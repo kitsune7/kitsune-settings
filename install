@@ -13,20 +13,15 @@ while getopts hfq flag; do
   esac
 done
 
-for i in $( ls -ap ./settings | grep -v '/$' )
+for i in $( ls -A ./settings | grep -v '/$' )
 do
-  cp $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ./settings/$i ~/
-done
-
-# Run settings immediately
-for i in $( ls -ap ./settings | grep -v '/$' )
-do
-  source ~/$i
+  cp -R $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ./settings/$i ~/
 done
 
 if [ ! $qflag ]
 then
   echo "Finished installing settings"
+  echo "Restart terminal to see changes"
 fi
 
 exit 0
