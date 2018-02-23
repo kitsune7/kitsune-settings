@@ -6,5 +6,6 @@ A collection of settings I like to have in my home directory
 
 ```bash
 git clone https://github.com/kitsune7/kitsune-settings.git
+cd ./kitsune-settings
 ./kitsune-settings/install.sh
 ```

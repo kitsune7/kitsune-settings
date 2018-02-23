@@ -3,9 +3,6 @@
 alias ll='ls -la'
 alias cd..='cd ..'
 alias ..='cd ..'
-alias grep='grep --color=auto'
-alias diff='colordiff'
-alias mount='mount | column -t'
 alias vi=vim
 alias svi='sudo vim'
 alias ping='ping -c 5'
@@ -19,10 +16,6 @@ alias gp='git push'
 alias gs='git status'
 
 # Safety nets
-alias rm='rm -I --preserve-root'
-alias chown='chown --preserve-root'
-alias chmod='chmod --preserve-root'
-alias chgrp='chgrp --preserve-root'
 alias mv='mv -i'
 alias cp='cp -i'
 alias ln='ln -i'
