@@ -1,0 +1,32 @@
+#!/bin/bash
+
+fflag=''
+qflag=''
+usage='usage: install [-h | [-fq]]'
+
+while getopts hfq flag; do
+  case "${flag}" in
+    h) echo $usage ;;
+    f) fflag='true' ;;
+    q) qflag='true' ;;
+    *) error "Unexpected option ${flag}"; echo $usage ;;
+  esac
+done
+
+for i in $( ls -ap ./settings | grep -v '/$' )
+do
+  cp $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ./settings/$i ~/
+done
+
+# Run settings immediately
+for i in $( ls -ap ./settings | grep -v '/$' )
+do
+  source ~/$i
+done
+
+if [ ! $qflag ]
+then
+  echo "Finished installing settings"
+fi
+
+exit 0
