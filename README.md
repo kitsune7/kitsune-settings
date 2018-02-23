@@ -12,9 +12,9 @@ cd ./kitsune-settings
 ./install
 ```
 
-# Options
+# Install Script Options
 
-The following options are available for the install script:
+The following options are available for `install`:
 
 __-h__&nbsp;&nbsp;&nbsp;&nbsp;Shows usage string.
 
