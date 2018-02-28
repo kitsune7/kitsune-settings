@@ -16,6 +16,7 @@ alias ga='git add .'
 alias gc='git commit -m'
 alias gp='git push'
 alias gs='git status'
+alias gr='git reset HEAD~'
 alias drop='git stash; git stash drop stash@{0}'
 
 alias mv='mv -i'
