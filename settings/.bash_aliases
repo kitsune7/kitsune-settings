@@ -13,7 +13,7 @@ alias ports='netstat -tulanp'
 alias wget='wget -c'
 
 alias ga='git add .'
-alias gc='git commit -m'
+alias gc='git pull && git commit -m'
 alias gp='git push'
 alias gs='git status'
 alias gr='git reset HEAD~'
