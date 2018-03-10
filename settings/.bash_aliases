@@ -32,3 +32,7 @@ cdl () {
   cd $1
   ls
 }
+
+clone () {
+  git clone https://github.com/kitsune7/$1
+}
