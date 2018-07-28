@@ -3,6 +3,9 @@
 alias ll='ls -la'
 alias cd..='cd ..'
 alias ..='cd ..'
+alias g='cd ~/Git'
+alias d='cd ~/Dropbox'
+alias s='cd ~/Git/kitsune-settings'
 
 alias vi=vim
 alias svi='sudo vim'
@@ -28,9 +31,17 @@ alias ln='ln -i'
 alias c='clear'
 alias help='cat ~/Git/kitsune-settings/settings/.bash_aliases'
 alias edit='vim ~/Git/kitsune-settings/settings/.bash_aliases'
+alias reload='~/Git/kitsune-settings/install -f && source ~/.bash_aliases'
 
 alias python='python3'
 alias pip='python3 -m pip'
+
+
+# Connect to my servers
+
+alias ppssh='ssh -i ~/Dropbox/ssh/preview-play chris@178.128.177.77'
+alias pprssh='ssh -i ~/Dropbox/ssh/preview-play root@178.128.177.77'
+
 
 # FUNCTIONS
 

@@ -13,9 +13,9 @@ while getopts hfq flag; do
   esac
 done
 
-for i in $( ls -A ./settings | grep -v '/$' )
+for i in $( ls -A ~/Git/kitsune-settings/settings | grep -v '/$' )
 do
-  cp -R $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ./settings/$i ~/
+  cp -R $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ~/Git/kitsune-settings/settings/$i ~/
 done
 
 if [ ! $qflag ]
