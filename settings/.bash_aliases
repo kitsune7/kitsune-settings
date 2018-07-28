@@ -17,7 +17,8 @@ alias gc='git pull && git commit -m'
 alias gp='git push'
 alias gs='git status'
 alias gr='git reset HEAD~'
-alias drop='git stash; git stash drop stash@{0}'
+alias drop='git stash -u'
+alias pop='git stash pop'
 alias cred='git config credential.helper store'
 
 alias mv='mv -i'
@@ -25,6 +26,8 @@ alias cp='cp -i'
 alias ln='ln -i'
 
 alias c='clear'
+alias help='cat ~/Git/kitsune-settings/settings/.bash_aliases'
+alias edit='vim ~/Git/kitsune-settings/settings/.bash_aliases'
 
 alias python='python3'
 alias pip='python3 -m pip'
