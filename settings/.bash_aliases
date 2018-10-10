@@ -62,8 +62,13 @@ new-component () {
   cd ..
 }
 
-alias rnc="new-component '.js' '.js'"
-alias tsc="new-component '.tsx' '.css'"
+rnc () {
+  new-component $1 'js' 'js'
+}
+
+tsc () {
+  new-component $1 'tsx' 'css'
+}
 
 
 # FUNCTIONS
