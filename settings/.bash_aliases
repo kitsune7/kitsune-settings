@@ -49,7 +49,7 @@ alias pprssh='ssh -i ~/Dropbox/ssh/preview-play root@178.128.177.77'
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stackoverflow="chrome 'http://stackoverflow.com/'"
 
-new-component () {
+newcomponent () {
   # $1: Name of component
   # $2: Component extension
   # $3: Style extension
@@ -63,11 +63,11 @@ new-component () {
 }
 
 rnc () {
-  new-component $1 'js' 'js'
+  newcomponent $1 'js' 'js'
 }
 
 tsc () {
-  new-component $1 'tsx' 'css'
+  newcomponent $1 'tsx' 'css'
 }
 
 
