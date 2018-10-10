@@ -48,15 +48,22 @@ alias pprssh='ssh -i ~/Dropbox/ssh/preview-play root@178.128.177.77'
 
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stackoverflow="chrome 'http://stackoverflow.com/'"
-rnc () {
+
+new-component () {
+  # $1: Name of component
+  # $2: Component extension
+  # $3: Style extension
   mkdir $1
   cd $1
-  index=`cat ~/Git/kitsune-settings/snippets/index.js`
-  echo "${index//\$1/$1}" > index.js
-  touch $1.js
-  touch style.js
+  index=`cat ~/Git/kitsune-settings/snippets/index.$2`
+  echo "${index//\$1/$1}" > index.$2
+  touch $1.$2
+  touch style.$3
   cd ..
 }
+
+alias rnc="new-component '.js' '.js'"
+alias tsc="new-component '.tsx' '.css'"
 
 
 # FUNCTIONS
