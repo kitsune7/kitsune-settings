@@ -46,6 +46,8 @@ alias pprssh='ssh -i ~/Dropbox/ssh/preview-play root@178.128.177.77'
 
 # React programming
 
+alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
+alias stackoverflow="chrome 'http://stackoverflow.com/'"
 rnc () {
   mkdir $1
   cd $1
@@ -59,9 +61,21 @@ rnc () {
 
 # FUNCTIONS
 
+save () {
+  cd ~/Git/kitsune-settings
+  git add .
+  git commit -m '$1'
+  git push
+  reload
+}
+
 cdl () {
   cd $1
   ls
+}
+
+chrome () {
+  /usr/bin/open -a '/Applications/Google Chrome.app' $1
 }
 
 clone () {
