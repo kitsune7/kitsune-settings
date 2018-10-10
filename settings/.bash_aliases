@@ -44,6 +44,18 @@ alias owl="julia ~/Dropbox/School/CS\ 330/interpreter\ 2/owl.jl"
 alias ppssh='ssh -i ~/Dropbox/ssh/preview-play chris@178.128.177.77'
 alias pprssh='ssh -i ~/Dropbox/ssh/preview-play root@178.128.177.77'
 
+# React programming
+
+rnc () {
+  mkdir $1
+  cd $1
+  index=`cat ~/Git/kitsune-settings/snippets/index.js`
+  echo "${index//\$1/$1}" > index.js
+  touch $1.js
+  touch style.js
+  cd ..
+}
+
 
 # FUNCTIONS
 
