@@ -61,11 +61,16 @@ rnc () {
 
 # FUNCTIONS
 
-save () {
-  cd ~/Git/kitsune-settings
+acp () {
+  git pull
   git add .
   git commit -m '$1'
   git push
+}
+
+ss () {
+  cd ~/Git/kitsune-settings
+  acp $1
   reload
 }
 
