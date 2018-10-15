@@ -36,7 +36,7 @@ alias reload='~/Git/kitsune-settings/install -f && source ~/.bash_aliases'
 alias python='python3'
 alias pip='python3 -m pip'
 
-alias owl="julia ~/Dropbox/School/CS\ 330/interpreter\ 2/owl.jl"
+alias owl="julia ~/Dropbox/School/CS\ 330/interpreter\ 3/owl.jl"
 
 
 # Connect to my servers
