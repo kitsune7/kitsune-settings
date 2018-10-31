@@ -68,6 +68,9 @@ rnc () {
 
 tsc () {
   newcomponent $1 'tsx' 'css'
+  cd $1
+  mv index.tsx index.ts
+  cd ../
 }
 
 
@@ -76,7 +79,7 @@ tsc () {
 acp () {
   git pull
   git add .
-  git commit -m '$1'
+  git commit -m "$1"
   git push
 }
 
