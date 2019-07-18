@@ -20,7 +20,7 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gs='git status'
 alias gr='git reset HEAD~'
-alias drop='git stash -u'
+alias drop='git stash save --include-untracked && git stash clear'
 alias pop='git stash pop'
 alias cred='git config credential.helper store'
 
@@ -68,6 +68,20 @@ tsc () {
 
 
 # FUNCTIONS
+
+save () {
+  _cd=`pwd`
+  cd ~/Git/kitsune-settings/
+  git pull
+  git add .
+  git commit -m "Auto-saving updates to settings"
+  git push
+  cd $_cd
+}
+
+stash () {
+  git stash save --include-untracked "$1"
+}
 
 acp () {
   git pull
