@@ -22,6 +22,7 @@ alias gs='git status'
 alias gr='git reset HEAD~'
 alias drop='git stash save --include-untracked && git stash clear'
 alias pop='git stash pop'
+alias list='git stash list'
 alias cred='git config credential.helper store'
 
 alias mv='mv -i'
