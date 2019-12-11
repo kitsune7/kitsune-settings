@@ -20,6 +20,7 @@ alias gc='git commit -m'
 alias gp='git push'
 alias gs='git status'
 alias gr='git reset HEAD~'
+alias gb='git branch'
 alias drop='git stash save --include-untracked && git stash drop stash@{0}'
 alias pop='git stash pop'
 alias list='git stash list'
@@ -108,4 +109,8 @@ chrome () {
 
 clone () {
   git clone https://github.com/kitsune7/$1
+}
+
+install-autocomplete () {
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 }
