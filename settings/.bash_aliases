@@ -1,11 +1,13 @@
-# ALIASES
+# Any commands that use the settings directory rely on this variable
+settingsDir='~/Git/kitsune-settings'
 
+# ALIASES
 alias ll='ls -la'
 alias cd..='cd ..'
 alias ..='cd ..'
 alias g='cd ~/Git'
 alias d='cd ~/Dropbox'
-alias s='cd ~/Git/kitsune-settings'
+alias s='cd $settingsDir'
 
 alias vi=vim
 alias svi='sudo vim'
@@ -17,9 +19,10 @@ alias wget='wget -c'
 
 alias ga='git add .'
 alias gc='git commit -m'
-alias gp='git push'
+alias gp='git push origin `git rev-parse --abbrev-ref HEAD`'
 alias gs='git status'
 alias gr='git reset HEAD~'
+alias gcm='git checkout master'
 alias gb='git branch'
 alias gbd='git branch -D'
 alias drop='git stash save --include-untracked && git stash drop stash@{0}'
@@ -33,18 +36,17 @@ alias cp='cp -i'
 alias ln='ln -i'
 
 alias c='clear'
-alias help='cat ~/Git/kitsune-settings/settings/.bash_aliases'
-alias edit='vim ~/Git/kitsune-settings/settings/.bash_aliases'
-alias reload='~/Git/kitsune-settings/install -f && source ~/.bash_aliases'
+alias help='cat $settingsDir/settings/.bash_aliases'
+alias edit='vim $settingsDir/settings/.bash_aliases'
+alias reload='$settingsDir/install -f && source ~/.bash_aliases'
 
 alias python='python3'
 alias pip='python3 -m pip'
 
 
 # React programming
-
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
-alias stackoverflow="chrome 'http://stackoverflow.com/'"
+alias stack="chrome 'http://stackoverflow.com/'"
 
 newcomponent () {
   # $1: Name of component
@@ -52,7 +54,7 @@ newcomponent () {
   # $3: Style extension
   mkdir $1
   cd $1
-  index=`cat ~/Git/kitsune-settings/snippets/index.$2`
+  index=`cat $settingsDir/snippets/index.$2`
   echo "${index//\$1/$1}" > index.$2
   touch $1.$2
   touch style.$3
@@ -75,7 +77,7 @@ tsc () {
 
 save () {
   _cd=`pwd`
-  cd ~/Git/kitsune-settings/
+  cd $settingsDir
   git pull
   git add .
   git commit -m "Auto-saving updates to settings"
@@ -91,11 +93,15 @@ acp () {
   git pull
   git add .
   git commit -m "$1"
-  git push
+  git push origin `git rev-parse --abbrev-ref HEAD`
+}
+
+gnb () {
+  git checkout -b $1
 }
 
 ss () {
-  cd ~/Git/kitsune-settings
+  cd $settingsDir
   acp $1
   reload
 }
@@ -116,3 +122,9 @@ clone () {
 install-autocomplete () {
   curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 }
+
+add-pre-commit () {
+  cp $settnigsDir/snippets/pre-commit ./.git/hooks/pre-commit
+  chmod 755 ./.git/hooks/pre-commit
+}
+
