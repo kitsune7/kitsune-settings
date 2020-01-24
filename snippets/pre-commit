@@ -1,0 +1,34 @@
+#!/bin/bash
+# Requires the `dialog` package to be installed on linux machines
+# Only supported on Mac OSX and Linux
+
+warningString="You're on master. Are you sure you want to commit your changes here?"
+yesResponse="Alright. Here we go, I guess."
+noResponse="Cool. Let's keep it safe. Switch to a different branch before you rush to commit next time, okay?"
+
+macDialogScript='button returned of (display dialog "Are you sure!?" with icon caution buttons {"No", "Yes"})'
+
+branch=`git rev-parse --abbrev-ref HEAD`
+if [ $branch = 'master' ]; then
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        if [ dialog --title "Warning" --yesno "$warningString" 8 30 ]
+        then
+            echo $yesResponse
+        else
+            echo $noResponse
+            exit 1
+        fi
+    # Mac OSX
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        if [ `osascript -e "$macDialogScript"` = "Yes" ]; then
+            echo $yesResponse
+        else
+            echo $noResponse
+            exit 1
+        fi
+    fi
+fi
+ 
+# Run tests
+npm test
+

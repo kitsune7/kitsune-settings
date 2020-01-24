@@ -54,20 +54,20 @@ newcomponent () {
   # $3: Style extension
   mkdir $1
   cd $1
-  index=`cat $settingsDir/snippets/index.$2`
-  echo "${index//\$1/$1}" > index.$2
-  touch $1.$2
-  touch style.$3
+  index=`cat "$settingsDir/snippets/index.$2"`
+  echo "${index//\$1/$1}" > "index.$2"
+  touch "$1.$2"
+  touch "style.$3"
   cd ..
 }
 
 rnc () {
-  newcomponent $1 "js" "js"
+  newcomponent "$1" "js" "js"
 }
 
 tsc () {
-  newcomponent $1 "tsx" "css"
-  cd $1
+  newcomponent "$1" "tsx" "css"
+  cd "$1"
   mv index.tsx index.ts
   cd ../
 }
@@ -97,22 +97,22 @@ acp () {
 }
 
 gnb () {
-  git checkout -b $1
+  git checkout -b "$1"
 }
 
 ss () {
-  cd $settingsDir
-  acp $1
+  cd "$settingsDir"
+  acp "$1"
   reload
 }
 
 cdl () {
-  cd $1
+  cd "$1"
   ls
 }
 
 chrome () {
-  /usr/bin/open -a "/Applications/Google Chrome.app" $1
+  /usr/bin/open -a "/Applications/Google Chrome.app" "$1"
 }
 
 clone () {
@@ -124,7 +124,7 @@ install-autocomplete () {
 }
 
 add-pre-commit () {
-  cp "$settnigsDir/snippets/pre-commit" ./.git/hooks/pre-commit
+  cp "$settingsDir/snippets/pre-commit" ./.git/hooks/pre-commit
   chmod 755 ./.git/hooks/pre-commit
 }
 
