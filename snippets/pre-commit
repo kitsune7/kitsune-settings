@@ -6,7 +6,7 @@ warningString="You're on master. Are you sure you want to commit your changes he
 yesResponse="Alright. Here we go, I guess."
 noResponse="Cool. Let's keep it safe. Switch to a different branch before you rush to commit next time, okay?"
 
-macDialogScript='button returned of (display dialog "Are you sure!?" with icon caution buttons {"No", "Yes"})'
+macDialogScript="button returned of (display dialog \"$warningString\" with icon caution buttons {'No', 'Yes'})"
 
 branch=`git rev-parse --abbrev-ref HEAD`
 if [ $branch = 'master' ]; then
