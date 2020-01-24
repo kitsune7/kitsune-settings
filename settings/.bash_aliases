@@ -1,52 +1,52 @@
 # Any commands that use the settings directory rely on this variable
-settingsDir='~/Git/kitsune-settings'
+settingsDir="$HOME/Git/kitsune-settings"
 
 # ALIASES
-alias ll='ls -la'
-alias cd..='cd ..'
-alias ..='cd ..'
-alias g='cd ~/Git'
-alias d='cd ~/Dropbox'
-alias s='cd $settingsDir'
+alias ll="ls -la"
+alias cd..="cd .."
+alias ..="cd .."
+alias g="cd ~/Git"
+alias d="cd ~/Dropbox"
+alias s="cd $settingsDir"
 
-alias vi=vim
-alias svi='sudo vim'
+alias vi="vim"
+alias svi="sudo vim"
 
-alias ping='ping -c 5'
-alias fastping='ping -c 100 -s.2'
-alias ports='netstat -tulanp'
-alias wget='wget -c'
+alias ping="ping -c 5"
+alias fastping="ping -c 100 -s.2"
+alias ports="netstat -tulanp"
+alias wget="wget -c"
 
-alias ga='git add .'
-alias gc='git commit -m'
-alias gp='git push origin `git rev-parse --abbrev-ref HEAD`'
-alias gs='git status'
-alias gr='git reset HEAD~'
-alias gcm='git checkout master'
-alias gb='git branch'
-alias gbd='git branch -D'
-alias drop='git stash save --include-untracked && git stash drop stash@{0}'
-alias pop='git stash pop'
-alias list='git stash list'
-alias cred='git config credential.helper store'
-alias undo-last-commit='git reset --soft HEAD~1'
+alias ga="git add ."
+alias gc="git commit -m"
+alias gp="git push origin `git rev-parse --abbrev-ref HEAD`"
+alias gs="git status"
+alias gr="git reset HEAD~"
+alias gcm="git checkout master"
+alias gb="git branch"
+alias gbd="git branch -D"
+alias drop="git stash save --include-untracked && git stash drop stash@{0}"
+alias pop="git stash pop"
+alias list="git stash list"
+alias cred="git config credential.helper store"
+alias undo-last-commit="git reset --soft HEAD~1"
 
-alias mv='mv -i'
-alias cp='cp -i'
-alias ln='ln -i'
+alias mv="mv -i"
+alias cp="cp -i"
+alias ln="ln -i"
 
-alias c='clear'
-alias help='cat $settingsDir/settings/.bash_aliases'
-alias edit='vim $settingsDir/settings/.bash_aliases'
-alias reload='$settingsDir/install -f && source ~/.bash_aliases'
+alias c="clear"
+alias help="cat $settingsDir/settings/.bash_aliases"
+alias edit="vim $settingsDir/settings/.bash_aliases"
+alias reload="$settingsDir/install -f && source ~/.bash_aliases"
 
-alias python='python3'
-alias pip='python3 -m pip'
+alias python="python3"
+alias pip="python3 -m pip"
 
 
 # React programming
-alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
-alias stack="chrome 'http://stackoverflow.com/'"
+alias rndocs="chrome "https://facebook.github.io/react-native/docs/components-and-apis#basic-components""
+alias stack="chrome "http://stackoverflow.com/""
 
 newcomponent () {
   # $1: Name of component
@@ -62,11 +62,11 @@ newcomponent () {
 }
 
 rnc () {
-  newcomponent $1 'js' 'js'
+  newcomponent $1 "js" "js"
 }
 
 tsc () {
-  newcomponent $1 'tsx' 'css'
+  newcomponent $1 "tsx" "css"
   cd $1
   mv index.tsx index.ts
   cd ../
@@ -112,11 +112,11 @@ cdl () {
 }
 
 chrome () {
-  /usr/bin/open -a '/Applications/Google Chrome.app' $1
+  /usr/bin/open -a "/Applications/Google Chrome.app" $1
 }
 
 clone () {
-  git clone https://github.com/kitsune7/$1
+  git clone "https://github.com/kitsune7/$1"
 }
 
 install-autocomplete () {
@@ -124,7 +124,7 @@ install-autocomplete () {
 }
 
 add-pre-commit () {
-  cp $settnigsDir/snippets/pre-commit ./.git/hooks/pre-commit
+  cp "$settnigsDir/snippets/pre-commit" ./.git/hooks/pre-commit
   chmod 755 ./.git/hooks/pre-commit
 }
 
