@@ -2,6 +2,7 @@
 settingsDir="$HOME/Git/kitsune-settings"
 
 # ALIASES
+alias l="ls"
 alias ll="ls -la"
 alias cd..="cd .."
 alias ..="cd .."
@@ -22,7 +23,7 @@ alias gc="git commit -m"
 alias gp="git push origin `git rev-parse --abbrev-ref HEAD`"
 alias gs="git status"
 alias gr="git reset HEAD~"
-alias gcm="git checkout master"
+alias gcm="git checkout master; git pull"
 alias gb="git branch"
 alias gbd="git branch -D"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
