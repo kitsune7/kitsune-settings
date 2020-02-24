@@ -32,6 +32,9 @@ alias list="git stash list"
 alias cred="git config credential.helper store"
 alias undo-last-commit="git reset --soft HEAD~1"
 
+alias dev="npm run dev"
+alias start="npm start"
+
 alias mv="mv -i"
 alias cp="cp -i"
 alias ln="ln -i"
