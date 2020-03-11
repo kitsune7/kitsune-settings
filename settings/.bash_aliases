@@ -49,8 +49,8 @@ alias pip="python3 -m pip"
 
 
 # React programming
-alias rndocs="chrome "https://facebook.github.io/react-native/docs/components-and-apis#basic-components""
-alias stack="chrome "http://stackoverflow.com/""
+alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
+alias stack="chrome 'http://stackoverflow.com/'"
 
 newcomponent () {
   # $1: Name of component
