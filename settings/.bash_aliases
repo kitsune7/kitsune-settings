@@ -104,6 +104,10 @@ gnb () {
   git checkout -b "$1"
 }
 
+gt () {
+  git tag -a v$1 -m "$2"
+}
+
 ss () {
   cd "$settingsDir"
   acp "$1"
