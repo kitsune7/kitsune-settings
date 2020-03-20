@@ -2,6 +2,7 @@
 settingsDir="$HOME/Git/kitsune-settings"
 
 # ALIASES
+alias size="du -hs"
 alias l="ls"
 alias ll="ls -la"
 alias cd..="cd .."
@@ -97,7 +98,7 @@ acp () {
   git pull
   git add .
   git commit -m "$1"
-  git push origin `git rev-parse --abbrev-ref HEAD`
+  git push origin `git rev-parse --abbrev-ref HEAD` && git push --tags
 }
 
 gnb () {
