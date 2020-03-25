@@ -106,7 +106,7 @@ gnb () {
 }
 
 gt () {
-  git tag -a v$1 -m "$2"
+  git tag -a v$1 -m "$2" && npm run postversion
 }
 
 ss () {
