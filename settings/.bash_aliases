@@ -90,6 +90,10 @@ save () {
   cd $_cd
 }
 
+server () {
+  http-server "$1" -a localhost -c-1
+}
+
 stash () {
   git stash save --include-untracked "$1"
 }
