@@ -146,13 +146,12 @@ add-pre-commit () {
 }
 
 run-server () {
-  echo "run-server $1 $2 $3"
   port=${2:-8080}
   branch=${3:-master}
-  git --git-dir/.git $1 checkout $3
-  git --git-dir/.git $1 pull
+  git --git-dir $1/.git checkout $3
+  git --git-dir $1/.git pull
   yarn --cwd $1
-  PORT=port npm run dev --prefix $1 &
+  PORT=$port npm run dev --prefix $1 &
   disown -h $!
 }
 
@@ -174,7 +173,7 @@ killport () {
 }
 
 killservers () {
-  kill `lsof -ti:8080,8081,8082` > /dev/null
+  kill `lsof -ti:8080,8081,8082` > /dev/null 2>&1
   reset -c
 }
 
