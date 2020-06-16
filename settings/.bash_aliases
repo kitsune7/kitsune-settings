@@ -169,6 +169,10 @@ killjobs () {
 
 killport () {
   port=${1:-8080}
-  kill ${lsof -ti:$port}
+  kill `lsof -ti:$port`
+}
+
+killservers () {
+  kill `lsof -ti:8080,8081,8082`
 }
 
