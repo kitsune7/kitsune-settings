@@ -162,6 +162,6 @@ run-db-app-server () {
   run-server ~/Git/db-app-server $1 $2
 }
 
-kill-jobs () {
+killjobs () {
   kill $(jobs -p)
 }
