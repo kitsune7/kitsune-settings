@@ -91,6 +91,7 @@ save () {
   git commit -m "Auto-saving updates to settings"
   git push
   cd $_cd
+  reload
 }
 
 server () {
@@ -165,3 +166,9 @@ run-db-app-server () {
 killjobs () {
   kill $(jobs -p)
 }
+
+killport () {
+  port=${1:-8080}
+  kill ${lsof -ti:$port}
+}
+
