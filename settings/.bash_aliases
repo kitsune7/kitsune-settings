@@ -141,3 +141,11 @@ add-pre-commit () {
   chmod 755 ./.git/hooks/pre-commit
 }
 
+run-metrics-api () {
+  port=${1:-8080}
+  git --git-dir ~/Git/metrics-rest-api checkout master
+  git --git-dir ~/Git/metrics-rest-api pull
+  yarn --cwd ~/Git/metrics-rest-api/
+  PORT=port npm run dev --prefix ~/Git/metrics-rest-api/ &
+  disown -h %1
+}
