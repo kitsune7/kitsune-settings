@@ -146,6 +146,7 @@ add-pre-commit () {
 }
 
 run-server () {
+  echo "run-server $1 $2 $3"
   port=${2:-8080}
   branch=${3:-master}
   git --git-dir/.git $1 checkout $3
