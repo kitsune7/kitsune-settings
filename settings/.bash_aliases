@@ -48,6 +48,9 @@ alias reload="$settingsDir/install -f && source ~/.bash_aliases"
 alias python="python3"
 alias pip="python3 -m pip"
 
+alias app="run-db-app-server; run-metrics-api 8081"
+alias mconfig="run-metrics-api; run-db-app-server 8081"
+
 
 # React programming
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
@@ -141,11 +144,24 @@ add-pre-commit () {
   chmod 755 ./.git/hooks/pre-commit
 }
 
+run-server () {
+  port=${2:-8080}
+  branch=${3:-master}
+  git --git-dir $1 checkout $3
+  git --git-dir $1 pull
+  yarn --cwd $1
+  PORT=port npm run dev --prefix $1 &
+  disown -h $!
+}
+
 run-metrics-api () {
-  port=${1:-8080}
-  git --git-dir ~/Git/metrics-rest-api checkout master
-  git --git-dir ~/Git/metrics-rest-api pull
-  yarn --cwd ~/Git/metrics-rest-api/
-  PORT=port npm run dev --prefix ~/Git/metrics-rest-api/ &
-  disown -h %1
+  run-server ~/Git/metrics-rest-api $1 $2
+}
+
+run-db-app-server () {
+  run-server ~/Git/db-app-server $1 $2
+}
+
+kill-jobs () {
+  kill $(jobs -p)
 }
