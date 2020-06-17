@@ -174,6 +174,6 @@ killport () {
 
 killservers () {
   kill `lsof -ti:8080,8081,8082` > /dev/null 2>&1
-  reset -c
+  reset
 }
 
