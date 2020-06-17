@@ -49,7 +49,7 @@ alias python="python3"
 alias pip="python3 -m pip"
 
 alias app="run-db-app-server; run-metrics-api 8081"
-alias mconfig="run-metrics-api; run-db-app-server 8081"
+alias mconfig="run-metrics-api; run-sync 8081"
 
 
 # React programming
@@ -148,7 +148,7 @@ add-pre-commit () {
 run-server () {
   port=${2:-8080}
   branch=${3:-master}
-  git --git-dir $1/.git checkout $3
+  git --git-dir $1/.git checkout $branch
   git --git-dir $1/.git pull
   yarn --cwd $1
   PORT=$port npm run dev --prefix $1 &
@@ -161,6 +161,17 @@ run-metrics-api () {
 
 run-db-app-server () {
   run-server ~/Git/db-app-server $1 $2
+}
+
+run-sync () {
+  port=${1:-8080}
+  branch=${2:-master}
+  git --git-dir ~/Git/synchronization-microservice/.git checkout $branch
+  git --git-dir ~/Git/synchronization-microservice/.git pull
+  yarn --cwd ~/Git/synchronization-microservice
+  npm run build --prefix ~/Git/synchronization-microservice/
+  PORT=$port npm start --prefix ~/Git/synchronization-microservice/ &
+  disown -h $!
 }
 
 killjobs () {
