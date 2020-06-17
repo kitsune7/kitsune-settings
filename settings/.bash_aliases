@@ -189,6 +189,6 @@ killservers () {
 }
 
 viewservers () {
-  lsof -ti:8080,8081,8082
+  lsof -ti:8080,8081,8082 | xargs -n1 lsof -Pp | grep 'DIR\|(LISTEN)\|NAME' | perl -ne 'print if ++$k{$_}==1'
 }
 
