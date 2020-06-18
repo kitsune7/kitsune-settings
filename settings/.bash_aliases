@@ -113,6 +113,10 @@ gnb () {
   git checkout -b "$1"
 }
 
+pr () {
+  gnb $1; acp $2
+}
+
 gt () {
   git tag -a v$1 -m "$2" && npm run postversion
 }
