@@ -49,7 +49,9 @@ alias python="python3"
 alias pip="python3 -m pip"
 
 alias app="run-db-app-server; run-metrics-api 8081"
-alias mconfig="run-metrics-api; run-sync 8081"
+alias config="run-metrics-api; run-sync 8081"
+alias ks="killservers"
+alias vs="viewservers"
 
 
 # React programming
