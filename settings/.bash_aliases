@@ -114,7 +114,7 @@ gnb () {
 }
 
 pr () {
-  gnb $1; acp $2
+  gnb "$1"; acp "$2"
 }
 
 gt () {
