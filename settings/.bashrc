@@ -23,3 +23,8 @@ RESET="\e[0m"
 LINE="$(echo $(for i in $(seq 1 $COLUMNS); do printf '-'; done))"
 
 export PS1="$CYAN\u $GREEN\W $RESET$ "
+
+NPM_PACKAGES="${HOME}/.npm-packages"
+export PATH="$PATH:$NPM_PACKAGES/bin"
+export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
+
