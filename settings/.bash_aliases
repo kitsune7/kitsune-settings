@@ -97,7 +97,7 @@ save () {
 }
 
 server () {
-  path=${1:./dist/}
+  path=${1:-./dist/}
   http-server "$1" -a localhost -c-1 -p 5000 -P http://localhost:5000?
 }
 
