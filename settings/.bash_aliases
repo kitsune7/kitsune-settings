@@ -124,6 +124,22 @@ gt () {
   git tag -a v$1 -m "$2" && npm run postversion
 }
 
+version () {
+  acp $2
+  yarn $1
+  yarn postversion
+}
+
+major () {
+  version major "BREAKING CHANGE: $1"
+}
+minor () {
+  version minor "feat: $1"
+}
+patch () {
+  version patch "patch: $1"
+}
+
 ss () {
   cd "$settingsDir"
   acp "$1"
