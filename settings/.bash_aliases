@@ -35,6 +35,7 @@ alias undo-last-commit="git reset --soft HEAD~1"
 
 alias dev="npm run dev"
 alias start="npm start"
+alias local-prod="server ./dist"
 
 alias mv="mv -i"
 alias cp="cp -i"
