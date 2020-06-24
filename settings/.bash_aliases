@@ -35,7 +35,6 @@ alias undo-last-commit="git reset --soft HEAD~1"
 
 alias dev="npm run dev"
 alias start="npm start"
-alias local-prod="server ./dist"
 
 alias mv="mv -i"
 alias cp="cp -i"
@@ -98,7 +97,8 @@ save () {
 }
 
 server () {
-  http-server "$1" -a localhost -c-1
+  path=${1:./dist/}
+  http-server "$1" -a localhost -c-1 -p 5000 -P http://localhost:5000?
 }
 
 stash () {
