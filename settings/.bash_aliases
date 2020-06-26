@@ -128,8 +128,7 @@ version () {
   git add .
   git commit -m "$1"
   echo "Commit message: \"$1\""
-  yarn release
-  yarn postversion
+  npm run release
 }
 
 major () {
