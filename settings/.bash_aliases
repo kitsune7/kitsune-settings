@@ -126,21 +126,20 @@ gt () {
 
 version () {
   git add .
-  git commit -m "$2"
-  echo "Commit message: \"$2\""
-  echo "Release type: \"$1\""
-  yarn "$1"
+  git commit -m "$1"
+  echo "Commit message: \"$1\""
+  yarn release
   yarn postversion
 }
 
 major () {
-  version major "BREAKING CHANGE: $1"
+  version "BREAKING CHANGE: $1"
 }
 minor () {
-  version minor "feat: $1"
+  version "feat: $1"
 }
 patch () {
-  version patch "patch: $1"
+  version "patch: $1"
 }
 
 ss () {
