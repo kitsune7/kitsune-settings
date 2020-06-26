@@ -128,6 +128,7 @@ version () {
   git add .
   git commit -m "$2"
   echo "Commit message: \"$2\""
+  echo "Release type: \"$1\""
   yarn "$1"
   yarn postversion
 }
