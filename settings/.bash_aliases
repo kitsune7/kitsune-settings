@@ -216,3 +216,19 @@ viewservers () {
   lsof -ti:8080,8081,8082 | xargs -n1 lsof -Pp | grep 'DIR\|(LISTEN)\|NAME' | perl -ne 'print if ++$k{$_}==1'
 }
 
+updatecommon () {
+  if [ -z ${1+x} ]; then
+    echo "Usage: updatecommon <semantic version number>"
+  else
+    version=`grep common.git package.json | grep -E -o '[0-9]+\.[0-9]+\.[0-9]+(-[a-z]+\.[0-9]*)?'`
+    escapedVersion=`echo $version | sed 's/\\./\\\\./g'`
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      sed -i '' "/common.git/s/$extendedVersion/$1/" package.json
+    else
+      sed -i "/common.git/s/$extendedVersion/$1/" package.json
+    fi
+
+    yarn
+  fi
+}
