@@ -128,7 +128,7 @@ version () {
   git add .
   git commit -m "$1"
   echo "Commit message: \"$1\""
-  npm run release
+  npx standard-version
 }
 
 major () {
