@@ -125,8 +125,10 @@ gt () {
 }
 
 version () {
-  acp $2
-  yarn $1
+  git add .
+  git commit -m "$2"
+  echo "Commit message: \"$2\""
+  yarn "$1"
   yarn postversion
 }
 
