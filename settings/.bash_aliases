@@ -224,6 +224,7 @@ updatecommon () {
     escapedVersion=`echo $version | sed 's/\\./\\\\./g'`
 
     if [[ "$OSTYPE" == "darwin"* ]]; then
+      echo sed -i '' "/common.git/s/$extendedVersion/$1/" package.json
       sed -i '' "/common.git/s/$extendedVersion/$1/" package.json
     else
       sed -i "/common.git/s/$extendedVersion/$1/" package.json
