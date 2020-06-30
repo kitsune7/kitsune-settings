@@ -97,11 +97,9 @@ save () {
   reload
 }
 
-commonedit () {
-  commonPath=./node_modules/common/dist
-  filePath=${1:-utilities/DbDataHelper.js}
+editmodule () {
   lineNumber=${2:-0}
-  webstorm --line "$lineNumber" "$commonPath/$filePath"
+  webstorm --line "$lineNumber" "$1"
 }
 
 server () {
