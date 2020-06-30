@@ -35,6 +35,7 @@ alias undo-last-commit="git reset --soft HEAD~1"
 
 alias dev="npm run dev"
 alias start="npm start"
+alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 
 alias mv="mv -i"
 alias cp="cp -i"
@@ -94,6 +95,13 @@ save () {
   git push
   cd $_cd
   reload
+}
+
+commonedit () {
+  commonPath=./node_modules/common/dist
+  filePath=${1:-utilities/DbDataHelper.js}
+  lineNumber=${2:-0}
+  webstorm --line "$lineNumber" "$commonPath/$filePath"
 }
 
 server () {
