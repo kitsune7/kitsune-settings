@@ -86,6 +86,10 @@ tsc () {
 
 # FUNCTIONS
 
+sysfind () {
+  sudo find / -iname $1 2>/dev/null
+}
+
 save () {
   _cd=`pwd`
   cd $settingsDir
