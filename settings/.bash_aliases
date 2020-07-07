@@ -45,6 +45,7 @@ alias c="clear"
 alias help="cat $settingsDir/settings/.bash_aliases"
 alias edit="vim $settingsDir/settings/.bash_aliases"
 alias reload="$settingsDir/install -f && source ~/.bash_aliases"
+alias latest="git --git-dir $settingsDir/.git pull; reload"
 
 alias python="python3"
 alias pip="python3 -m pip"
