@@ -87,6 +87,10 @@ tsc () {
 
 # FUNCTIONS
 
+kfind () {
+  help | grep "$1"
+}
+
 sysfind () {
   sudo find / -iname $1 2>/dev/null
 }
