@@ -187,6 +187,8 @@ add-pre-commit () {
 run-server () {
   port=${2:-8080}
   branch=${3:-master}
+  git --git-dir $1/.git stash
+  git --git-dir $1/.git stash drop stash@{0}
   git --git-dir $1/.git checkout $branch
   git --git-dir $1/.git pull
   yarn --cwd $1
