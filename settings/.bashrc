@@ -3,26 +3,19 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # PS1 stuff
-GREEN="\e[32m"
-YELLOW="\e[33m"
-BLUE="\e[34m"
-MAGENTA="\e[35m"
-CYAN="\e[36m"
-DEFAULT="\e[39m"
-DARK_GREY="\e[90m"
-LIGHT_RED="\e[91m"
-LIGHT_GREEN="\e[92m"
-LIGHT_YELLOW="\e[93m"
-LIGHT_BLUE="\e[94m"
-LIGHT_MAGENTA="\e[95m"
-LIGHT_CYAN="\e[96m"
-WHITE="\e[97m"
-DIM="\e[2m"
-RESET="\e[0m"
-
+GREEN=$(tput setaf 2)
+YELLOW=$(tput setaf 3)
+BLUE=$(tput setaf 4)
+MAGENTA=$(tput setaf 5)
+CYAN=$(tput setaf 6)
+DEFAULT=$(tput setaf 9)
+WHITE=$(tput setaf 7)
+BRIGHT=$(tput bold)
+DIM=$(tput dim)
+RESET=$(tput sgr0)
 LINE="$(echo $(for i in $(seq 1 $COLUMNS); do printf '-'; done))"
 
-export PS1="$CYAN\u $GREEN\W $RESET$ "
+export PS1='\[$CYAN\]\u \[$GREEN\]\W \[$RESET\]$ '
 
 NPM_PACKAGES="${HOME}/.npm-packages"
 export PATH="$PATH:$NPM_PACKAGES/bin"
