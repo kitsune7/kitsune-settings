@@ -233,3 +233,7 @@ updatecommon () {
     yarn
   fi
 }
+
+jsonpost () {
+  curl -d "$1" -H 'Content-Type: application/json' -X POST "$2"
+}
