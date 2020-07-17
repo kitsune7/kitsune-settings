@@ -50,8 +50,7 @@ alias latest="git --git-dir $settingsDir/.git pull; reload"
 alias python="python3"
 alias pip="python3 -m pip"
 
-alias app="run-db-app-server; run-metrics-api 8081"
-alias config="run-metrics-api; run-sync 8081"
+alias rs="run-server ~/Git/db-app-server && run-server ~/Git/metrics-rest-api && run-server ~/Git/synchronization-microservice"
 alias ks="killservers"
 alias vs="viewservers"
 
@@ -185,34 +184,19 @@ add-pre-commit () {
 }
 
 run-server () {
-  port=${2:-8080}
-  branch=${3:-master}
-  git --git-dir $1/.git stash
-  git --git-dir $1/.git stash drop stash@{0}
-  git --git-dir $1/.git checkout $branch
-  git --git-dir $1/.git pull
-  yarn --cwd $1
-  PORT=$port npm run dev --prefix $1 &
-  disown -h $!
-}
-
-run-metrics-api () {
-  run-server ~/Git/metrics-rest-api $1 $2
-}
-
-run-db-app-server () {
-  run-server ~/Git/db-app-server $1 $2
-}
-
-run-sync () {
-  port=${1:-8080}
-  branch=${2:-master}
-  git --git-dir ~/Git/synchronization-microservice/.git checkout $branch
-  git --git-dir ~/Git/synchronization-microservice/.git pull
-  yarn --cwd ~/Git/synchronization-microservice
-  npm run build --prefix ~/Git/synchronization-microservice/
-  PORT=$port npm start --prefix ~/Git/synchronization-microservice/ &
-  disown -h $!
+  if [ -d "$1/.git" ] then
+    cd $1
+    git stash
+    git stash drop stash@{0}
+    git checkout master
+    git pull
+    yarn
+    npm run dev &
+  else
+    echo "$1 doesn't have a .git directory."
+    killservers()
+    exit 1
+  fi
 }
 
 killjobs () {
