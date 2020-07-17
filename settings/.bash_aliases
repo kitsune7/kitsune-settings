@@ -184,7 +184,7 @@ add-pre-commit () {
 }
 
 run-server () {
-  if [ -d "$1/.git" ] then
+  if [ -d "$1/.git" ]; then
     cd $1
     git stash
     git stash drop stash@{0}
