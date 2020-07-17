@@ -194,7 +194,7 @@ run-server () {
     npm run dev &
   else
     echo "$1 doesn't have a .git directory."
-    killservers()
+    killservers
     exit 1
   fi
 }
