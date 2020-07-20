@@ -21,7 +21,7 @@ alias wget="wget -c"
 
 alias ga="git add ."
 alias gc="git commit -m"
-alias gp='git push origin `git rev-parse --abbrev-ref HEAD`'
+alias gp='git push origin head'
 alias gs="git status"
 alias gr="git reset HEAD~"
 alias gcm="git checkout master; git pull"
