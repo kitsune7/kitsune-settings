@@ -237,3 +237,13 @@ updatecommon () {
 jsonpost () {
   curl -d "$1" -H 'Content-Type: application/json' -X POST "$2"
 }
+
+httpscert () {
+  brew install openssl
+  openssl genrsa -des3 -passout pass:x -out server.pass.key 2048
+  openssl rsa -passin pass:x -in server.pass.key -out private.key
+  rm server.pass.key
+  openssl req -new -key private.key -out server.csr
+  openssl x509 -req -sha256 -days 365 -in server.csr -signkey private.key -out certificate.crt
+}
+
