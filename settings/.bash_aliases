@@ -60,6 +60,10 @@ alias vs="viewservers"
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stack="chrome 'http://stackoverflow.com/'"
 
+test () {
+  npx jest --runInBand $1
+}
+
 newcomponent () {
   # $1: Name of component
   # $2: Component extension
