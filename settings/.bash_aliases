@@ -253,8 +253,7 @@ httpscert () {
 
 cdr () {
   searchStart=${1:-./src}
-  echo "$searchStart"
-  workingDir=workingDir=`find "$searchStart" -type f -exec stat -lt "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | sed -En "s/([0-9-]+ [0-9:]* |\/[a-zA-Z0-9.]+$)//gp" | sed -En "s/\/\//\//gp"`
+  workingDir=`find "$searchStart" -type f -exec stat -lt "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | sed -En "s/([0-9-]+ [0-9:]* |\/[a-zA-Z0-9.]+$)//gp" | sed -En "s/\/\//\//gp"`
   cd "$workingDir"
 }
 
