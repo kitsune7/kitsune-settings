@@ -55,7 +55,6 @@ alias rs="run-server ~/Git/db-app-server && run-server ~/Git/metrics-rest-api &&
 alias ks="killservers"
 alias vs="viewservers"
 
-
 # React programming
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stack="chrome 'http://stackoverflow.com/'"
@@ -250,5 +249,11 @@ httpscert () {
   rm server.pass.key
   openssl req -new -key private.key -out server.csr
   openssl x509 -req -sha256 -days 365 -in server.csr -signkey private.key -out certificate.crt
+}
+
+cdr () {
+  searchStart=${1:-./src}
+  workingDir=workingDir=`find "$searchStart" -type f -exec stat -lt "%F %T" {} \+ | cut -d' ' -f6- | sort -n | tail -1 | sed -En "s/([0-9-]+ [0-9:]* |\/[a-zA-Z0-9.]+$)//gp" | sed -En "s/\/\//\//gp"`
+  cd "$workingDir"
 }
 
