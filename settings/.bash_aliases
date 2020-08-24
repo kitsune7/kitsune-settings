@@ -37,6 +37,8 @@ alias gitignore="curl https://gist.githubusercontent.com/kitsune7/b9b453f7f48b0e
 alias dev="npm run dev"
 alias start="npm start"
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
+alias stagingToProd='replace "s/staging/psql-db/g" .env'
+alias prodToStaging='replace "s/psql-db/staging/g" .env'
 
 alias mv="mv -i"
 alias cp="cp -i"
@@ -89,6 +91,11 @@ tsc () {
 
 
 # FUNCTIONS
+
+replace () {
+  echo "Using sed for Mac to run $1 on $2"
+  sed -i "" "$1" $2
+}
 
 kfind () {
   help | grep "$1"
