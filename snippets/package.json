@@ -1,0 +1,16 @@
+{
+  "name": "$1",
+  "description": "$2",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo 'No tests written'",
+    "clean": "rm -rf node_modules yarn.lock && yarn cache clean && yarn"
+  },
+  "author": "Christopher Bradshaw",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": "",
+  "homepage": ""
+}

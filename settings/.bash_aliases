@@ -1,3 +1,6 @@
+shopt -s extglob
+shopt -s dotglob
+
 # Any commands that use the settings directory rely on this variable
 settingsDir="$HOME/Git/kitsune-settings"
 
@@ -16,7 +19,6 @@ alias svi="sudo vim"
 
 alias ping="ping -c 5"
 alias fastping="ping -c 100 -s.2"
-alias ports="netstat -tulanp"
 alias wget="wget -c"
 
 alias ga="git add ."
@@ -46,6 +48,7 @@ alias ln="ln -i"
 
 alias c="clear"
 alias help="cat $settingsDir/settings/.bash_aliases"
+alias kfind="help | grep "
 alias edit="vim $settingsDir/settings/.bash_aliases"
 alias reload="$settingsDir/install -f && source ~/.bash_aliases"
 alias latest="git --git-dir $settingsDir/.git pull; reload"
@@ -61,7 +64,7 @@ alias vs="viewservers"
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stack="chrome 'http://stackoverflow.com/'"
 
-test () {
+jesttest () {
   npx jest --runInBand $1
 }
 
@@ -92,13 +95,54 @@ tsc () {
 
 # FUNCTIONS
 
-replace () {
-  echo "Using sed for Mac to run $1 on $2"
-  sed -i "" "$1" $2
+alias isLinux='"$OSTYPE" == "linux-gnu"'
+alias isMac='"$OSTYPE" == "darwin"*'
+
+function runOnLinux () {
+  if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    $@
+  fi
 }
 
-kfind () {
-  help | grep "$1"
+function runOnMac () {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    $@
+  fi
+}
+
+function replaceInFile () {
+  runOnMac sed -i '' "$1" "$2"
+  runOnLinux sed -i "$1" "$2"
+}
+
+function showSnippets () {
+  ls "$settingsDir"/snippets/*
+}
+
+function loadSnippet () {
+  cp "$settingsDir/snippets/$1"
+
+  argc=$#
+  argv=("$@")
+  for (( i=1; i<argc; i++ )); do
+    replace "/s/\$$i/${argv[i]}/g" "./$1"
+  done
+}
+
+# New Repository
+function nr () {
+  name=${1:-"new-repo"}
+  description=${2:-}
+
+  mkdir "$name"
+  cd "$name"
+
+  loadSnippet "package.json" "$name" "$description"
+  loadSnippet "readme.md" "$name" "$description"
+  loadSnippet ".gitignore"
+
+  git init
+  acp 'Initial commit'
 }
 
 sysfind () {

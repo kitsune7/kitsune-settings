@@ -1,27 +1,72 @@
 #!/bin/bash
+shopt -s extglob
+shopt -s dotglob
 
-fflag=''
-qflag=''
-usage='usage: install [-h | [-fq]]'
+alias showInstallScriptUsage='usage: install [-h | [-fq]]'
+overwrite=''
+quiet=''
 
-while getopts hfq flag; do
-  case "${flag}" in
-    h) echo $usage ;;
-    f) fflag='true' ;;
-    q) qflag='true' ;;
-    *) error "Unexpected option ${flag}"; echo $usage ;;
+# https://wiki.bash-hackers.org/howto/getopts_tutorial
+while getopts ":hfq" option; do
+  case "${option}" in
+    h) # Help
+      showInstallScriptUsage
+    ;;
+    f)
+      overwrite='true'
+    ;;
+    q)
+      quiet='true'
+    ;;
+    \?)
+      error "Unexpected option ${option}"
+      showInstallScriptUsage
+    ;;
   esac
 done
 
-for i in $( ls -A ~/Git/kitsune-settings/settings | grep -v '/$' )
-do
-  cp -R $([ ! $fflag ] && echo '-i') $([ ! $qflag ] && echo '-v') ~/Git/kitsune-settings/settings/$i ~/
+function log () {
+  if [[ ! "$quiet" ]]; then
+    echo "$1"
+  fi
+}
+
+function copyFileToHome () {
+  cp -R "$([[ ! $overwrite ]] && echo '-i')" "$([ ! "$quiet" ] && echo '-v')" "$1" "$HOME"
+}
+
+function getStartScript () {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    echo ".bash_profile"
+  else
+    echo ".bashrc"
+  fi
+}
+
+currentDir=$(PWD)
+startScript=$(getStartScript)
+
+for i in "$currentDir"/settings/*; do
+  file=$(basename -- "$i")
+
+  if [[ "$i" == ".bash_profile" ]] && [[ "$startScript" != ".bash_profile" ]]; then
+    continue
+  elif [[ "$i" == ".bashrc" ]] && [[ "$startScript" != ".bashrc" ]]; then
+    continue
+  fi
+
+  copyFileToHome "$currentDir/settings/$file"
 done
 
-if [ ! $qflag ]
-then
-  echo "Finished installing settings"
-  echo "Restart terminal to see changes"
+if [[ -f "$currentDir/.env" ]]; then
+  copyFileToHome "$currentDir/.env"
 fi
 
+if [[ -f "$startScript" ]]; then
+  source "$startScript"
+  log "Ran $startScript"
+fi
+
+log "Finished installing settings"
+log "You may need to restart your terminal to see every change"
 exit 0

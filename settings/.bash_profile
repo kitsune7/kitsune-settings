@@ -1,10 +1,5 @@
-if [ -f ~/.bashrc ]; then
-   source ~/.bashrc
+if [ -f ~/.bash_settings ]; then
+   source ~/.bash_settings
 fi
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
-
-if [ -f ~/.git-completion.bash ]; then
-  . ~/.git-completion.bash
-fi
-
