@@ -3,8 +3,8 @@ shopt -s extglob
 shopt -s dotglob
 
 alias showInstallScriptUsage='usage: install [-h | [-fq]]'
-overwrite=''
-quiet=''
+overwrite=""
+quiet=""
 
 # https://wiki.bash-hackers.org/howto/getopts_tutorial
 while getopts ":hfq" option; do
@@ -13,10 +13,10 @@ while getopts ":hfq" option; do
       showInstallScriptUsage
     ;;
     f)
-      overwrite='true'
+      overwrite="true"
     ;;
     q)
-      quiet='true'
+      quiet="true"
     ;;
     \?)
       error "Unexpected option ${option}"
@@ -31,8 +31,13 @@ function log () {
   fi
 }
 
+function getCpOptions () {
+  options=$(echo "-$([[ -z $overwrite ]] && echo 'i')$([[ -z $quiet ]] && echo 'v')")
+  [[ $options != '-' ]] && echo "$options"
+}
+
 function copyFileToHome () {
-  cp -R "$([[ ! $overwrite ]] && echo '-i')" "$([ ! "$quiet" ] && echo '-v')" "$1" "$HOME"
+  cp -R $(getCpOptions) "$1" "$HOME"
 }
 
 function getStartScript () {
@@ -44,7 +49,7 @@ function getStartScript () {
 }
 
 currentDir=$(PWD)
-startScript=$(getStartScript)
+startScript=$HOME/$(getStartScript)
 
 for i in "$currentDir"/settings/*; do
   file=$(basename -- "$i")
@@ -68,5 +73,5 @@ if [[ -f "$startScript" ]]; then
 fi
 
 log "Finished installing settings"
-log "You may need to restart your terminal to see every change"
+log "You may need to restart your terminal to see some changes"
 exit 0
