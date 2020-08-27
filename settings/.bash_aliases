@@ -41,7 +41,7 @@ alias start="npm start"
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 alias stagingToProd='replace "s/staging/psql-db/g" .env'
 alias prodToStaging='replace "s/psql-db/staging/g" .env'
-alias psqlStaging="psql --host=$DB_DEV_HOST --port=$DB_PORT --username=$DB_DEV_USERNAME --password --dbname=$DB_NAME"
+alias psqlStaging=$(echo "psql --host=$DB_DEV_HOST --port=$DB_PORT --username=$DB_DEV_USERNAME --password --dbname=$DB_NAME")
 
 alias mv="mv -i"
 alias cp="cp -i"
