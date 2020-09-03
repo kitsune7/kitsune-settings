@@ -121,12 +121,12 @@ function showSnippets () {
 }
 
 function loadSnippet () {
-  cp "$settingsDir/snippets/$1"
+  cp "$settingsDir/snippets/$1" .
 
   argc=$#
   argv=("$@")
   for (( i=1; i<argc; i++ )); do
-    replace "/s/\$$i/${argv[i]}/g" "./$1"
+    replaceInFile "/s/\$$i/${argv[i]}/g" "./$1"
   done
 }
 
