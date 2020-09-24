@@ -48,7 +48,7 @@ function getStartScript () {
   fi
 }
 
-currentDir=$(PWD)
+currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 startScript=$HOME/$(getStartScript)
 
 for i in "$currentDir"/settings/*; do
