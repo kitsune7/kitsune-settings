@@ -61,6 +61,8 @@ alias rs="run-server ~/Git/db-app-server && run-server ~/Git/metrics-rest-api &&
 alias ks="killservers"
 alias vs="viewservers"
 
+alias adb="~/platform-tools/adb"
+
 # React programming
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stack="chrome 'http://stackoverflow.com/'"
