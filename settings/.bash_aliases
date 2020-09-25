@@ -3,6 +3,7 @@ shopt -s dotglob
 
 # Any commands that use the settings directory rely on this variable
 settingsDir="$HOME/Git/kitsune-settings"
+platformTools="$HOME/Library/Android/sdk/platform-tools"
 
 # ALIASES
 alias size="du -hs"
@@ -61,7 +62,8 @@ alias rs="run-server ~/Git/db-app-server && run-server ~/Git/metrics-rest-api &&
 alias ks="killservers"
 alias vs="viewservers"
 
-alias adb="$HOME/Library/Android/sdk/platform-tools/adb"
+alias adb="$platformTools/adb"
+alias fastboot="$platformTools/fastboot"
 
 # React programming
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
