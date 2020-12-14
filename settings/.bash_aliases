@@ -134,6 +134,10 @@ function loadSnippet () {
   done
 }
 
+function gh () {
+  git log --pretty=short -u -L "$1":"$2"
+}
+
 # New Repository
 function nr () {
   name=${1:-"new-repo"}
