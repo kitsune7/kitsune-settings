@@ -11,9 +11,11 @@ alias l="ls"
 alias ll="ls -la"
 alias cd..="cd .."
 alias ..="cd .."
-alias g="cd ~/Git"
-alias d="cd ~/Dropbox"
-alias s="cd $settingsDir"
+alias g="cdl ~/Git"
+alias d="cdl ~/Dropbox"
+alias s="cdl $settingsDir"
+alias k="s"
+alias h="cd $HOME"
 
 alias vi="vim"
 alias svi="sudo vim"
@@ -98,6 +100,26 @@ tsc () {
   cd ../
 }
 
+function tmb () {
+  pip install leveldb
+
+  if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]; then
+    git clone git@github.com:kitsune7/tampermonkey-scripts.git
+  fi
+
+  scriptPath="$settingsDir/scripts/backup_tampermonkey_scripts.py"
+  chromeProfileDirectory="$HOME/Library/Application Support/Google/Chrome/Default"
+
+  extensionId=$(egrep -r --include=manifest.json '"name": "Tampermonkey"' "$chromeProfileDirectory/Extensions" | awk -F'/' '{ print $(NF-2) }')
+
+  enableKSettingScripts
+  runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId/"
+}
+function tamperMonkeyBackup () { tmb; }
+
+function enableKSettingScripts () {
+  chmod -R +x "$settingsDir/scripts"
+}
 
 # FUNCTIONS
 
