@@ -103,11 +103,11 @@ tsc () {
 function tmb () {
   pip install leveldb
 
-  if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]; then
+  if [ ! -d "$HOME/Git/tampermonkey-scripts" ]; then
     git clone git@github.com:kitsune7/tampermonkey-scripts.git
   fi
 
-  scriptPath="$settingsDir/scripts/backup_tampermonkey_scripts.py"
+  scriptPath="$settingsDir/scripts/BackupTampermonkeyScripts/backup_tampermonkey_scripts.py"
   chromeProfileDirectory="$HOME/Library/Application Support/Google/Chrome/Default"
 
   extensionId=$(egrep -r --include=manifest.json '"name": "Tampermonkey"' "$chromeProfileDirectory/Extensions" | awk -F'/' '{ print $(NF-2) }')

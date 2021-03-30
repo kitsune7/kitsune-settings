@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python3
 
 # Linux usage: ./extract_tampermonkey_script.py "/home/<USER>/.config/<BROWSER>/Default/Local Extension Settings/<EXTENSION_ID>"
 #        i.e.: ./extract_tampermonkey_script.py "/home/foo/.config/google-chrome-beta/Default/Local Extension Settings/gcalenpjmijncebpfijmoaglllgpjagf"
@@ -11,7 +11,7 @@ import re
 import json
 import codecs
 
-print sys.argv
+print(sys.argv)
 """
 pattern = re.compile("^@source(.*)$")
 
