@@ -11,10 +11,13 @@ import re
 import json
 import codecs
 
-print(sys.argv)
+extensionSettingsPath = " ".join(sys.argv[1:-1])
+script_path = sys.argv[-1]
 
-"""
-for bk,bv in db.RangeIter():
+pattern = re.compile("^@source(.*)$")
+db = leveldb.LevelDB(extensionSettingsPath)
+
+for bk, bv in db.RangeIter():
     k = bk.decode('utf-8')
     v = bv.decode('utf-8')
     m = pattern.match(k)
@@ -28,4 +31,3 @@ for bk,bv in db.RangeIter():
 
         with codecs.open(full_name, 'w', 'utf-8') as text_file:
             text_file.write(content)
-"""

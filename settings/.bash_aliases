@@ -113,7 +113,7 @@ function tmb () {
   extensionId=$(egrep -r --include=manifest.json '"name": "Tampermonkey"' "$chromeProfileDirectory/Extensions" | awk -F'/' '{ print $(NF-2) }')
 
   enableKSettingScripts
-  runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId/" "$HOME/Git/tampermonkey-scripts"
+  runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId" "$HOME/Git/tampermonkey-scripts"
 }
 function tamperMonkeyBackup () { tmb; }
 
