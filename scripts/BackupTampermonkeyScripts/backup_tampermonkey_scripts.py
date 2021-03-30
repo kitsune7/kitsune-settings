@@ -14,6 +14,7 @@ import codecs
 extensionSettingsPath = " ".join(sys.argv[1:-1])
 script_path = sys.argv[-1]
 
+"""
 pattern = re.compile("^@source(.*)$")
 db = leveldb.LevelDB(extensionSettingsPath)
 
@@ -31,3 +32,4 @@ for bk, bv in db.RangeIter():
 
         with codecs.open(full_name, 'w', 'utf-8') as text_file:
             text_file.write(content)
+"""

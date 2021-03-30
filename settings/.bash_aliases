@@ -103,8 +103,9 @@ tsc () {
 function tmb () {
   pip install leveldb
 
-  if [ ! -d "$HOME/Git/tampermonkey-scripts" ]; then
-    git clone git@github.com:kitsune7/tampermonkey-scripts.git
+  if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]
+  then
+    git clone git@github.com:kitsune7/tampermonkey-scripts.git "$HOME/Git"
   fi
 
   scriptPath="$settingsDir/scripts/BackupTampermonkeyScripts/backup_tampermonkey_scripts.py"
