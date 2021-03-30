@@ -12,21 +12,19 @@ import json
 import codecs
 
 print(sys.argv)
+
 """
-pattern = re.compile("^@source(.*)$")
-
-db = leveldb.LevelDB(sys.argv[1:][0])
-
-for k,v in db.RangeIter():
+for bk,bv in db.RangeIter():
+    k = bk.decode('utf-8')
+    v = bv.decode('utf-8')
     m = pattern.match(k)
     if m:
-        script_directory = ''
         name = re.sub("[\W\b]", "_", m.groups()[0].strip())
-        full_name = "%s/%s.user.js" % (script_directory, name)
+        full_name = "%s/%s.user.js" % (script_path, name)
 
-        print "Writing to %s" % full_name
+        print("Writing to %s" % full_name)
 
-        content = json.JSONDecoder(encoding='UTF-8').decode(v)['value']
+        content = json.loads(v)['value']
 
         with codecs.open(full_name, 'w', 'utf-8') as text_file:
             text_file.write(content)
