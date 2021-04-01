@@ -29,7 +29,6 @@ alias gc="git commit -m"
 alias gp='git push origin head'
 alias gs="git status"
 alias gundo="git reset HEAD~"
-alias gcm="git checkout master; git pull"
 alias gb="git branch"
 alias gbd="git branch -D"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
@@ -98,6 +97,15 @@ tsc () {
   cd "$1"
   mv index.tsx index.ts
   cd ../
+}
+
+function gcm () {
+  if [ -n "$(git branch --list master)" ]; then
+    git checkout master
+  else
+    git checkout main
+  fi
+  git pull
 }
 
 function tmb () {
