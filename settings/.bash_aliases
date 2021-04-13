@@ -123,6 +123,7 @@ function tmb () {
 
   enableKSettingScripts
   runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId" "$HOME/Git/tampermonkey-scripts"
+  saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
 }
 function tamperMonkeyBackup () { tmb; }
 
@@ -194,14 +195,19 @@ localfind () {
   find / -iname $1 2>/dev/null
 }
 
-save () {
+function saveRepoChanges () {
+  commitMessage=${2:-"Save updates"}
   _cd=`pwd`
-  cd $settingsDir
+  cd "$1"
   git pull
   git add .
-  git commit -m "Auto-saving updates to settings"
+  git commit -m "$commitMessage"
   git push
   cd $_cd
+}
+
+save () {
+  saveRepoChanges "$settingsDir" "Auto-save updates to settings"
   reload
 }
 
