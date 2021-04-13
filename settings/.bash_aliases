@@ -129,7 +129,7 @@ function tmb () { tb; }
 function tamperMonkeyBackup () { tb; }
 
 function mtb () {
-
+  runInDir "$HOME/Downloads" ls
 }
 
 function enableKSettingScripts () {
