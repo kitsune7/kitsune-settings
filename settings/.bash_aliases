@@ -130,9 +130,10 @@ function tamperMonkeyBackup () { tb; }
 
 function mtb () {
   backupFile=`find "$HOME/Downloads" -iname 'tampermonkey-backup*.txt'`
-  mv "$backupFile" "$HOME/Git/tampermonkey-scripts/tampermonkey-backup.txt"
+  mv -f "$backupFile" "$HOME/Git/tampermonkey-scripts/tampermonkey-backup.txt"
   saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
 }
+function mtmb () { mtb; }
 
 function enableKSettingScripts () {
   chmod -R +x "$settingsDir/scripts"
