@@ -67,7 +67,7 @@ def get_storage_object(uuid):
     return storage_object
 
 def write_file(name, content):
-    full_name = f"{script_path}/{name}.js"
+    full_name = f"{script_path}/{name}"
     print(f"Writing to {full_name}")
 
     with codecs.open(full_name, 'w', 'utf-8') as text_file:
@@ -82,6 +82,6 @@ def backup_script_files():
         if m:
             content = json.loads(v)['value']
             name = re.search("@name\s+([\w -\(\)]+)\n", content).groups()[0]
-            write_file(name, content)
+            write_file(f"{name}.js", content)
 
 main()
