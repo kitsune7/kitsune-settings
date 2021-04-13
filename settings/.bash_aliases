@@ -108,7 +108,7 @@ function gcm () {
   git pull
 }
 
-function tmb () {
+function tb () {
   pip install leveldb > /dev/null
 
   if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]
@@ -125,7 +125,12 @@ function tmb () {
   runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId" "$HOME/Git/tampermonkey-scripts"
   saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
 }
-function tamperMonkeyBackup () { tmb; }
+function tmb () { tb; }
+function tamperMonkeyBackup () { tb; }
+
+function mtb () {
+
+}
 
 function enableKSettingScripts () {
   chmod -R +x "$settingsDir/scripts"
@@ -195,15 +200,16 @@ localfind () {
   find / -iname $1 2>/dev/null
 }
 
-function saveRepoChanges () {
-  commitMessage=${2:-"Save updates"}
+function runInDir () {
   _cd=`pwd`
   cd "$1"
-  git pull
-  git add .
-  git commit -m "$commitMessage"
-  git push
-  cd $_cd
+  "$2"
+  cd "$_cd"
+}
+
+function saveRepoChanges () {
+  commitMessage=${2:-"Save updates"}
+  runInDir "$1" "acp $commitMessage"
 }
 
 save () {
