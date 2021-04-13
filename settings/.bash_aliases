@@ -129,7 +129,9 @@ function tmb () { tb; }
 function tamperMonkeyBackup () { tb; }
 
 function mtb () {
-  runInDir "$HOME/Downloads" ls
+  backupFile=`find "$HOME/Downloads" -iname 'tampermonkey-backup*.txt'`
+  mv "$backupFile" "$HOME/Git/tampermonkey-scripts/tampermonkey-backup.txt"
+  saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
 }
 
 function enableKSettingScripts () {
@@ -200,16 +202,12 @@ localfind () {
   find / -iname $1 2>/dev/null
 }
 
-function runInDir () {
-  _cd=`pwd`
-  cd "$1"
-  "$2"
-  cd "$_cd"
-}
-
 function saveRepoChanges () {
   commitMessage=${2:-"Save updates"}
-  runInDir "$1" "acp $commitMessage"
+  _cd=`pwd`
+  cd "$1"
+  acp "$commitMessage"
+  cd "$_cd"
 }
 
 save () {
