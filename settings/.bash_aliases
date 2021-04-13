@@ -109,7 +109,7 @@ function gcm () {
 }
 
 function tmb () {
-  pip install leveldb 2> /dev/null
+  pip install leveldb > /dev/null
 
   if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]
   then
