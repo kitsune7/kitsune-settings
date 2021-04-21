@@ -26,7 +26,7 @@ alias wget="wget -c"
 
 alias ga="git add ."
 alias gc="git commit -m"
-alias gp='git push origin head'
+alias gpush="git push origin head"
 alias gs="git status"
 alias gundo="git reset HEAD~"
 alias gb="git branch"
@@ -37,7 +37,7 @@ alias list="git stash list"
 alias cred="git config credential.helper store"
 alias undo-last-commit="git reset --soft HEAD~1"
 alias gitignore="curl https://gist.githubusercontent.com/kitsune7/b9b453f7f48b0ee8adb84cf1e928dd07/raw/e689d9a723d64093f07bc750004fffcbe9b0a785/.gitignore --output .gitignore"
-alias clearbranch="git branch | grep -v 'master\|main\|cb-message-campaigns' | xargs git branch -d"
+alias clearbranch="git branch | grep -v 'master\|main' | xargs git branch -d"
 
 alias dev="npm run dev"
 alias start="npm start"
@@ -106,6 +106,19 @@ function gcm () {
     git checkout main
   fi
   git pull
+}
+
+function gpull () {
+  # This file sometimes interferes with git hooks
+  if [[ -f ".git/gc.log" ]]; then
+      rm ".git/gc.log"
+  fi
+
+  if [[ -z "$1" ]]; then
+      git pull origin `git branch --show-current`
+  else
+      git pull origin "$1"
+  fi
 }
 
 function tb () {
