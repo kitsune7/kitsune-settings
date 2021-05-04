@@ -105,7 +105,7 @@ function gcm () {
   else
     git checkout main
   fi
-  git pull
+  gpull
 }
 
 function gpull () {
