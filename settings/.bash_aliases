@@ -38,6 +38,7 @@ alias cred="git config credential.helper store"
 alias undo-last-commit="git reset --soft HEAD~1"
 alias gitignore="curl https://gist.githubusercontent.com/kitsune7/b9b453f7f48b0ee8adb84cf1e928dd07/raw/e689d9a723d64093f07bc750004fffcbe9b0a785/.gitignore --output .gitignore"
 alias clearbranch="git branch | grep -v 'master\|main' | xargs git branch -d"
+alias npmileg="npm install --legacy-peer-deps"
 
 alias dev="npm run dev"
 alias start="npm start"
