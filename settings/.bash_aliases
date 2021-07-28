@@ -94,10 +94,6 @@ rnc () {
   newcomponent "$1" "js" "js"
 }
 
-nvm () {
-  nvm "$@" --latest-npm
-}
-
 tsc () {
   newcomponent "$1" "tsx" "css"
   cd "$1"
