@@ -94,7 +94,7 @@ rnc () {
   newcomponent "$1" "js" "js"
 }
 
-n () {
+nvm () {
   nvm "$@" --latest-npm
 }
 
