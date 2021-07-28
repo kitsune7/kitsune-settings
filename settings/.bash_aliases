@@ -40,7 +40,6 @@ alias gitignore="curl https://gist.githubusercontent.com/kitsune7/b9b453f7f48b0e
 alias clearbranch="git branch | grep -v 'master\|main' | xargs git branch -d"
 alias npmileg="npm install --legacy-peer-deps"
 alias ns="npm start"
-alias n="nvm --latest-npm"
 
 alias dev="npm run dev"
 alias start="npm start"
@@ -93,6 +92,10 @@ newcomponent () {
 
 rnc () {
   newcomponent "$1" "js" "js"
+}
+
+n () {
+  nvm "$@" --latest-npm
 }
 
 tsc () {
