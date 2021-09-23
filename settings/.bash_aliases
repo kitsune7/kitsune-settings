@@ -112,11 +112,6 @@ function gcm () {
 }
 
 function gpull () {
-  # This file sometimes interferes with git hooks
-  if [[ -f ".git/gc.log" ]]; then
-      rm ".git/gc.log"
-  fi
-
   if [[ -z "$1" ]]; then
       git pull origin `git branch --show-current`
   else
