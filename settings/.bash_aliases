@@ -42,6 +42,7 @@ alias clearbranch="git branch | grep -v 'master\|main' | xargs git branch -d"
 alias npmileg="npm install --legacy-peer-deps"
 alias ns="npm start"
 
+alias pe="pnpm exec"
 alias dev="npm run dev"
 alias start="npm start"
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
