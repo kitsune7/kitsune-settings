@@ -44,6 +44,7 @@ alias ns="npm start"
 
 alias pe="pnpm exec"
 alias px="pnpm dlx"
+alias pnx="pnpm nx"
 alias dev="npm run dev"
 alias start="npm start"
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
