@@ -250,6 +250,11 @@ acp () {
   git push origin `git rev-parse --abbrev-ref HEAD` && git push --tags
 }
 
+ac () {
+  git add .
+  git commit -m "$1"
+}
+
 gnb () {
   git checkout -b "$1"
 }
