@@ -25,7 +25,7 @@ alias fastping="ping -c 100 -s.2"
 alias wget="wget -c"
 
 alias ga="git add ."
-alias gc="git commit -m"
+alias gc="git commit -S -m"
 alias gpush="git push origin head"
 alias gs="git status"
 alias gundo="git reset HEAD~"
