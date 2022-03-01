@@ -77,6 +77,13 @@ alias fastboot="$platformTools/fastboot"
 alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
 alias stack="chrome 'http://stackoverflow.com/'"
 
+retag () {
+  git push --delete origin "$1"
+  git tag -d "$1"
+  git tag "$1"
+  git push origin "$1"
+}
+
 jesttest () {
   npx jest --runInBand $1
 }
