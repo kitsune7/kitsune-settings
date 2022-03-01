@@ -78,10 +78,14 @@ alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-an
 alias stack="chrome 'http://stackoverflow.com/'"
 
 retag () {
-  git push --delete origin "$1"
-  git tag -d "$1"
-  git tag "$1"
-  git push origin "$1"
+  if [[ "$1" == v*.*.* ]]; then
+    git push --delete origin "$1"
+    git tag -d "$1"
+    git tag "$1"
+    git push origin "$1"
+  else
+    echo 'Invalid semantic version tag. Did you forget to prefix the version with "v"?'
+  fi
 }
 
 jesttest () {
