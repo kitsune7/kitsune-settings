@@ -25,7 +25,7 @@ alias fastping="ping -c 100 -s.2"
 alias wget="wget -c"
 
 alias ga="git add ."
-alias gc="git commit -S -m"
+alias gc="git commit -m"
 alias gpush="git push origin head"
 alias gs="git status"
 alias gundo="git reset HEAD~"
@@ -257,7 +257,7 @@ stash () {
 
 acp () {
   git add .
-  git commit -S -m "$1"
+  git commit -m "$1"
   git push origin `git rev-parse --abbrev-ref HEAD` && git push --tags
 }
 
