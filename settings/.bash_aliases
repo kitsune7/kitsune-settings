@@ -257,7 +257,7 @@ stash () {
 
 acp () {
   git add .
-  git commit -m "$1"
+  git commit -S -m "$1"
   git push origin `git rev-parse --abbrev-ref HEAD` && git push --tags
 }
 
