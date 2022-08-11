@@ -5,12 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo 'No tests written'",
-    "clean": "rm -rf node_modules yarn.lock && yarn cache clean && yarn"
+    "test": "echo 'No tests written'"
   },
   "author": "Christopher Bradshaw",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": "",
   "homepage": ""
 }

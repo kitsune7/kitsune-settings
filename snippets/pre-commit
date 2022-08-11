@@ -2,14 +2,14 @@
 # Requires the `dialog` package to be installed on linux machines
 # Only supported on Mac OSX and Linux
 
-warningString="You're on master. Are you sure you want to commit your changes here?"
+warningString="You're on `main`. Are you sure you want to commit your changes here?"
 yesResponse="Alright. Here we go, I guess."
 noResponse="Cool. Let's keep it safe. Switch to a different branch before you rush to commit next time, okay?"
 
 macDialogScript="button returned of (display dialog \"$warningString\" with icon caution buttons {'No', 'Yes'})"
 
 branch=`git rev-parse --abbrev-ref HEAD`
-if [ $branch = 'master' ]; then
+if [ $branch = 'main' ]; then
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         if [ dialog --title "Warning" --yesno "$warningString" 8 30 ]
         then

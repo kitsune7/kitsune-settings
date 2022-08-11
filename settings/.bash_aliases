@@ -73,10 +73,6 @@ alias vs="viewservers"
 alias adb="$platformTools/adb"
 alias fastboot="$platformTools/fastboot"
 
-# React programming
-alias rndocs="chrome 'https://facebook.github.io/react-native/docs/components-and-apis#basic-components'"
-alias stack="chrome 'http://stackoverflow.com/'"
-
 retag () {
   if [[ "$1" == v*.*.* ]]; then
     git push --delete origin "$1"
