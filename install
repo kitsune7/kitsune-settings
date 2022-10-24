@@ -2,7 +2,7 @@
 shopt -s extglob
 shopt -s dotglob
 
-alias showInstallScriptUsage='usage: install [-h | [-fq]]'
+alias showInstallScriptUsage='usage: install [-h | [-q]]'
 overwrite=""
 quiet=""
 
@@ -38,7 +38,7 @@ function copyFiles () {
   destDir=$2
   for i in "$srcDir"/*; do
     file=$(basename -- "$i")
-    rsync -avh "$srcDir/$file" "$destDir"
+    rsync -a --progress "$srcDir/$file" "$destDir"
   done
 }
 
