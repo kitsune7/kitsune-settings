@@ -61,3 +61,6 @@ setopt inc_append_history
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 PNPM_HOME="$HOME/Library/pnpm"
+NPM_PACKAGES="${HOME}/.npm-packages"
+export PATH="$PATH:$NPM_PACKAGES/bin"
+export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
