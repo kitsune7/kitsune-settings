@@ -30,6 +30,7 @@ alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 alias python="python3"
 alias pip="python3 -m pip"
 alias vi="vim"
+alias cat="bat"
 
 function killtag () {
   if [[ "$1" == v*.*.* ]]; then
