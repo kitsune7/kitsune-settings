@@ -7,7 +7,7 @@ overwrite=""
 quiet=""
 
 # https://wiki.bash-hackers.org/howto/getopts_tutorial
-while getopts ":hfq" option; do
+while getopts ":hq" option; do
   case "${option}" in
     h) # Help
       showInstallScriptUsage
@@ -38,20 +38,19 @@ function copyFileToHome () {
 }
 
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-startScript=$HOME/$(getStartScript)
 
 for i in "$currentDir"/settings/*; do
   file=$(basename -- "$i")
   copyFileToHome "$currentDir/settings/$file"
 done
 
+for i in "$currentDir"/oh-my-zsh-custom/*; do
+  file=$(basename -- "$i")
+  rsync -avh --progress "$currentDir/oh-my-zsh-custom/$file" "$HOME/.oh-my-zsh/custom"
+done
+
 if [[ -f "$currentDir/.env" ]]; then
   copyFileToHome "$currentDir/.env"
-fi
-
-if [[ -f "$startScript" ]]; then
-  source "$startScript"
-  log "Ran $startScript"
 fi
 
 log "Finished installing settings"
