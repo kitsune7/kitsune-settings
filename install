@@ -12,9 +12,6 @@ while getopts ":hfq" option; do
     h) # Help
       showInstallScriptUsage
     ;;
-    f)
-      overwrite="true"
-    ;;
     q)
       quiet="true"
     ;;
@@ -37,15 +34,7 @@ function getCpOptions () {
 }
 
 function copyFileToHome () {
-  cp -R $(getCpOptions) "$1" "$HOME"
-}
-
-function getStartScript () {
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo ".bash_profile"
-  else
-    echo ".bashrc"
-  fi
+  rsync -avh --progress "$1" "$HOME"
 }
 
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
@@ -53,13 +42,6 @@ startScript=$HOME/$(getStartScript)
 
 for i in "$currentDir"/settings/*; do
   file=$(basename -- "$i")
-
-  if [[ "$i" == ".bash_profile" ]] && [[ "$startScript" != ".bash_profile" ]]; then
-    continue
-  elif [[ "$i" == ".bashrc" ]] && [[ "$startScript" != ".bashrc" ]]; then
-    continue
-  fi
-
   copyFileToHome "$currentDir/settings/$file"
 done
 

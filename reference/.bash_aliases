@@ -129,33 +129,6 @@ function gpull () {
   fi
 }
 
-function tb () {
-  pip install leveldb > /dev/null
-
-  if [[ ! -d "$HOME/Git/tampermonkey-scripts" ]]
-  then
-    git clone git@github.com:kitsune7/tampermonkey-scripts.git "$HOME/Git/tampermonkey-scripts"
-  fi
-
-  scriptPath="$settingsDir/scripts/BackupTampermonkeyScripts/backup_tampermonkey_scripts.py"
-  chromeProfileDirectory="$HOME/Library/Application Support/Google/Chrome/Default"
-
-  extensionId=$(egrep -r --include=manifest.json '"name": "Tampermonkey"' "$chromeProfileDirectory/Extensions" | awk -F'/' '{ print $(NF-2) }')
-
-  enableKSettingScripts
-  runOnMac "$scriptPath" "$chromeProfileDirectory/Local Extension Settings/$extensionId" "$HOME/Git/tampermonkey-scripts"
-  saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
-}
-function tmb () { tb; }
-function tamperMonkeyBackup () { tb; }
-
-function mtb () {
-  backupFile=`find "$HOME/Downloads" -iname 'tampermonkey-backup*.txt'`
-  mv -f "$backupFile" "$HOME/Git/tampermonkey-scripts/tampermonkey-backup.txt"
-  saveRepoChanges "$HOME/Git/tampermonkey-scripts" "Backup latest tampermonkey changes"
-}
-function mtmb () { mtb; }
-
 function enableKSettingScripts () {
   chmod -R +x "$settingsDir/scripts"
 }
