@@ -33,25 +33,19 @@ function getCpOptions () {
   [[ $options != '-' ]] && echo "$options"
 }
 
-function copyFileToHome () {
-  rsync -avh --progress "$1" "$HOME"
+function copyFiles () {
+  srcDir=$1
+  destDir=$2
+  for i in "$srcDir"/*; do
+    file=$(basename -- "$i")
+    rsync -avh "$srcDir/$file" "$destDir"
+  done
 }
 
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-for i in "$currentDir"/settings/*; do
-  file=$(basename -- "$i")
-  copyFileToHome "$currentDir/settings/$file"
-done
-
-for i in "$currentDir"/oh-my-zsh-custom/*; do
-  file=$(basename -- "$i")
-  rsync -avh --progress "$currentDir/oh-my-zsh-custom/$file" "$HOME/.oh-my-zsh/custom"
-done
-
-if [[ -f "$currentDir/.env" ]]; then
-  copyFileToHome "$currentDir/.env"
-fi
+copyFiles "$currentDir/settings" "$HOME"
+copyFiles "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
 
 log "Finished installing settings"
 exit 0
