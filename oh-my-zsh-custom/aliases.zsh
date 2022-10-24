@@ -5,8 +5,10 @@ alias s="cd $settingsDir; ls"
 alias k="s"
 alias h="cd $HOME; ls -a"
 
-alias edit="vim $settingsDir/settings/.oh-my-zsh/custom/aliases.zsh"
-alias reload="$settingsDir/install"
+alias edit="vim $settingsDir/.oh-my-zsh-custom/aliases.zsh"
+alias reload="$settingsDir/install; exec zsh"
+alias save="saveRepoChanges $settingsDir 'Auto-save updates to settings'; reload"
+alias install="$settingsDir/install"
 
 alias size="du -hs"
 alias c="clear"
@@ -79,12 +81,7 @@ function saveRepoChanges () {
   cd "$_cd" || return
 }
 
-save () {
-  saveRepoChanges "$settingsDir" "Auto-save updates to settings"
-  reload
-}
-
-editmodule () {
+function editmodule () {
   lineNumber=${2:-0}
   webstorm --line "$lineNumber" "$1"
 }

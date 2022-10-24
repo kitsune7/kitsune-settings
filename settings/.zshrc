@@ -93,6 +93,8 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
+setopt inc_append_history
+
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
