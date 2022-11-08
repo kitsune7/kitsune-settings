@@ -5,7 +5,7 @@ alias s="cd $settingsDir; ls"
 alias k="s"
 alias h="cd $HOME; ls -a"
 
-alias edit="vim $settingsDir/.oh-my-zsh-custom/aliases.zsh"
+alias edit="vim $settingsDir/oh-my-zsh-custom/aliases.zsh"
 alias reload="$settingsDir/install; exec zsh"
 alias save="saveRepoChanges $settingsDir 'Auto-save updates to settings'; reload"
 alias install="$settingsDir/install"
@@ -61,7 +61,7 @@ function gnb () {
 }
 
 function pr () {
-  git checkout "$1"
+  git checkout -b "$1"
   acp "$2"
 }
 
