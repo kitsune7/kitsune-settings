@@ -33,6 +33,10 @@ alias pip="python3 -m pip"
 alias vi="vim"
 alias cat="bat"
 
+function ll {
+  cd "$(llama "$@")"
+}
+
 function killtag () {
   if [[ "$1" == v*.*.* ]]; then
     git push --delete origin "$1"
