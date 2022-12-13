@@ -33,6 +33,7 @@ alias python="python3"
 alias pip="python3 -m pip"
 alias vi="vim"
 alias cat="bat"
+alias docker="lima nerdctl"
 
 function ll {
   cd "$(llama "$@")"
