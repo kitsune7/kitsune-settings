@@ -93,3 +93,8 @@ function editmodule () {
   lineNumber=${2:-0}
   webstorm --line "$lineNumber" "$1"
 }
+
+function killport () {
+  port=${1:-8080}
+  kill -9 $(lsof -t -i tcp:${port})
+}
