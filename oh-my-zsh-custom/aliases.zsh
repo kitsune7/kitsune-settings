@@ -15,6 +15,7 @@ alias c="clear"
 alias la="ls -a"
 alias ..="cd .."
 alias cd..="cd .."
+alias count='grep "^.*$" -c'
 
 alias ga="git add ."
 alias gc="git commit -m"
@@ -97,4 +98,8 @@ function editmodule () {
 function killport () {
   port=${1:-8080}
   kill -9 $(lsof -t -i tcp:${port})
+}
+
+function findPackageJson () {
+  find . -name package.json -not \( -path "*/node_modules*" -prune \)
 }
