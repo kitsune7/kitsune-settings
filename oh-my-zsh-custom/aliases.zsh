@@ -101,5 +101,5 @@ function killport () {
 }
 
 function findPackageJson () {
-  find . -name package.json -not \( -path "*/node_modules*" -prune \)
+  find . -name package.json -not \( -path "*/(node_modules|dist)*" -prune \)
 }
