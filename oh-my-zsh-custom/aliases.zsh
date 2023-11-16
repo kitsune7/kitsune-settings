@@ -27,7 +27,7 @@ alias list="git stash list"
 alias stash="git stash save"
 alias pop="git stash pop"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
-alias clearbranch="git branch | grep -v 'master\|main' | xargs git branch -d"
+alias clearbranch="git branch | grep -v 'master\|main\|development' | xargs git branch -D
 alias start="npm start"
 
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
