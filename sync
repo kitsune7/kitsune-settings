@@ -2,7 +2,7 @@
 shopt -s extglob
 shopt -s dotglob
 
-alias showInstallScriptUsage='usage: install [-h | [-q]]'
+alias showInstallScriptUsage='usage: sync [-h | [-q]]'
 overwrite=""
 quiet=""
 
@@ -47,5 +47,5 @@ currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 copyFiles "$currentDir/settings" "$HOME"
 copyFiles "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
 
-log "Finished installing settings"
+log "Finished syncing settings"
 exit 0

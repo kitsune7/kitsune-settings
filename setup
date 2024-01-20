@@ -1,16 +1,34 @@
 #!/bin/bash
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 
+brew install nvm
 brew install bat
 brew install --cask visual-studio-code
 brew install --cask firefox
+brew install --cask obsidian
 
 touch "$HOME/.workrc"
 git config --global user.name "Christopher Bradshaw"
 git config --global user.email "chris.kofox@gmail.com"
+
+chsh -s $(which zsh)
+
+if [ ! -d "$HOME/Git" ]
+then
+  mkdir "$HOME/Git"
+fi
+
+if [ ! -d "$HOME/Git/kitsune-settings" ]
+then
+  git clone https://github.com/kitsune7/kitsune-settings.git "$HOME/Git/kitsune-settings"
+fi
+
+$HOME/Git/kitsune-settings/sync

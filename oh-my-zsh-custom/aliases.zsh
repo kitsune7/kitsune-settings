@@ -6,9 +6,9 @@ alias k="s"
 alias h="cd $HOME; ls -a"
 
 alias edit="vim $settingsDir/oh-my-zsh-custom/aliases.zsh"
-alias reload="$settingsDir/install; exec zsh"
+alias reload="$settingsDir/sync; exec zsh"
 alias save="saveRepoChanges $settingsDir 'Auto-save updates to settings'; reload"
-alias install="$settingsDir/install"
+alias sync="$settingsDir/sync"
 
 alias size="du -hs"
 alias c="clear"
@@ -39,6 +39,22 @@ alias docker="lima nerdctl"
 
 function ll {
   cd "$(llama "$@")"
+}
+
+function new-ssh-key () {
+  ssh-keygen -t ed25519 -C "chris.kofox@gmail.com"
+  eval "$(ssh-agent -s)"
+  if [ ! -f "~/.ssh/config" ]
+  then
+    touch "~/.ssh/config"
+  fi
+  echo "Host github.com\nAddKeysToAgent yes\nIdentityFile ~/.ssh/id_ed25519"
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+  
+  pbcopy < ~/.ssh/id_ed25519.pub
+  echo "Public key copied to clipboard!"
+  echo "You can go ahead and add this new key to Github."
+  echo "https://github.com/settings/ssh/new"
 }
 
 function killtag () {
@@ -80,7 +96,8 @@ function sysfind () {
 }
 
 function localfind () {
-  find / -iname $1 2>/dev/null
+  searchPath=${2:-"./"}
+  find $searchPath -type f -iname $1
 }
 
 function saveRepoChanges () {
@@ -93,7 +110,7 @@ function saveRepoChanges () {
 
 function editmodule () {
   lineNumber=${2:-0}
-  webstorm --line "$lineNumber" "$1"
+  code --line "$lineNumber" "$1"
 }
 
 function killport () {
