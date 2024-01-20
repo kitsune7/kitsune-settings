@@ -21,13 +21,13 @@ alias ga="git add ."
 alias gc="git commit -m"
 alias gs="git status"
 alias gb="git branch"
-alias gcd="git checkout development; git pull"
+alias gcd="git checkout develop; git pull"
 alias ac="git add .; git commit -m"
 alias list="git stash list"
 alias stash="git stash save"
 alias pop="git stash pop"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
-alias clearbranch="git branch | grep -v 'master\|main\|development' | xargs git branch -D"
+alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias start="npm start"
 
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
@@ -90,9 +90,8 @@ function pr () {
   acp "$2"
 }
 
-
 function sysfind () {
-  sudo find / -iname $1 2>/dev/null
+  sudo find / -type f -iname $1 2>/dev/null
 }
 
 function localfind () {
