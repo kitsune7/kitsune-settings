@@ -41,6 +41,10 @@ function ll {
   cd "$(llama "$@")"
 }
 
+function replace-in-file() {
+  perl -pi -e "s/$1/$2/g" $3
+}
+
 function new-ssh-key () {
   ssh-keygen -t ed25519 -C "chris.kofox@gmail.com"
   eval "$(ssh-agent -s)"
