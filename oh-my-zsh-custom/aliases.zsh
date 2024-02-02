@@ -1,4 +1,5 @@
 settingsDir="$HOME/Git/kitsune-settings"
+iCloudDir="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
 
 alias g="cd ~/Git; ls"
 alias s="cd $settingsDir; ls"
