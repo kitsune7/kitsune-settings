@@ -20,6 +20,7 @@ alias count='grep "^.*$" -c'
 
 alias ga="git add ."
 alias gc="git commit -m"
+alias guc="git reset HEAD~"
 alias gs="git status"
 alias gb="git branch"
 alias gcd="git checkout develop; git pull"
