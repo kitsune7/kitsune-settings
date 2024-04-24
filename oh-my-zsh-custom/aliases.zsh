@@ -6,7 +6,7 @@ alias s="cd $settingsDir; ls"
 alias k="s"
 alias h="cd $HOME; ls -a"
 
-alias edit="vim $settingsDir/oh-my-zsh-custom/aliases.zsh"
+alias edit="code $settingsDir/oh-my-zsh-custom/aliases.zsh"
 alias reload="$settingsDir/sync; exec zsh"
 alias save="saveRepoChanges $settingsDir 'Auto-save updates to settings'; reload"
 alias sync="$settingsDir/sync"
@@ -36,11 +36,14 @@ alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 alias python="python3"
 alias pip="python3 -m pip"
 alias vi="vim"
-alias cat="bat"
-alias docker="lima nerdctl"
 
 function ll {
   cd "$(llama "$@")"
+}
+
+function cdl {
+  cd $1
+  ls -la
 }
 
 function replace-in-file() {
