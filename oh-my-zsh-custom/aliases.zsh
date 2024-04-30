@@ -1,5 +1,5 @@
 settingsDir="$HOME/Git/kitsune-settings"
-iCloudDir="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+ICLOUD_DIR="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 
 alias g="cd ~/Git; ls"
 alias s="cd $settingsDir; ls"
@@ -24,6 +24,7 @@ alias guc="git reset HEAD~"
 alias gs="git status"
 alias gb="git branch"
 alias gcd="git checkout develop; git pull"
+alias gcdc="gcd; clearbranch"
 alias ac="git add .; git commit -m"
 alias list="git stash list"
 alias stash="git stash save"
@@ -31,6 +32,10 @@ alias pop="git stash pop"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias start="npm start"
+alias dev="npm run dev"
+alias sb="npm run storybook"
+alias update="npm update --save"
+alias outdated="npm outdated"
 
 alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 alias python="python3"
@@ -128,4 +133,17 @@ function killport () {
 
 function findPackageJson () {
   find . -name package.json -not \( -path "*/node_modules*" -prune \) -not \( -path "*/dist*" -prune \)
+}
+
+function save-workrc() {
+  source "${HOME}/.workrc"
+  cp "${HOME}/.workrc" "${ICLOUD_DIR}/backup/workrc-backup"
+}
+
+function show-workrc() {
+  cat "${HOME}/.workrc"
+}
+
+function edit-workrc() {
+  code "${HOME}/.workrc"
 }
