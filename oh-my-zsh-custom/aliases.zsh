@@ -37,10 +37,12 @@ alias sb="npm run storybook"
 alias update="npm update --save"
 alias outdated="npm outdated"
 
-alias webstorm=/Applications/WebStorm.app/Contents/MacOS/webstorm
 alias python="python3"
 alias pip="python3 -m pip"
 alias vi="vim"
+
+alias mv='mv -i'
+alias cp='cp -i'
 
 function ll {
   cd "$(llama "$@")"
