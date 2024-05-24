@@ -176,3 +176,7 @@ function show-workrc() {
 function edit-workrc() {
   code "${HOME}/.workrc"
 }
+
+function restore-workrc() {
+  cp "${ICLOUD_DIR}/Resources/1 - Backup/workrc" "${HOME}/.workrc"
+}
