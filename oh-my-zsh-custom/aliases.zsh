@@ -166,7 +166,7 @@ function findPackageJson () {
 
 function save-workrc() {
   source "${HOME}/.workrc"
-  cp "${HOME}/.workrc" "${ICLOUD_DIR}/backup/workrc-backup"
+  cp "${HOME}/.workrc" "${ICLOUD_DIR}/Resources/1 - Backup/workrc"
 }
 
 function show-workrc() {
