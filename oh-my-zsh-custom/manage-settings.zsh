@@ -8,7 +8,12 @@ function show () {
   # Usage: show [ALIAS_OR_FUNCTION_NAME]
   # `show` by itself will show all custom aliases and functions
   # `show ALIAS_OR_FUNCTION_NAME` will show the definition of the alias or function
-  node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom" "$@"
+  if [[ $# -eq 0 ]]
+  then
+    node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom"
+  else
+    node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom" "$1" | bat -l zsh
+  fi
 }
 
 function save-workrc () {
