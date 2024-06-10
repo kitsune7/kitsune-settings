@@ -44,7 +44,7 @@ async function readCommands(filePath) {
 }
 
 function extractBashFunction(functionName, fileContents) {
-  const pattern = new RegExp(`function\\s+${functionName}\\s*\\([^)]*\\)\\s*\\{.*\\}`, 'gm')
+  const pattern = new RegExp(`function\\s+${functionName}\\s*\\([^)]*\\)\\s*\\{[^}]*\\}`, 'gms')
   const match = pattern.exec(fileContents)
   if (!match) return null
   return match[0]
@@ -71,7 +71,6 @@ function outputCommandsForFile(filePath, commands) {
 
       if (commandFilter) {
         const command = commands.find((command) => command.name === commandFilter)
-        console.log(command)
         if (command) {
           console.log(command.definition)
           break
