@@ -74,9 +74,9 @@ function outputCommandsForFile(filePath, commands) {
         if (command) {
           console.log(command.definition)
           break
-        } else {
-          outputCommandsForFile(filePath, commands)
         }
+      } else {
+        outputCommandsForFile(filePath, commands)
       }
     }
   } catch (error) {
