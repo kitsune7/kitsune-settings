@@ -1,4 +1,4 @@
-function go-latest() {
+function go-latest () {
   download_page=$(curl -sL "https://go.dev/dl/?mode=json")
   latest_version=$(echo "$download_page" | jq -r '.[0].version')
 

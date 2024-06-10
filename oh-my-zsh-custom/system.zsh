@@ -10,16 +10,16 @@ alias is-mac='"$OSTYPE" == "darwin"*'
 alias run-on-mac='[[ "$OSTYPE" == "darwin"* ]] && "$@"'
 alias run-on-linux='[[ "$OSTYPE" == "linux-gnu" ]] && "$@"'
 
-function ll {
+function ll () {
   cd "$(llama "$@")"
 }
 
-function cdl {
+function cdl () {
   cd $1
   ls -la
 }
 
-function replace-in-file() {
+function replace-in-file () {
   perl -pi -e "s/$1/$2/g" $3
 }
 
