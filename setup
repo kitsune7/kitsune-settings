@@ -34,3 +34,6 @@ then
 fi
 
 $HOME/Git/kitsune-settings/sync
+
+setup-icloud-dir
+setup-ssh-keys

@@ -2,6 +2,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 if [[ -f "$HOME/.workrc" ]]; then
   source "$HOME/.workrc"
 fi
@@ -49,17 +51,17 @@ zstyle ':omz:update' mode auto      # update automatically without asking
 unsetopt correct
 
 plugins=(
-    catimg
-    command-not-found
-    git
-    git-extras
-    gitfast
-    history
-    pip
-    python
-    safe-paste
-    zsh-autosuggestions
-    zsh-interactive-cd
+  catimg
+  command-not-found
+  git
+  git-extras
+  gitfast
+  history
+  pip
+  python
+  safe-paste
+  zsh-autosuggestions
+  zsh-interactive-cd
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -70,15 +72,14 @@ setopt inc_append_history
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-PNPM_HOME="$HOME/Library/pnpm"
 NPM_PACKAGES="${HOME}/.npm-packages"
 export PATH="$PATH:$NPM_PACKAGES/bin"
 export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
 
+# pnpm setup
+PNPM_HOME="$HOME/Library/pnpm"
+
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-eval "$(/opt/homebrew/bin/brew shellenv)"
