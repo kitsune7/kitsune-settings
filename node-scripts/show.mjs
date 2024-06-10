@@ -71,6 +71,7 @@ function outputCommandsForFile(filePath, commands) {
 
       if (commandFilter) {
         const command = commands.find((command) => command.name === commandFilter)
+        console.log(command)
         if (command) {
           console.log(command.definition)
           break
