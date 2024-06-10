@@ -69,11 +69,15 @@ function outputCommandsForFile(filePath, commands) {
       const filePath = path.join(directory, file)
       const commands = await readCommands(filePath)
 
-      if (commandFilter && file.includes(commandFilter)) {
-        console.log()
+      if (commandFilter) {
+        const command = commands.find((command) => command.name === commandFilter)
+        if (command) {
+          console.log(command.definition)
+          break
+        } else {
+          outputCommandsForFile(filePath, commands)
+        }
       }
-
-      outputCommandsForFile(filePath, commands)
     }
   } catch (error) {
     console.error(error)
