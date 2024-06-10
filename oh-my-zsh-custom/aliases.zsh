@@ -4,6 +4,7 @@ ICLOUD_DIR="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 alias g="cd ~/Git; ls"
 alias s="cd $settingsDir; ls"
 alias k="s"
+alias k-edit="vscode $settingsDir"
 alias h="cd $HOME; ls -a"
 
 alias edit="code $settingsDir/oh-my-zsh-custom/aliases.zsh"
