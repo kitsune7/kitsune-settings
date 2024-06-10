@@ -3,7 +3,7 @@ alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias save="save-repo-changes ${SETTINGS_DIR} 'Auto-save updates to settings'; reload"
 alias sync="${SETTINGS_DIR}/sync"
 
-function show {
+function show () {
   node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom"
 }
 
