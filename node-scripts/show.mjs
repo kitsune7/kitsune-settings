@@ -1,7 +1,9 @@
 import fs from 'fs/promises'
+import { type } from 'os'
 import path from 'path'
 
 const directory = process.argv?.[2]
+const commandFilter = process.argv?.[3]
 
 const reset = '\x1b[0m'
 const fgBlack = '\x1b[30m'
@@ -23,25 +25,37 @@ async function readCommands(filePath) {
     const trimmedLine = line.trim()
     if (trimmedLine.startsWith('alias')) {
       const parts = trimmedLine.split('=')
-      commands.push(parts[0].split(' ')[1]) // Extract alias name
+      commands.push({
+        type: 'alias',
+        name: parts[0].split(' ')[1],
+        definition: trimmedLine,
+      })
     } else if (trimmedLine.startsWith('function')) {
       const parts = trimmedLine.split(' ')
-      commands.push(parts[1]) // Extract function name
+      commands.push({
+        type: 'function',
+        name: parts[1],
+        definition: extractBashFunction(parts[1], content),
+      })
     }
   }
 
   return commands
 }
 
-async function processFile(filePath) {
-  if (filePath.endsWith('.zsh')) {
-    const filename = path.basename(filePath)
-    const commands = await readCommands(filePath)
+function extractBashFunction(functionName, fileContents) {
+  const pattern = new RegExp(`function\\s+${functionName}(\\([^)]*\\))?\\s*{(.*?)}$`, 's')
+  const match = pattern.exec(fileContents)
+  if (!match) return null
+  return match[0]
+}
 
-    if (commands.length) {
-      console.log(fgCyan, filename, reset)
-      commands.forEach((alias) => console.log(`  ${fgYellow}${alias}${reset}`))
-    }
+function outputCommandsForFile(filePath, commands) {
+  if (commands.length) {
+    console.log(fgCyan, path.basename(filePath), reset)
+    commands.forEach((command) =>
+      console.log(`  ${command.type === 'alias' ? fgYellow : fgMagenta}${command.name}${reset}`),
+    )
   }
 }
 
@@ -50,10 +64,16 @@ async function processFile(filePath) {
     if (!directory) {
       throw new Error('Target directory not provided as a command-line argument for the script')
     }
-    const files = await fs.readdir(directory)
+    const files = (await fs.readdir(directory)).filter((file) => file.endsWith('.zsh'))
     for (const file of files) {
       const filePath = path.join(directory, file)
-      await processFile(filePath)
+      const commands = await readCommands(filePath)
+
+      if (commandFilter && file.includes(commandFilter)) {
+        console.log()
+      }
+
+      outputCommandsForFile(filePath, commands)
     }
   } catch (error) {
     console.error(error)

@@ -4,7 +4,11 @@ alias save="save-repo-changes ${SETTINGS_DIR} 'Auto-save updates to settings'; r
 alias sync="${SETTINGS_DIR}/sync"
 
 function show () {
-  node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom"
+  # Shows the custom aliases and functions provided to `oh-my-zsh`
+  # Usage: show [ALIAS_OR_FUNCTION_NAME]
+  # `show` by itself will show all custom aliases and functions
+  # `show ALIAS_OR_FUNCTION_NAME` will show the definition of the alias or function
+  node "${SETTINGS_DIR}/node-scripts/show.mjs" "${HOME}/.oh-my-zsh/custom" "$@"
 }
 
 function save-workrc () {
