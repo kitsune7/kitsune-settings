@@ -35,6 +35,13 @@ function uncomment-shell-line () {
   replace-in-file "^#\s*$beginningOfUncommentedLine" "$beginningOfUncommentedLine" $filePath
 }
 
+function comment-shell-line () {
+  beginningOfLine=$1
+  filePath=$2
+
+  replace-in-file "$beginningOfLine" "# $beginningOfLine" $filePath
+}
+
 function sysfind () {
   fileName=$1
   sudo find / -type f -iname $fileName 2>/dev/null
