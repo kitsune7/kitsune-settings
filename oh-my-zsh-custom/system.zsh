@@ -15,21 +15,35 @@ function ll () {
 }
 
 function cdl () {
-  cd $1
+  directory=$1
+  cd $directory
   ls -la
 }
 
 function replace-in-file () {
-  perl -pi -e "s/$1/$2/g" $3
+  searchStr=$1
+  replaceStr=$2
+  filePath=$3
+
+  perl -pi -e "s/$searchStr/$replaceStr/g" $filePath
+}
+
+function uncomment-shell-line () {
+  beginningOfUncommentedLine=$1
+  filePath=$2
+
+  replace-in-file "^#\s*$beginningOfUncommentedLine" "$beginningOfUncommentedLine" $filePath
 }
 
 function sysfind () {
-  sudo find / -type f -iname $1 2>/dev/null
+  fileName=$1
+  sudo find / -type f -iname $fileName 2>/dev/null
 }
 
 function localfind () {
+  fileName=$1
   searchPath=${2:-"./"}
-  find $searchPath -type f -iname $1
+  find $searchPath -type f -iname $fileName
 }
 
 function killport () {
