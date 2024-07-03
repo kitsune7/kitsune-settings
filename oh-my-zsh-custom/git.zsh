@@ -13,6 +13,11 @@ alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias clone="git clone"
 
+function clone () {
+  git clone "$1" && cd "$(basename "$1" .git)"
+  code .
+}
+
 function pullhead () {
   WORKING_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   PROTECTED_BRANCHES=("master" "main" "develop")
