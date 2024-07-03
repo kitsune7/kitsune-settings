@@ -13,6 +13,12 @@ alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 
 function clone () {
+  if test -d "${HOME}/Git"; then
+    cd "${HOME}/Git"
+  else
+    mkdir "${HOME}/Git" && cd "${HOME}/Git"
+  fi
+  
   git clone "$1" && cd "$(basename "$1" .git)"
   code .
 }
