@@ -11,7 +11,6 @@ alias stash="git stash save"
 alias pop="git stash pop"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
-alias clone="git clone"
 
 function clone () {
   git clone "$1" && cd "$(basename "$1" .git)"
