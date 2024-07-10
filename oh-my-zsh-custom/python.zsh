@@ -4,7 +4,7 @@ alias d="deactivate"
 alias j="jupyter"
 alias py-run="python3 src/main.py"
 
-function create-py() {
+function create-py () {
   projectName=$1
   
   mkdir $projectName
