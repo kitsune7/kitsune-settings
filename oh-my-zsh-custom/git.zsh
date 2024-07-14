@@ -11,6 +11,7 @@ alias stash="git stash save"
 alias pop="git stash pop"
 alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
+alias cred="git config credential.helper store"
 
 function clone () {
   if test -d "${HOME}/Git"; then
