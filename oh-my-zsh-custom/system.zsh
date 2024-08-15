@@ -14,6 +14,12 @@ function ll () {
   cd "$(llama "$@")"
 }
 
+function mv-contents () {
+  sourceDir=$1
+  targetDir=$2
+  mv -f $sourceDir/{.,}* $targetDir
+}
+
 function cdl () {
   directory=$1
   cd $directory
