@@ -16,7 +16,7 @@ function show () {
   while (( "$#" )); do
     case "$1" in
       -p|--plain)
-        args+=( '-p' )
+        BAT_ARGS+=( '-p' )
         shift
         ;;
       -d|--directory)
