@@ -1,5 +1,4 @@
 import fs from 'fs/promises'
-import { type } from 'os'
 import path from 'path'
 
 const directory = process.argv?.[2]

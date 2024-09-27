@@ -4,8 +4,12 @@ export NVM_DIR="$HOME/.nvm"
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-if [[ -f "$HOME/.workrc" ]]; then
-  source "$HOME/.workrc"
+# Load all .zsh files from .local-scripts directory
+if [ -d "$HOME/.local-scripts" ]; then
+    for file in "$HOME"/.local-scripts/*.zsh; do
+        [ -r "$file" ] && source "$file"
+    done
+    unset file
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
