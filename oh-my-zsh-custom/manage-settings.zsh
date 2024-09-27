@@ -54,6 +54,7 @@ function save-local () {
       [ -r "$file" ] && source "$file"
   done
 
+  rm -rf "${ICLOUD_BACKUP_DIR}/local-scripts"
   cp -R "${HOME}/.local-scripts" "${ICLOUD_BACKUP_DIR}/local-scripts"
 }
 
