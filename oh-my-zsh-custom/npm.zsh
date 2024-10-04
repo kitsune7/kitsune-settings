@@ -84,7 +84,7 @@ function workspacePath () {
   local workspace=$1
   findPackageJson | while read -r packageJson; do
     workspaceName=$(cat $packageJson | jq -r ".name")
-    echo $workspaceName
+    echo "found $workspaceName"
     if test "$workspaceName" == "$workspace"
     then
       dirname $packageJson
