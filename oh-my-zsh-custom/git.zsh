@@ -1,5 +1,7 @@
 alias ga="git add ."
 alias gc="git commit -m"
+alias gpull="git pull"
+alias gpush="git push"
 alias guc="git reset HEAD~"
 alias gs="git status"
 alias gb="git branch"
