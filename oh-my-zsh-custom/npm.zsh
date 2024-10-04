@@ -13,14 +13,16 @@ function editModule () {
   local projectPath=$(pwd)
   
   # Ensure the module is in node_modules
-  npm i > /dev/null
+  echo "Clearing existing links by installing node_modules"
+  npm i
   if [ ! -d node_modules/$module ]; then
     echo "Module $module not found in node_modules"
     return
   fi
 
   # Remove the package from ~/Git/module-edits if it already exists
-  if [ -d ~/Git/module-edits/$module ]; then
+  if [ -d "$HOME/Git/module-edits/$module" ]
+  then
     echo -n "This module already exists in ~/Git/module-edits. Would you like to replace it with a fresh copy (y/n)? "
     read REPLY
     echo    # move to a new line
@@ -39,15 +41,17 @@ function editModule () {
   # Move the module
   if [[ "$module" == *"/"* ]]
   then
+    echo "Module is scoped"
     local scope="${module_arg%%/*}"
-    mkdir -p ~/Git/module-edits/$scope
-    mv node_modules/$module ~/Git/module-edits/$scope
+    echo "Scope: $scope"
+    mkdir -p "$HOME/Git/module-edits/$scope"
+    mv "node_modules/$module" "$HOME/Git/module-edits/$scope"
   else
-    mv node_modules/$module ~/Git/module-edits
+    mv "node_modules/$module" "$HOME/Git/module-edits"
   fi
 
   # Link the module
-  cd ~/Git/module-edits/$module
+  cd "$HOME/Git/module-edits/$module"
   npm link
   cd $projectPath
   npm link $module
@@ -58,7 +62,7 @@ function editModule () {
 function rmModule () {
   local module=$1
 
-  if [ -d ~/Git/module-edits/$module ]; then
+  if [ -d "~/Git/module-edits/$module" ]; then
     npm unlink
     rm -rf ~/Git/module-edits/$module
   fi
