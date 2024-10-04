@@ -41,9 +41,7 @@ function editModule () {
   # Move the module
   if [[ "$module" == *"/"* ]]
   then
-    echo "Module is scoped"
-    local scope="${module_arg%%/*}"
-    echo "Scope: $scope"
+    local scope="${module%%/*}"
     mkdir -p "$HOME/Git/module-edits/$scope"
     mv "node_modules/$module" "$HOME/Git/module-edits/$scope"
   else
