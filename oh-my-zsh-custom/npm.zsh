@@ -45,6 +45,10 @@ function editModule () {
   fi
 
   # Move the module
+  if [ -n "$workspace" ]
+  then
+    cd $(workspacePath "$workspace")
+  fi
   if [[ "$module" == *"/"* ]]
   then
     local scope="${module%%/*}"
@@ -80,6 +84,7 @@ function rmModule () {
   npm unlink $module
 }
 
+# TODO: Fix this function so it works correctly
 function workspacePath () {
   workspace=$1
   findPackageJson | while read -r packageJson; do
