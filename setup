@@ -29,7 +29,7 @@ chsh -s $(which zsh)
 
 if [ ! -d "$HOME/Git" ]
 then
-  mkdir "$HOME/Git"
+  mkdir -p "$HOME/Git/module-edits"
 fi
 
 if [ ! -d "$HOME/Git/kitsune-settings" ]
