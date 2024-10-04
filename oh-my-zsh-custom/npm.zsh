@@ -13,7 +13,7 @@ function editModule () {
   local projectPath=$(pwd)
   
   # Ensure the module is in node_modules
-  npm i
+  npm i > /dev/null
   if [ ! -d node_modules/$module ]; then
     echo "Module $module not found in node_modules"
     return
@@ -21,10 +21,12 @@ function editModule () {
 
   # Remove the package from ~/Git/module-edits if it already exists
   if [ -d ~/Git/module-edits/$module ]; then
-    read -p "This module already exists in ~/Git/module-edits. Would you like to replace it with a fresh copy (y/n)? " -n 1 -r
+    echo -n "This module already exists in ~/Git/module-edits. Would you like to replace it with a fresh copy (y/n)? "
+    read REPLY
     echo    # move to a new line
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
+      echo "Removing existing module"
       rm -rf ~/Git/module-edits/$module
     fi
   fi
@@ -40,7 +42,7 @@ function editModule () {
   npm link
   cd $projectPath
   npm link $module
-  code ~/Git/module-edits/$module
+  code $HOME/Git/module-edits/$module
 }
 
 function rmModule () {
