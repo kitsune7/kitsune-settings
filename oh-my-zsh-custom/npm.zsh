@@ -84,6 +84,13 @@ function rmModule () {
   npm unlink $module
 }
 
+# TODO: Make it so this also unlinks the modules globally
+function clearModules () {
+  rm -rf ~/Git/module-edits/*
+  # For each module
+  # npm rm -g $module
+}
+
 # TODO: Fix this function so it works correctly
 function workspacePath () {
   workspace=$1
