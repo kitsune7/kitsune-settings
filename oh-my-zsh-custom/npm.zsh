@@ -83,8 +83,10 @@ function rmModule () {
 function workspacePath () {
   local workspace=$1
   findPackageJson | while read -r packageJson; do
-    name=$(cat $packageJson | jq -r ".name")
-    if [ "$name" == "$workspace" ]; then
+    workspaceName=$(cat $packageJson | jq -r ".name")
+    echo $workspaceName
+    if test "$workspaceName" == "$workspace"
+    then
       dirname $packageJson
       return
     fi
