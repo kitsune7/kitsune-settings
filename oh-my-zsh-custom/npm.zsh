@@ -11,6 +11,12 @@ function findPackageJson () {
 function editModule () {
   local module=$1
   local projectPath=$(pwd)
+  local workspace=""
+
+  if test -n "$2" && { test "$2" == "-w" || test "$2" == "--workspace"; } && test -n "$3"
+  then
+    workspace=$3
+  fi
   
   # Ensure the module is in node_modules
   echo "Clearing existing links by installing node_modules"
@@ -52,7 +58,13 @@ function editModule () {
   cd "$HOME/Git/module-edits/$module"
   npm link
   cd $projectPath
-  npm link $module
+
+  if [ -n "$workspace" ]
+  then
+    npm link "$module" --workspace "$workspace"
+  else
+    npm link "$module"
+  fi
   
   code $HOME/Git/module-edits/$module
 }
@@ -66,4 +78,11 @@ function rmModule () {
   fi
 
   npm unlink $module
+}
+
+function workspacePath () {
+  local workspace=$1
+  findPackageJson | while read -r packageJson; do
+    cat $packageJson | jq -r ".name"
+  done
 }
