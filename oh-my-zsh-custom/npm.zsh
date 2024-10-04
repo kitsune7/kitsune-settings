@@ -36,12 +36,22 @@ function editModule () {
     rm -rf ./node_modules/.vite
   fi
 
-  # Move the module, link it, and open it in VS Code
-  mv node_modules/$module ~/Git/module-edits
+  # Move the module
+  if [[ "$module" == *"/"* ]]
+  then
+    local scope="${module_arg%%/*}"
+    mkdir -p ~/Git/module-edits/$scope
+    mv node_modules/$module ~/Git/module-edits/$scope
+  else
+    mv node_modules/$module ~/Git/module-edits
+  fi
+
+  # Link the module
   cd ~/Git/module-edits/$module
   npm link
   cd $projectPath
   npm link $module
+  
   code $HOME/Git/module-edits/$module
 }
 
