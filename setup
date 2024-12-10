@@ -12,6 +12,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 brew install nvm
 brew install bat
 brew install jq
+brew install yq
 brew install go
 brew install --cask visual-studio-code
 brew install --cask obsidian
