@@ -14,6 +14,8 @@ brew install bat
 brew install jq
 brew install yq
 brew install go
+brew install --cask raycast
+brew install --cask ghostty
 brew install --cask visual-studio-code
 brew install --cask obsidian
 
