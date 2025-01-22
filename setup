@@ -9,13 +9,15 @@ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
+# Install UV for python programming and development
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
 brew install nvm
 brew install bat
 brew install jq
-brew install yq
 brew install go
 brew install --cask raycast
-brew install --cask ghostty
+brew install --cask iterm2
 brew install --cask visual-studio-code
 brew install --cask obsidian
 
