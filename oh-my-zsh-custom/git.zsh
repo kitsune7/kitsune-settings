@@ -15,6 +15,21 @@ alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias cred="git config credential.helper store"
 
+function reclone () {
+  if test -d "./.git"
+  then
+    REPO_NAME=$(pwd)
+    REPO_URL=$(git remote get-url origin)
+    cd ..
+    rm -rf "$REPO_NAME"
+    git clone "$REPO_URL"
+    cd "$REPO_NAME"
+    git status
+  else
+    echo "\`reclone\` must be run from within a git repository."
+  fi
+}
+
 function clone () {
   if test -d "${HOME}/Git"; then
     cd "${HOME}/Git"
