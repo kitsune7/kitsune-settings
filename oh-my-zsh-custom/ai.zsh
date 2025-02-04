@@ -24,6 +24,6 @@ function ori () {
     echo "Ori failed to start or respond appropriately."
     exit 1
   else
-    echo $response
+    echo $response | jq -r '.choices[0].message.content'
   fi
 }
