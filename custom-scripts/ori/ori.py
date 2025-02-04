@@ -16,8 +16,8 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 tool_schemas = []
-for fname in os.listdir("tools"):
-    with open(f"tools/{fname}") as f:
+for fname in os.listdir("./tools"):
+    with open(f"./tools/{fname}") as f:
         tool_schemas.append(json.load(f))
 
 LM_STUDIO_URL = "http://localhost:1234/v1"
