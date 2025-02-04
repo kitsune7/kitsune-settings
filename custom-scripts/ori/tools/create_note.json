@@ -8,18 +8,14 @@
       "properties": {
         "note_name": {
           "type": "string",
-          "description": "The name of the note"
+          "description": "The name of the note. It shouldn't contain a file extension."
         },
-        "location": {
-          "type": "string",
-          "description": "The location is a relative path in the file system. It can go under \"1 - Projects\", \"2 - Areas\", \"3 - Resources\", or \"4 - Archive\". You can use a subfolder of one of those or even a full path for the location if the user specifies it."
-        },
-        "markdown_contents": {
+        "note_content": {
           "type": "string",
           "description": "The content for the note. It should be in markdown format."
         }
       },
-      "required": ["note_name", "location", "markdown_contents"]
+      "required": ["note_name", "note_content"]
     }
   }
 }
