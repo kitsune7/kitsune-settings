@@ -1,4 +1,4 @@
-ori-server-port=1230
+oriServerPort=1230
 
 alias ori-server="${SETTINGS_DIR}/custom-scripts/ori.py"
 alias os="ori-server"
@@ -18,7 +18,7 @@ function ori () {
       ]
     }')
   curl_exit_code=$?
-  kill -9 $(lsof -t -i tcp:${ori-server-port})
+  kill -9 $(lsof -t -i tcp:${oriServerPort})
 
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
