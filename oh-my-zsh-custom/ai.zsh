@@ -4,10 +4,19 @@ alias os="ori-server"
 function ori () {
   ori-server & server_pid=$!
   sleep 1
-  curl -f http://localhost:1230
+  curl -X POST http://localhost:1230/chat/completions \
+    -H "Content-Type: application/json" \
+    -d '{
+      "messages": [
+        {
+          "role": "user",
+          "text": "'$1'"
+        }
+      ],
+    }'
   curl_exit_code=$?
   kill $server_pid
   if [ $curl_exit_code -ne 0 ]; then
-    echo "Server failed to start and accept connections"
+    echo "Ori failed to start or respond appropriately."
   fi
 }
