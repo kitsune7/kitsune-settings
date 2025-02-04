@@ -27,5 +27,8 @@ function ori () {
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
   fi
 
-  kill -9 $(lsof -t -i tcp:${oriServerPort})
+  # Kill the server if it's still running
+  if [ $(lsof -t -i tcp:${oriServerPort}) ]; then
+    kill -9 $(lsof -t -i tcp:${oriServerPort})
+  fi
 }
