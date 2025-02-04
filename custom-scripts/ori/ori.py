@@ -57,18 +57,25 @@ def execute_tool(tool_name, tool_args):
 
 def create_note(tool_args):
     work_notes_path = os.environ.get("ICLOUD_WORK_NOTES_DIR", "")
+    intermediate_path = "5 - Unsorted"
     if not work_notes_path:
-        return "WORK_NOTES_PATH environment variable is not set"
+        return {
+            "error": "ICLOUD_WORK_NOTES_DIR environment variable is not set",
+            "content": "",
+        }
     note_name = tool_args.get("note_name", "Untitled Ori Note")
     note_content = tool_args.get("note_content", "")
-    note_path = f"{work_notes_path}/5 - Unsorted/{note_name}.md"
+    note_path = f"{work_notes_path}/{intermediate_path}/{note_name}.md"
 
     # Create the file for the note if it doesn't already exist
     if not os.path.exists(note_path):
         with open(note_path, "w") as f:
             f.write(note_content)
 
-    return f"Created note successfully: {note_path}"
+    return {
+        "error": "",
+        "content": f"Created note successfully: {intermediate_path}/{note_name}.md",
+    }
 
 @app.route('/<path:subpath>', methods=['POST'])
 def proxy(subpath):
@@ -86,7 +93,10 @@ def proxy(subpath):
                 tool_name = tool_call["function"]["name"]
                 tool_args = json.loads(tool_call["function"]["arguments"])
                 tool_result = execute_tool(tool_name, tool_args)
-                content["tool_results"] = tool_result
+                if tool_result.get("error"):
+                    response.status_code = 500
+                    content["error"] = tool_result["error"]
+                content["tool_results"] = tool_result.get("content", "")
         return jsonify(content)
     else:
         return response.text, response.status_code
