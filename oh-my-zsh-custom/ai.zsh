@@ -2,9 +2,9 @@ alias ori-server="${SETTINGS_DIR}/custom-scripts/ori.py"
 alias os="ori-server"
 
 function ori () {
-  ori-server & server_pid=$!
+  ori-server > /dev/null & server_pid=$!
   sleep 1
-  response=$(curl -X POST http://localhost:1230/chat/completions \
+  curl -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
     -d '{
       "model": "qwen2.5-7b-instruct-1m",
@@ -14,7 +14,7 @@ function ori () {
           "content": "'$1'"
         }
       ]
-    }')
+    }' | jq -r '.completions[0].message.content'
   curl_exit_code=$?
   kill $server_pid
   if [ $curl_exit_code -ne 0 ]; then
