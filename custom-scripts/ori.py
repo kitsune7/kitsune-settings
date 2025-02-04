@@ -1,0 +1,71 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = [
+#     "flask",
+#     "requests",
+# ]
+# ///
+
+import subprocess
+import requests
+import json
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+LM_STUDIO_URL = "http://localhost:1234/v1"
+
+def start_lm_studio():
+    try:
+        subprocess.run(["lms", "server", "start"], check=True)
+        print("LM Studio server started successfully")
+    except subprocess.CalledProcessError:
+        print("Failed to start LM Studio server")
+
+def load_model():
+    try:
+        subprocess.run(["lms", "model", "load", "--first"], check=True)
+        print("Model loaded successfully")
+    except subprocess.CalledProcessError:
+        print("Failed to load model")
+
+def check_lm_studio_status():
+    try:
+        response = requests.get(f"{LM_STUDIO_URL}/models")
+        if response.status_code == 200:
+            return True
+        return False
+    except requests.RequestException:
+        return False
+
+def execute_tool(tool_name, tool_args):
+    # Implement your tool execution logic here
+    if tool_name == "example_tool":
+        return f"Executed {tool_name} with args: {tool_args}"
+    else:
+        return f"Unknown tool: {tool_name}"
+
+@app.route('/<path:subpath>', methods=['POST'])
+def proxy(subpath):
+    if not check_lm_studio_status():
+        start_lm_studio()
+        load_model()
+
+    url = f"{LM_STUDIO_URL}/{subpath}"
+    response = requests.post(url, json=request.json)
+
+    if response.status_code == 200:
+        content = response.json()
+        if "tool_calls" in content:
+            for tool_call in content["tool_calls"]:
+                tool_name = tool_call["function"]["name"]
+                tool_args = json.loads(tool_call["function"]["arguments"])
+                tool_result = execute_tool(tool_name, tool_args)
+                content["tool_results"] = tool_result
+        return jsonify(content)
+    else:
+        return response.text, response.status_code
+
+if __name__ == '__main__':
+    app.run(port=1230)
