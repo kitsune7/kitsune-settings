@@ -1,6 +1,6 @@
 oriServerPort=1230
 
-alias ori-server="${SETTINGS_DIR}/custom-scripts/ori.py"
+alias ori-server="${SETTINGS_DIR}/custom-scripts/ori/ori.py"
 alias os="ori-server"
 
 function ori () {
@@ -19,7 +19,6 @@ function ori () {
       ]
     }')
   curl_exit_code=$?
-  kill -9 $(lsof -t -i tcp:${oriServerPort})
 
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
@@ -27,4 +26,7 @@ function ori () {
   else
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
   fi
+
+  sleep 3
+  kill -9 $(lsof -t -i tcp:${oriServerPort})
 }
