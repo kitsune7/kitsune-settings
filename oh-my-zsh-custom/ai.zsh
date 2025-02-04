@@ -1,11 +1,16 @@
 oriServerPort=1230
 
-alias ori-server="${SETTINGS_DIR}/custom-scripts/ori/ori.py"
-alias os="ori-server"
+alias ori-start="${SETTINGS_DIR}/custom-scripts/ori/ori.py"
+alias ori-start-quiet="ori-start > /dev/null 2>&1 &"
+alias ori-stop="kill -9 $(lsof -t -i tcp:$oriServerPort)"
+alias os="ori-start"
+
+alias 
 
 function ori () {
-  (ori-server > /dev/null 2>&1 &)
-  sleep 1
+  if [ ! $(lsof -i tcp:$oriServerPort) ]; then
+    ori-start-quiet
+  fi
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
@@ -25,10 +30,5 @@ function ori () {
     exit 1
   else
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
-  fi
-
-  # Kill the server if it's still running
-  if [ $(lsof -t -i tcp:${oriServerPort}) ]; then
-    kill -9 $(lsof -t -i tcp:${oriServerPort})
   fi
 }
