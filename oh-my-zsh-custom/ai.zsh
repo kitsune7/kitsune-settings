@@ -5,6 +5,7 @@ alias os="ori-server"
 
 function ori () {
   (ori-server > /dev/null 2>&1 &)
+  sleep 1
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
