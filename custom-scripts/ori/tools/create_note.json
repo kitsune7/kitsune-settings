@@ -1,32 +1,25 @@
 {
   "type": "function",
-  "description": "Create a new note with specified name, location, and markdown contents.",
-  "name": "create_note",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "note_name": {
-        "type": "string",
-        "description": "The name of the note."
+  "function": {
+    "name": "create_note",
+    "description": "This tool creates a new markdown note in an Obsidian vault. It should be used when the user asks to create a note.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "note_name": {
+          "type": "string",
+          "description": "The name of the note"
+        },
+        "location": {
+          "type": "string",
+          "description": "The location is a relative path in the file system. It can go under \"1 - Projects\", \"2 - Areas\", \"3 - Resources\", or \"4 - Archive\". You can use a subfolder of one of those or even a full path for the location if the user specifies it."
+        },
+        "markdown_contents": {
+          "type": "string",
+          "description": "The content for the note. It should be in markdown format."
+        }
       },
-      "location": {
-        "type": "string",
-        "description": "The location where the note should be stored or associated with."
-      },
-      "markdown_contents": {
-        "type": "string",
-        "description": "The markdown content for the note."
-      }
-    },
-    "required": ["note_name", "location", "markdown_contents"]
-  },
-  "returns": {
-    "type": "object",
-    "properties": {
-      "note_id": {
-        "type": "string",
-        "description": "A unique identifier for the newly created note."
-      }
+      "required": ["note_name", "location", "markdown_contents"]
     }
   }
 }
