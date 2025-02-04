@@ -1,11 +1,16 @@
 oriServerPort=1230
 
-alias ori-start="${SETTINGS_DIR}/custom-scripts/ori/ori.py"
 alias ori-start-quiet="ori-start > /dev/null 2>&1 &"
-alias ori-stop="kill -9 $(lsof -t -i tcp:$oriServerPort)"
 alias os="ori-start"
+alias osq="ori-start-quiet"
 
-alias 
+function ori-start () {
+  ${SETTINGS_DIR}/custom-scripts/ori/ori.py
+}
+
+function ori-stop () {
+  kill -9 $(lsof -t -i tcp:$oriServerPort)
+}
 
 function ori () {
   if [ ! $(lsof -i tcp:$oriServerPort) ]; then
