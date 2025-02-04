@@ -7,7 +7,12 @@ function ori-start () {
 }
 
 function ori-stop () {
+  if [ ! $(lsof -i tcp:$oriServerPort) ]; then
+    echo "Ori is not running."
+    return 1
+  fi
   kill -9 $(lsof -t -i tcp:$oriServerPort)
+  echo "Ori has been stopped."
 }
 
 function ori () {
@@ -32,8 +37,8 @@ function ori () {
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
     return 1
-  elif [ $(echo $response | jq -r '.error') != "null" ]; then
-    echo $response | jq -r '.error'
+  elif [ $(echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .error') != "null" ]; then
+    echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .error'
     return 1
   else
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
