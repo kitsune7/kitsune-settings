@@ -23,6 +23,7 @@ function ori () {
     echo "Ori failed to start or respond appropriately."
     exit 1
   else
+    echo "Ori responded:"
     echo $response
   fi
 }
