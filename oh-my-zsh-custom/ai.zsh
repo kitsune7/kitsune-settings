@@ -13,6 +13,7 @@ function ori-stop () {
 function ori () {
   if [ ! $(lsof -i tcp:$oriServerPort) ]; then
     ori-start > /dev/null 2>&1 &
+    sleep 1
   fi
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
