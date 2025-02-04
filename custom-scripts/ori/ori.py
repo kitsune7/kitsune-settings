@@ -1,4 +1,4 @@
-#!/usr/bin/env -S uv run --script
+#!/usr/bin/env uv run --script
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -16,8 +16,9 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)
 
 tool_schemas = []
-for fname in os.listdir("./tools"):
-    with open(f"./tools/{fname}") as f:
+script_dir = os.path.dirname(os.path.abspath(__file__))
+for fname in os.listdir(f"{script_dir}/tools"):
+    with open(f"{script_dir}/tools/{fname}") as f:
         tool_schemas.append(json.load(f))
 
 LM_STUDIO_URL = "http://localhost:1234/v1"

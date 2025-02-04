@@ -32,6 +32,9 @@ function ori () {
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
     return 1
+  else if [ $(echo $response | jq -r '.error') != "null" ]; then
+    echo $response | jq -r '.error'
+    return 1
   else
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
   fi
