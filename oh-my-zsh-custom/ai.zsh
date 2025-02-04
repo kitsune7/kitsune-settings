@@ -12,7 +12,7 @@ function ori-stop () {
 
 function ori () {
   if [ ! $(lsof -i tcp:$oriServerPort) ]; then
-    ori-start > /dev/null 2>&1 &
+    (ori-start > /dev/null 2>&1 &)
     sleep 1
   fi
 
