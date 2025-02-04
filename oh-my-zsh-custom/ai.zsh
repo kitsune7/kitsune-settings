@@ -1,8 +1,6 @@
 oriServerPort=1230
 
-alias ori-start-quiet="ori-start > /dev/null 2>&1 &"
 alias os="ori-start"
-alias osq="ori-start-quiet"
 
 function ori-start () {
   ${SETTINGS_DIR}/custom-scripts/ori/ori.py
@@ -14,7 +12,7 @@ function ori-stop () {
 
 function ori () {
   if [ ! $(lsof -i tcp:$oriServerPort) ]; then
-    ori-start-quiet
+    ori-start > /dev/null 2>&1 &
   fi
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
