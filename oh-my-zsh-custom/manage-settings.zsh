@@ -39,9 +39,9 @@ function show () {
 
   if [[ $# -eq 0 ]]
   then
-    node "${SETTINGS_DIR}/node-scripts/show.mjs" $DIRECTORY
+    node "${SETTINGS_DIR}/custom-scripts/show.mjs" $DIRECTORY
   else
-    node "${SETTINGS_DIR}/node-scripts/show.mjs" $DIRECTORY "$1" | bat -l zsh "${BAT_ARGS[@]}"
+    node "${SETTINGS_DIR}/custom-scripts/show.mjs" $DIRECTORY "$1" | bat -l zsh "${BAT_ARGS[@]}"
   fi
 }
 
