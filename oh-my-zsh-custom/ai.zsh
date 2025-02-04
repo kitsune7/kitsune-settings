@@ -2,7 +2,7 @@ alias ori-server="${SETTINGS_DIR}/custom-scripts/ori.py"
 alias os="ori-server"
 
 function ori () {
-  ori-server > /dev/null & server_pid=$!
+  (ori-server > /dev/null 2>&1 & server_pid=$!)
   sleep 1
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
