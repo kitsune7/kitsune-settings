@@ -11,7 +11,7 @@ function ori () {
       "messages": [
         {
           "role": "user",
-          "text": "'$1'"
+          "content": "'$1'"
         }
       ]
     }'
