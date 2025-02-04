@@ -7,12 +7,13 @@ function ori () {
   curl -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
     -d '{
+      "model": "qwen2.5-7b-instruct-1m",
       "messages": [
         {
           "role": "user",
           "text": "'$1'"
         }
-      ],
+      ]
     }'
   curl_exit_code=$?
   kill $server_pid
