@@ -1,9 +1,10 @@
+ori-server-port=1230
+
 alias ori-server="${SETTINGS_DIR}/custom-scripts/ori.py"
 alias os="ori-server"
 
 function ori () {
-  (ori-server > /dev/null 2>&1 & server_pid=$!)
-  sleep 1
+  (ori-server > /dev/null 2>&1 &)
 
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
@@ -17,13 +18,12 @@ function ori () {
       ]
     }')
   curl_exit_code=$?
-  kill $server_pid
+  kill -9 $(lsof -t -i tcp:${ori-server-port})
 
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
     exit 1
   else
-    echo "Ori responded:"
     echo $response
   fi
 }
