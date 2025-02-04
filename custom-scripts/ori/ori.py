@@ -90,13 +90,23 @@ def proxy(subpath):
         content = response.json()
         if "tool_calls" in content["choices"][0]["message"]:
             for tool_call in content["choices"][0]["message"]["tool_calls"]:
+                content["choices"][0]["finish_reason"] = "stop"
+                
                 tool_name = tool_call["function"]["name"]
                 tool_args = json.loads(tool_call["function"]["arguments"])
                 tool_result = execute_tool(tool_name, tool_args)
                 if tool_result.get("error"):
                     response.status_code = 500
                     content["error"] = tool_result["error"]
+                    content["choices"][0]["message"] = {
+                        "content": tool_result.get("error", "Error handling tool call"),
+                        "role": "assistant",
+                    }
                 content["tool_results"] = tool_result.get("content", "")
+                content["choices"][0]["message"] = {
+                    "content": tool_result.get("content", ""),
+                    "role": "assistant",
+                }
         return jsonify(content)
     else:
         return response.text, response.status_code
