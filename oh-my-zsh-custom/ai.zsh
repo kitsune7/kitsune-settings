@@ -18,11 +18,11 @@ function ori () {
     }')
   curl_exit_code=$?
   kill $server_pid
-  
+
   if [ $curl_exit_code -ne 0 ]; then
     echo "Ori failed to start or respond appropriately."
     exit 1
   else
-    echo $response | jq -r '.completions[0].message.content'
+    echo $response
   fi
 }
