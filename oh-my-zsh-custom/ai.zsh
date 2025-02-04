@@ -27,6 +27,5 @@ function ori () {
     echo $response | jq -Rnr '[inputs] | join("\\n") | fromjson | .choices[0].message.content'
   fi
 
-  sleep 3
   kill -9 $(lsof -t -i tcp:${oriServerPort})
 }
