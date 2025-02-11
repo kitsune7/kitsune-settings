@@ -13,3 +13,7 @@ function new-ssh-key () {
   echo "You can go ahead and add this new key to Github."
   echo "https://github.com/settings/ssh/new"
 }
+
+function dependabot-approve () {
+  "${SETTINGS_DIR}/custom-scripts/dependabot-approve.py" "$@"
+}
