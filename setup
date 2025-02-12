@@ -20,6 +20,9 @@ brew install --cask iterm2
 brew install --cask visual-studio-code
 brew install --cask obsidian
 
+# Install Bun
+curl -fsSL https://bun.sh/install | bash
+
 if [ ! -d "$HOME/.local-scripts" ]
 then
   mkdir "$HOME/.local-scripts"

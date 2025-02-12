@@ -7,7 +7,7 @@ function ori-start () {
 }
 
 function ori-stop () {
-  if [ ! $(lsof -i tcp:$oriServerPort) ]; then
+  if ! lsof -i tcp:$oriServerPort >/dev/null 2>&1; then
     echo "Ori is not running."
     return 1
   fi
@@ -16,22 +16,24 @@ function ori-stop () {
 }
 
 function ori () {
-  if [ ! $(lsof -i tcp:$oriServerPort) ]; then
+  if ! lsof -i tcp:$oriServerPort >/dev/null 2>&1; then
     (ori-start > /dev/null &)
     sleep 1
   fi
 
+  local input_text=$(printf '%s' "$*" | sed 's/"/\\"/g')
+  
   response=$(curl -s -X POST http://localhost:1230/chat/completions \
     -H "Content-Type: application/json" \
-    -d '{
-      "model": "qwen2.5-7b-instruct-1m",
-      "messages": [
+    -d "{
+      \"model\": \"qwen2.5-7b-instruct-1m\",
+      \"messages\": [
         {
-          "role": "user",
-          "content": "'$1'"
+          \"role\": \"user\",
+          \"content\": \"$input_text\"
         }
       ]
-    }')
+    }")
   curl_exit_code=$?
 
   if [ $curl_exit_code -ne 0 ]; then
