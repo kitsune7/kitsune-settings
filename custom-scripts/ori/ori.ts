@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 
+import express from 'express';
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import { dirname, join } from 'path';
@@ -125,63 +126,82 @@ const executeTool = async (toolName: string, toolArgs: any): Promise<ToolResult>
   return { error: `Unknown tool: ${toolName}`, content: '' };
 };
 
-const server = Bun.serve({
-  port: 1230,
-  async fetch(req) {
-    try {
-      if (req.method !== 'POST') {
-        return new Response('Method not allowed', { status: 405 });
-      }
+const app = express();
+app.use(express.json());
 
-      if (!await checkLmStudioStatus()) {
-        await startLmStudio();
-        await loadModel();
-      }
-
-      const toolSchemas = await loadToolSchemas();
-      const body = await req.json() as Record<string, unknown>;
-      
-      const response = await fetch(`${LM_STUDIO_URL}${new URL(req.url).pathname}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...body, tools: toolSchemas }),
-      });
-
-      const content = await response.json() as LMStudioResponse;
-
-      if (response.ok && content.choices?.[0]?.message?.tool_calls) {
-        for (const toolCall of content.choices[0].message.tool_calls) {
-          content.choices[0].finish_reason = 'stop';
-          
-          const toolName = toolCall.function.name;
-          const toolArgs = JSON.parse(toolCall.function.arguments);
-          const toolResult = await executeTool(toolName, toolArgs);
-
-          if (toolResult.error) {
-            return Response.json({
-              error: toolResult.error,
-              choices: [{
-                message: {
-                  content: toolResult.error,
-                  role: 'assistant',
-                }
-              }]
-            }, { status: 500 });
-          }
-
-          content.tool_results = toolResult.content;
-          content.choices[0].message = {
-            content: toolResult.content,
-            role: 'assistant',
-          };
-        }
-      }
-
-      return Response.json(content);
-    } catch (error: any) {
-      return Response.json({ error: error.message }, { status: 500 });
-    }
-  },
+// Add CORS headers middleware
+app.use((_, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+  res.header('Access-Control-Allow-Headers', '*');
+  next();
 });
 
-console.log(`Server running on port ${server.port}`);
+app.all('*', (req, _, next) => {
+  console.debug(`Received request: ${req.method} to ${req.url} with body`, req.body);
+  next();
+});
+
+// Handle OPTIONS requests
+app.options('/v1/chat/completions', (req, res) => {
+  res.json({});
+});
+
+app.post('/v1/chat/completions', async (req, res) => {
+  try {
+    if (!await checkLmStudioStatus()) {
+      await startLmStudio();
+      await loadModel();
+    }
+
+    console.info(`Running chat completion on conversation with ${req.body.messages.length} message${req.body.messages.length > 1 ? 's' : ''}.`);
+
+    const toolSchemas = await loadToolSchemas();
+    const response = await fetch(`${LM_STUDIO_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...req.body, tools: toolSchemas }),
+    });
+
+    const content = await response.json() as LMStudioResponse;
+
+    if (response.ok && content.choices?.[0]?.message?.tool_calls) {
+      for (const toolCall of content.choices[0].message.tool_calls) {
+        content.choices[0].finish_reason = 'stop';
+        
+        const toolName = toolCall.function.name;
+        const toolArgs = JSON.parse(toolCall.function.arguments);
+        const toolResult = await executeTool(toolName, toolArgs);
+
+        if (toolResult.error) {
+          return res.status(500).json({
+            error: toolResult.error,
+            choices: [{
+              message: {
+                content: toolResult.error,
+                role: 'assistant',
+              }
+            }]
+          });
+        }
+
+        content.tool_results = toolResult.content;
+        content.choices[0].message = {
+          content: toolResult.content,
+          role: 'assistant',
+        };
+      }
+    }
+
+    res.json(content);
+  } catch (error: any) {
+    console.error(`Error processing request: ${error.message}`);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const port = 1230;
+const server = app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+server.keepAliveTimeout = 5 * 1000;

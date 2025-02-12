@@ -3,7 +3,7 @@ oriServerPort=1230
 alias os="ori-start"
 
 function ori-start () {
-  ${SETTINGS_DIR}/custom-scripts/ori/ori.py
+  bun "${SETTINGS_DIR}/custom-scripts/ori/ori.ts"
 }
 
 function ori-stop () {
