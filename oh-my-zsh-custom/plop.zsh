@@ -1,6 +1,5 @@
 function run-plop () {
-  PLOP_NAME=${1}
-  TARGET_PROJECT=${2}
+  TARGET_PROJECT=${1}
   install-plop
   PLOPFILES=($SETTINGS_DIR/plopfiles/*)
   PLOPFILE=$(select_option "${PLOPFILES[@]}")
