@@ -1,9 +1,6 @@
-function run-plop () {
-  TARGET_PROJECT=${1}
+function kplop () {
   install-plop
-  PLOPFILES=($SETTINGS_DIR/plopfiles/*)
-  PLOPFILE=$(select_option "${PLOPFILES[@]}")
-  plop --plopfile $PLOPFILE $TARGET_PROJECT
+  plop --plopfile "$SETTINGS_DIR/plopfile.js" "$@"
 }
 
 function install-plop () {
