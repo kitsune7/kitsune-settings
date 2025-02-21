@@ -3,7 +3,7 @@ function run-plop () {
   TARGET_PROJECT=${2}
   install-plop
   PLOPFILES=($SETTINGS_DIR/plopfiles/*)
-  PLOPFILE=$(select-option "${PLOPFILES[@]}")
+  PLOPFILE=$(select_option "${PLOPFILES[@]}")
   echo "plop --plopfile $PLOPFILE $TARGET_PROJECT"
 }
 
