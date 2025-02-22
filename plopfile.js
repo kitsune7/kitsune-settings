@@ -1,27 +1,19 @@
 export default function (plop) {
-  const targetPath = plop.getDestBasePath() || plop.getArg('target-path');
-  console.log('targetPath:', targetPath);
-  console.log('destBasePath:', plop.getDestBasePath());
-
-  plop.setActionType('debug', function (answers, config, plop) {
-    console.log(answers);
-    console.log(config);
-    console.log(plop.getPlopfilePath());
-  });
-
-  plop.setGenerator('new-plop', {
-    description: 'Create a new plop file',
+  const settingsDir = process.env.SETTINGS_DIR || './';
+  plop.setGenerator('new-zsh-file', {
+    description: 'Make a new zsh file in kitsune-settings/oh-my-zsh-custom',
     prompts: [
       {
         type: 'input',
         name: 'name',
-        message: 'What is your plop file name?',
+        message: 'What should it be named (without the extension)?',
       },
     ],
     actions: [
       {
-        type: 'debug',
-        path: './',
+        type: 'add',
+        path: `${settingsDir}/oh-my-zsh-custom/{{name}}.zsh`,
+        templateFile: 'plop-templates/zsh-file.hbs',
       },
     ],
   });
