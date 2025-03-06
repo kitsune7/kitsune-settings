@@ -46,7 +46,7 @@ currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 copyFiles "$currentDir/home-settings" "$HOME"
 copyFiles "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
-rsync -a --progress "$currentDir/other-settings/com.googlecode.iterm2.plist" "${HOME}/Library/Preferences/com.googlecode.iterm2.plist"
+rsync -a --progress "$currentDir/other-settings/com.googlecode.iterm2.plist" "${HOME}/Library/Preferences"
 
 log "Finished syncing settings"
 exit 0
