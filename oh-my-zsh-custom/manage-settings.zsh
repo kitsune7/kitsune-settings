@@ -3,8 +3,8 @@ alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias sync="${SETTINGS_DIR}/sync"
 
 function save () {
-  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
   rsync -a "${HOME}/Library/Preferences/com.googlecode.iterm2.plist" "${SETTINGS_DIR}/other-settings"
+  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
   reload
 }
 
