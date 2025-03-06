@@ -1,7 +1,12 @@
 alias edit="code ${SETTINGS_DIR}"
 alias reload="${SETTINGS_DIR}/sync; exec zsh"
-alias save="save-repo-changes ${SETTINGS_DIR} 'Auto-save updates to settings'; reload"
 alias sync="${SETTINGS_DIR}/sync"
+
+function save () {
+  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
+  rsync -a "${HOME}/Library/Preferences/com.googlecode.iterm2.plist" "${SETTINGS_DIR}/other-settings/com.googlecode.iterm2.plist"
+  reload
+}
 
 function show () {
   # Shows the custom aliases and functions provided to `oh-my-zsh`
