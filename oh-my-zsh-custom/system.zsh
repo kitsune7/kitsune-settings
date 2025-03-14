@@ -63,19 +63,3 @@ function killport () {
   port=${1:-8080}
   kill -9 $(lsof -t -i tcp:${port})
 }
-
-function select_option() {
-  local prompt="Please select an option:"
-  local options=("$@")
-  local PS3="$prompt "
-  local selected
-
-  select selected in "${options[@]}"; do
-    if [[ -n "$selected" ]]; then
-      echo "$selected"
-      break
-    else
-      echo "Invalid option. Please try again."
-    fi
-  done
-}
