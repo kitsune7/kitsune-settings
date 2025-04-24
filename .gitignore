@@ -6,10 +6,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Package locks
-package-lock.json
-yarn.lock
-
 # Keys
 keys
 *.pub
