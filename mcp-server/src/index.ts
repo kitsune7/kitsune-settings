@@ -12,11 +12,13 @@ const server = new McpServer({
   },
 })
 
-server.tool('get_current_directory', 'This tool returns the current working directory', {}, async () => {
-  const cwd = (await $`pwd`).stdout.trim()
-  console.log('cwd', cwd)
-  return { content: [{ type: 'text', text: `The current working directory is ${cwd}.` }] }
-})
+// server.tool('test_tool', 'This is a test tool', {}, async () => {
+//   const cwd = $.sync`pwd`.stdout.trim()
+
+//   return {
+//     content: [{ type: 'text', text: `The current working directory is ${cwd}.` }],
+//   }
+// })
 
 server.tool(
   'commit_local_changes_for_pr',
@@ -27,8 +29,8 @@ server.tool(
     commit_message: z.string(),
   },
   async (params) => {
-    const defaultBranch = (await $`git remote show origin | sed -n '/HEAD branch/s/.*: //p'`).stdout.trim()
-    const currentBranch = (await $`git branch --show-current`).stdout.trim()
+    const defaultBranch = $.sync`git remote show origin | sed -n '/HEAD branch/s/.*: //p'`.stdout.trim()
+    const currentBranch = $.sync`git branch --show-current`.stdout.trim()
     if (defaultBranch !== currentBranch) {
       return {
         content: [

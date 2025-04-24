@@ -69,6 +69,14 @@ else
   echo "You may need to log out and log back in for the changes to take effect."
 fi
 
+# Set up kitsune-mcp server
+sudo echo "$(cat << EOF
+#!/usr/bin/env zsh
+"${SETTINGS_DIR}/mcp-server/bin/start.sh"
+EOF
+)" > /usr/local/bin/kitsune-mcp
+sudo chmod +x /usr/local/bin/kitsune-mcp
+
 $HOME/Git/kitsune-settings/sync
 
 setup-icloud-dir
