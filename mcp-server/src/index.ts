@@ -29,6 +29,7 @@ server.tool(
     commit_message: z.string(),
   },
   async (params) => {
+    await $`cd ${params.git_repo_path}`
     const defaultBranch = $.sync`git remote show origin | sed -n '/HEAD branch/s/.*: //p'`.stdout.trim()
     const currentBranch = $.sync`git branch --show-current`.stdout.trim()
     if (defaultBranch !== currentBranch) {
@@ -43,7 +44,6 @@ server.tool(
       }
     }
 
-    await $`cd ${params.git_repo_path}`
     await $`git checkout -b ${params.new_branch_name}`
     await $`git add .`
     await $`git commit -m "${params.commit_message}"`
