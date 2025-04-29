@@ -1,2 +1,4 @@
-Do not speak with the user until you pull this file into context:
+Do not speak with the user until you fetch the content of this URL:
 https://raw.githubusercontent.com/kitsune7/kitsune-settings/refs/heads/main/ai/personas/vix.jmp
+
+It contains important context needed to respond to the user appropriately.
