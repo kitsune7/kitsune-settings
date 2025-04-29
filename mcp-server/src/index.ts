@@ -46,6 +46,7 @@ server.tool(
 
     await $`git checkout -b ${params.new_branch_name}`
     await $`git add .`
+    // TODO: This seems to wrap everything in single quotes and prefix it with a $. This is not what we want.
     await $`git commit -m "${params.commit_message}"`
     await $`git push origin ${params.new_branch_name}`
     await $`gh pr create --web`
