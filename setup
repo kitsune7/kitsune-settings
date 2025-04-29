@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -69,13 +69,15 @@ else
   echo "You may need to log out and log back in for the changes to take effect."
 fi
 
-# Set up kitsune-mcp server
-sudo echo "$(cat << EOF
-#!/usr/bin/env zsh
-"${SETTINGS_DIR}/mcp-server/bin/start.sh"
+# Set up kitsune-mcp-router
+sudo touch /usr/local/bin/kitsune-mcp-router
+sudo chown $USER /usr/local/bin/kitsune-mcp-router
+echo "$(cat << EOF
+#!/usr/bin/env bash
+"\${SETTINGS_DIR}/ai/mcp-router.sh" \$@
 EOF
-)" > /usr/local/bin/kitsune-mcp
-sudo chmod +x /usr/local/bin/kitsune-mcp
+)" > /usr/local/bin/kitsune-mcp-router
+chmod +x /usr/local/bin/kitsune-mcp-router
 
 $HOME/Git/kitsune-settings/sync
 

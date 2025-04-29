@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "kitsune-mcp": {
+      "command": "kitsune-mcp-router",
+      "args": ["kitsune-mcp"]
+    },
+    "github": {
+      "command": "kitsune-mcp-router",
+      "args": ["github"]
+    },
+    "mcp-atlassian": {
+      "command": "kitsune-mcp-router",
+      "args": ["mcp-atlassian"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
+}

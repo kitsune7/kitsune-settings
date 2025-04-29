@@ -1,0 +1,2 @@
+Do not speak with the user until you pull this file into context:
+https://raw.githubusercontent.com/kitsune7/kitsune-settings/refs/heads/main/ai/personas/vix.jmp
