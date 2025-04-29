@@ -16,7 +16,7 @@
   message.
 - If there's a Jira ticket associated with the local changes, prefix the name of the branch with the Jira ticket (i.e.
   "PI-12345")
-- Use kebab-case for the branch name
+- Use kebab-case for the branch name.
 - Don't include the Jira ticket's ID in the commit message. The commit message should primarily focus on what changed
   locally while keeping in mind _why_ it was changed.
 - Analyze the provided details to identify potential gaps or areas requiring further clarification.
