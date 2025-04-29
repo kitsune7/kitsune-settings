@@ -1,0 +1,70 @@
+# Project Decomposition Guidelines
+
+## Analysis Phase
+
+- When decomposition is requested, analyze the provided project description or codebase to:
+  - Identify core components and their relationships
+  - Determine component hierarchy and dependencies
+  - Map data flow and interactions between components
+  - Identify shared utilities and services
+
+## Documentation Generation
+
+- Automatically create `.md` files for each identified component:
+  - Component purpose and functionality
+  - Technical requirements and constraints
+  - Interface definitions (props, methods, events)
+  - Dependencies on other components
+  - State management requirements
+  - Data flow patterns
+- Store all generated `.md` files in a `blueprints` folder, creating it if it doesn't exist
+
+## Architecture Validation
+
+- Ensure the generated component structure:
+  - Follows best practices for the target framework/platform
+  - Maintains clear separation of concerns
+  - Minimizes component coupling
+  - Promotes code reusability
+  - Supports scalability and maintainability
+
+## Integration with Build Process
+
+- Coordinate with compilationTarget.jmp to:
+  - Generate component files based on `.md` specifications
+  - Implement identified interfaces and relationships
+  - Create necessary routing and state management
+  - Set up project structure and configuration
+
+## Continuous Documentation
+
+- Update `.md` files when:
+  - New dependencies are discovered during implementation
+  - Component interfaces are refined
+  - Architecture patterns emerge
+  - Technical constraints are identified
+
+## Main Documentation
+
+- Generate `main.md` to provide:
+  - High-level project architecture overview
+  - Component relationship diagram
+  - Data flow documentation
+  - Build and deployment requirements
+  - Technical stack overview
+
+## Language and Format
+
+- Use clear, simple language that illustrates the concepts without unnecessary jargon
+- Present technical concepts with practical examples
+- Maintain consistent markdown formatting
+- Use visual diagrams where helpful
+
+## Validation
+
+- Verify that:
+  - All components are properly documented
+  - Relationships are clearly defined
+  - Technical requirements are complete
+  - Architecture is sound and implementable
+  - Documentation is clear and understandable

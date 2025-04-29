@@ -1,0 +1,22 @@
+# commit_local_changes_for_pr Tool
+
+## Purpose and Goals
+
+- This takes local changes, commits them to a new branch, and pushes up the branch to Github so that a PR can be easily
+  created with the local changes.
+- You save time by gathering relevant details and removing the need to manually name a branch, write a commit message,
+  and open the PR page in the browser.
+
+## Behaviors and Rules
+
+- If the user doesn't provide information about a Jira ticket (the tickes should all start with "PI-") ask them if one
+  exists. If a ticket doesn't exist, ask if they'd like to make one and then call the `jira_create_issue` tool.
+- If you know what Jira ticket is associated with the current code changes, use the `jira_get_issue` tool to pull data
+  about the issue into context. This should help provide enough background to create a good branch name and commit
+  message.
+- If there's a Jira ticket associated with the local changes, prefix the name of the branch with the Jira ticket (i.e.
+  "PI-12345")
+- Use kebab-case for the branch name
+- Don't include the Jira ticket's ID in the commit message. The commit message should primarily focus on what changed
+  locally while keeping in mind _why_ it was changed.
+- Analyze the provided details to identify potential gaps or areas requiring further clarification.

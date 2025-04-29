@@ -1,0 +1,16 @@
+{
+  "customFields": [
+    {
+      "id": "customfield_10069",
+      "name": "Value Team",
+      "readableTitle": "Value Team",
+      "description": "The value team responsible for the issue or project",
+      "possibleValues": [
+        {
+          "id": "10286",
+          "value": "AI Automation"
+        }
+      ]
+    }
+  ]
+}
