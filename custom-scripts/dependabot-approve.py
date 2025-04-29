@@ -39,6 +39,67 @@ def determine_update_type(version_string):
   else:
     return "no change"
 
+def parse_dependency_table(body):
+  """
+  Parses the dependency table from a PR description and returns a list of
+  dictionaries containing package info and version changes.
+
+  Args:
+      body (str): The PR description containing the markdown table.
+
+  Returns:
+      list: List of dictionaries with package info and version changes.
+  """
+  dependencies = []
+  
+  # Find the table in the description
+  table_lines = []
+  in_table = False
+  for line in body.split('\n'):
+    if '|' in line:
+      if '---' in line:  # Skip the header separator
+        continue
+      if 'Package' in line:  # Skip the header
+        continue
+      table_lines.append(line.strip())
+  
+  # Parse each row of the table
+  for line in table_lines:
+    # Split the line into columns and clean up
+    columns = [col.strip() for col in line.split('|')[1:-1]]
+    if len(columns) != 3:
+      continue
+    
+    package_info = {
+      'name': re.search(r'\[(.*?)\]', columns[0]).group(1) if '[' in columns[0] else columns[0],
+      'from_version': columns[1].strip('`'),
+      'to_version': columns[2].strip('`')
+    }
+    dependencies.append(package_info)
+  
+  return dependencies
+
+def check_group_update_eligibility(dependencies):
+  """
+  Checks if all dependencies in a group update are eligible for approval.
+
+  Args:
+      dependencies (list): List of dictionaries containing package info and version changes.
+
+  Returns:
+      bool: True if all updates are minor or patch, False if any are major.
+  """
+  for dep in dependencies:
+    version_string = f"from {dep['from_version']} to {dep['to_version']}"
+    try:
+      update_type = determine_update_type(version_string)
+      if update_type == "major":
+        return False
+    except ValueError as e:
+      print(f"Error determining update type for {dep['name']}: {e}")
+      return False
+  return True
+
 parser = argparse.ArgumentParser("dependabot-approve", description="Approve low-risk dependabot PRs.")
 parser.add_argument('user_or_org', help="The user/org that owns the repo")
 parser.add_argument('repo', help="The repo to check PRs for")
@@ -46,7 +107,7 @@ args = parser.parse_args()
 repo = f"{args.user_or_org}/{args.repo}"
 
 # Fetch all open Dependabot PRs
-pr_list_command = f"gh pr list --repo {repo} --search 'author:app/dependabot' --json number,title,headRefName,mergeable,reviews"
+pr_list_command = f"gh pr list --repo {repo} --search 'author:app/dependabot' --json number,title,headRefName,mergeable,reviews,body"
 pr_list_result = subprocess.run(pr_list_command, shell=True, capture_output=True, text=True)
 
 try:
@@ -61,6 +122,7 @@ eligible_prs = []
 for pr in pr_list:
   pr_number = pr['number']
   pr_title = pr['title']
+  pr_body = pr['body']
   mergeable = pr['mergeable']
   reviews = pr['reviews']
 
@@ -75,20 +137,34 @@ for pr in pr_list:
     print(f"PR #{pr_number} does not have all status checks passing. Skipping.")
     continue
 
-  # Ensure it's not a major version bump
-  try:
-    update_type = determine_update_type(pr_title)
-    if update_type == "major":
-      print(f"PR #{pr_number} is a major version bump. Skipping.")
+  # Check if this is a group update
+  is_group_update = 'group' in pr_title.lower()
+  
+  if is_group_update:
+    # Parse the dependency table and check all updates
+    dependencies = parse_dependency_table(pr_body)
+    if not dependencies:
+      print(f"PR #{pr_number} is a group update but couldn't parse dependency table. Skipping.")
       continue
-    elif update_type == "no change":
-      print(f"PR #{pr_number} does not change the version. Skipping.")
+    
+    if check_group_update_eligibility(dependencies):
+      eligible_prs.append((pr_number, pr_title))
+    else:
+      print(f"PR #{pr_number} contains major version updates in group. Skipping.")
+  else:
+    # Handle single dependency update
+    try:
+      update_type = determine_update_type(pr_title)
+      if update_type == "major":
+        print(f"PR #{pr_number} is a major version bump. Skipping.")
+        continue
+      elif update_type == "no change":
+        print(f"PR #{pr_number} does not change the version. Skipping.")
+        continue
+      eligible_prs.append((pr_number, pr_title))
+    except ValueError as e:
+      print(f"Error determining update type for PR #{pr_number}: {e}")
       continue
-  except ValueError as e:
-    print(f"Error determining update type for PR #{pr_number}: {e}")
-    continue
-
-  eligible_prs.append((pr_number, pr_title))
 
 if not eligible_prs:
   print("No eligible PRs found for approval.")
