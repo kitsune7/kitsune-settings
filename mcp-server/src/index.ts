@@ -62,6 +62,36 @@ server.tool(
   },
 )
 
+server.tool(
+  'commit_local_changes_for_pr_test',
+  'Test commiting local changes to a new branch and opening a page to create a PR',
+  {
+    git_repo_path: z.string(),
+    new_branch_name: z.string(),
+    commit_message: z.string(),
+  },
+  async (params) => {
+    $.cwd = params.git_repo_path
+    let output = ''
+    output += (await $`echo "git checkout -b ${params.new_branch_name}"`).stdout
+    output += (await $`echo "git add ."`).stdout
+    // TODO: This seems to wrap everything in single quotes and prefix it with a $. This is not what we want.
+    output += (await $`echo "git commit -m \"${params.commit_message}\""`).stdout
+    output += (await $`echo "git push origin ${params.new_branch_name}"`).stdout
+    output += (await $`echo "gh pr create --web"`).stdout
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `Created a new branch ${params.new_branch_name} and pushed the changes to it. A page has been opened in the browser to create a PR for it. Here's the output of the commands:
+          ${output}`,
+        },
+      ],
+    }
+  },
+)
+
 const transport = new StdioServerTransport()
 await server.connect(transport)
 
