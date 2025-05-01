@@ -90,6 +90,11 @@ function gnb () {
 function pr () {
   git checkout -b "$1"
   acp "$2"
+  gh pr create --web
+}
+
+function open-pr () {
+  gh pr create --web
 }
 
 function killtag () {

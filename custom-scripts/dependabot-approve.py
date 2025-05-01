@@ -14,10 +14,10 @@ def determine_update_type(version_string):
   a major, minor, or patch update.
 
   Args:
-      version_string (str): A string containing text followed by "from X.Y.Z to A.B.C".
+    version_string (str): A string containing text followed by "from X.Y.Z to A.B.C".
 
   Returns:
-      str: "major", "minor", "patch", or "no change" depending on the update type.
+    str: "major", "minor", "patch", or "no change" depending on the update type.
   """
   # Extract versions using regex
   match = re.search(r"from (\d+\.\d+\.\d+) to (\d+\.\d+\.\d+)", version_string)
@@ -45,10 +45,10 @@ def parse_dependency_table(body):
   dictionaries containing package info and version changes.
 
   Args:
-      body (str): The PR description containing the markdown table.
+    body (str): The PR description containing the markdown table.
 
   Returns:
-      list: List of dictionaries with package info and version changes.
+    list: List of dictionaries with package info and version changes.
   """
   dependencies = []
   
@@ -84,10 +84,10 @@ def check_group_update_eligibility(dependencies):
   Checks if all dependencies in a group update are eligible for approval.
 
   Args:
-      dependencies (list): List of dictionaries containing package info and version changes.
+    dependencies (list): List of dictionaries containing package info and version changes.
 
   Returns:
-      bool: True if all updates are minor or patch, False if any are major.
+    bool: True if all updates are minor or patch, False if any are major.
   """
   for dep in dependencies:
     version_string = f"from {dep['from_version']} to {dep['to_version']}"
@@ -99,6 +99,44 @@ def check_group_update_eligibility(dependencies):
       print(f"Error determining update type for {dep['name']}: {e}")
       return False
   return True
+
+def get_pr_notifications(repo):
+  """
+  Gets a list of notifications related to the specified repository.
+  
+  Args:
+    repo (str): The repository in the format "owner/repo".
+  
+  Returns:
+    list: A list of notifications for the repository.
+  """
+  cmd = f"gh api /notifications --jq '.[] | select(.repository.full_name == \"{repo}\")'"
+  result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+  
+  notifications = []
+  for line in result.stdout.strip().split('\n'):
+    if line:
+      try:
+        notification = json.loads(line)
+        notifications.append(notification)
+      except json.JSONDecodeError:
+        continue
+  
+  return notifications
+
+def mark_notification_as_done(thread_id):
+  """
+  Marks a notification thread as done.
+  
+  Args:
+    thread_id (str): The ID of the notification thread.
+  
+  Returns:
+    bool: True if successfully marked as done, False otherwise.
+  """
+  cmd = f"gh api -X DELETE /notifications/threads/{thread_id}"
+  result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+  return result.returncode == 0
 
 parser = argparse.ArgumentParser("dependabot-approve", description="Approve low-risk dependabot PRs.")
 parser.add_argument('user_or_org', help="The user/org that owns the repo")
@@ -179,7 +217,23 @@ if response.lower() != 'y':
   print("Operation cancelled.")
   exit(0)
 
+# Fetch notifications for the repo
+notifications = get_pr_notifications(repo)
+
 for pr_number, pr_title in eligible_prs:
+  # Approve PR
   approve_command = f"gh pr review {pr_number} --repo {repo} --approve"
   subprocess.run(approve_command, shell=True)
   print(f"Approved PR #{pr_number}: {pr_title}")
+  
+  # Find and mark notifications for this PR as done
+  pr_url_suffix = f"pull/{pr_number}"
+  for notification in notifications:
+    if (notification.get('subject', {}).get('url', '').endswith(pr_url_suffix) or 
+        notification.get('subject', {}).get('title', '') == pr_title):
+      thread_id = notification.get('id')
+      if thread_id:
+        if mark_notification_as_done(thread_id):
+          print(f"Marked notification for PR #{pr_number} as done.")
+        else:
+          print(f"Failed to mark notification for PR #{pr_number} as done.")
