@@ -6,10 +6,15 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Load all .zsh files from .local-scripts directory
 if [ -d "$HOME/.local-scripts" ]; then
-    for file in "$HOME"/.local-scripts/*.zsh; do
-        [ -r "$file" ] && source "$file"
-    done
-    unset file
+  for file in "$HOME"/.local-scripts/*.zsh; do
+    [ -r "$file" ] && source "$file"
+  done
+  unset file
+fi
+
+# Configure shell for rust when installed
+if [ -d "$HOME/.cargo"]; then
+  source "$HOME/.cargo/env"
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
