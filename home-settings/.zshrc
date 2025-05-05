@@ -13,7 +13,7 @@ if [ -d "$HOME/.local-scripts" ]; then
 fi
 
 # Configure shell for rust when installed
-if [ -d "$HOME/.cargo"]; then
+if [ -d "$HOME/.cargo" ]; then
   source "$HOME/.cargo/env"
 fi
 
