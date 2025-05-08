@@ -16,7 +16,7 @@ case "$1" in
     ;;
   "github")
     echo "Github token: $GITHUB_PERSONAL_ACCESS_TOKEN"
-    docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN -e GITHUB_DYNAMIC_TOOLSETS=1 ghcr.io/github/github-mcp-server
+    docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server
     ;;
   "mcp-atlassian")
     docker run -i --rm -e JIRA_URL=$JIRA_URL -e JIRA_USERNAME=$JIRA_USERNAME -e JIRA_API_TOKEN=$JIRA_API_TOKEN -e JIRA_PROJECTS_FILTER=$JIRA_PROJECTS_FILTER ghcr.io/sooperset/mcp-atlassian:latest
