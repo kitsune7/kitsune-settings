@@ -17,3 +17,8 @@ function new-ssh-key () {
 function dependabot-approve () {
   "${SETTINGS_DIR}/custom-scripts/dependabot-approve.py" "$@"
 }
+
+alias pn="process-notifications"
+function process-notifications () {
+  "${SETTINGS_DIR}/custom-scripts/process-notifications.py" "$@"
+}
