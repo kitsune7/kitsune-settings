@@ -212,7 +212,8 @@ print("\nThe following PRs are eligible for approval:")
 for pr_number, pr_title in eligible_prs:
   print(f"PR #{pr_number}: {pr_title}")
 
-response = input("\nWould you like to approve these PRs? (y/N): ")
+print("\nWould you like to approve these PRs? (y/N): ", end='', flush=True)
+response = input()
 if response.lower() != 'y':
   print("Operation cancelled.")
   exit(0)
