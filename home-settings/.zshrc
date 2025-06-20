@@ -88,6 +88,11 @@ export MANPATH="${MANPATH-$(manpath)}:$NPM_PACKAGES/share/man"
 # pnpm setup
 PNPM_HOME="$HOME/Library/pnpm"
 
+# Go setup
+if [ -d "$HOME/go" ]; then
+  export PATH=$PATH:$(go env GOPATH)/bin
+fi
+
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
