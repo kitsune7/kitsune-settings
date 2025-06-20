@@ -90,7 +90,8 @@ PNPM_HOME="$HOME/Library/pnpm"
 
 # Go setup
 if [ -d "$HOME/go" ]; then
-  export PATH=$PATH:$(go env GOPATH)/bin
+  export GOPATH=$(go env GOPATH)
+  export PATH=$PATH:$GOPATH/bin
 fi
 
 # bun completions
