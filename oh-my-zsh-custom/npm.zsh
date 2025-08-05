@@ -1,8 +1,37 @@
 alias start="npm start"
-alias dev="npm run dev"
-alias sb="npm run storybook"
-alias update="npm update --save"
 alias outdated="npm outdated"
+
+function dev () {
+  if [ -f "pnpm-lock.yaml" ]; then
+    pnpm dev
+  else
+    npm run dev
+  fi
+}
+
+function sb () {
+  if [ -f "pnpm-lock.yaml" ]; then
+    pnpm storybook
+  else
+    npm run storybook
+  fi
+}
+
+function update () {
+  if [ -f "pnpm-lock.yaml" ]; then
+    pnpm update --save
+  else
+    npm update --save
+  fi
+}
+
+function update-pnpm () {
+  npm install -g pnpm@latest
+}
+
+function update-npm () {
+  npm install -g npm@latest
+}
 
 function findPackageJson () {
   find . -name package.json -not \( -path "*/node_modules*" -prune \) -not \( -path "*/dist*" -prune \)
