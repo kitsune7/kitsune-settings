@@ -15,6 +15,7 @@ brew install jq
 brew install go
 brew install gh
 brew install uv
+brew install fzf
 brew install --cask raycast
 brew install --cask warp
 brew install --cask obsidian
