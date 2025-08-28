@@ -22,3 +22,8 @@ alias pn="process-notifications"
 function process-notifications () {
   "${SETTINGS_DIR}/custom-scripts/process-notifications.py" "$@"
 }
+
+alias prr="prs-reviewed"
+function prs-reviewed () {
+  gh search prs --reviewed-by @me --review approved --updated "$(date +%F)" | wc -l
+}
