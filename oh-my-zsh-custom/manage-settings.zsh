@@ -5,8 +5,8 @@ alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias sync="${SETTINGS_DIR}/sync"
 
 function save () {
-  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
   sync
+  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
   reload
 }
 
