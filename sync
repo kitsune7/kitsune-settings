@@ -46,11 +46,24 @@ function sync-newest () {
   file1="$1"
   file2="$2"
 
-  # Copy from file1 to file2 if file1 is newer
-  rsync -u "$file1" "$file2" 2>/dev/null
-
-  # Copy from file2 to file1 if file2 is newer
-  rsync -u "$file2" "$file1" 2>/dev/null
+  if [[ ! -e "$file1" ]] && [[ ! -e "$file2" ]]; then
+    echo "Neither file exists"
+    return 1
+  elif [[ ! -e "$file1" ]]; then
+    cp "$file2" "$file1"
+    echo "Copied $file2 to $file1 (file1 didn't exist)"
+  elif [[ ! -e "$file2" ]]; then
+    cp "$file1" "$file2"
+    echo "Copied $file1 to $file2 (file2 didn't exist)"
+  elif [[ "$file1" -nt "$file2" ]]; then
+    cp "$file1" "$file2"
+    echo "Copied newer $file1 to $file2"
+  elif [[ "$file2" -nt "$file1" ]]; then
+    cp "$file2" "$file1"
+    echo "Copied newer $file2 to $file1"
+  else
+    echo "Files are already in sync"
+  fi
 }
 
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
