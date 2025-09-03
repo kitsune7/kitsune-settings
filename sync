@@ -47,8 +47,8 @@ currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 copyFiles "$currentDir/home-settings" "$HOME"
 copyFiles "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
 copyFiles "$currentDir/other-settings/.claude" "$HOME/.claude"
+copyFiles "$currentDir/other-settings/zed" "$HOME/.config/zed"
 rsync -a --progress "$currentDir/other-settings/com.googlecode.iterm2.plist" "${HOME}/Library/Preferences"
-rsync -a --progress "$currentDir/other-settings/mcp.json" "$HOME/.cursor/mcp.json"
 
 log "Finished syncing settings"
 exit 0

@@ -1,0 +1,137 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "context_servers": {
+    "mcp-server-context7": {
+      "source": "extension",
+      "enabled": true,
+      "settings": {
+        "default_minimum_tokens": "10000"
+      }
+    },
+    "github": {
+      "source": "custom",
+      "enabled": true,
+      "command": "kitsune-mcp-router",
+      "args": ["github"]
+    }
+  },
+  "format_on_save": "prettier",
+  "languages": {
+    "JavaScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      }
+    },
+    "TypeScript": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      }
+    },
+    "TSX": {
+      "code_actions_on_format": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+      }
+    }
+  },
+  "buffer_font_features": {
+    "calt": false // Disable ligatures
+  },
+  "title_bar": {
+    "show_sign_in": false
+  },
+  "features": {
+    "edit_prediction_provider": "copilot"
+  },
+  "agent": {
+    "default_profile": "research",
+    "enable_feedback": false,
+    "profiles": {
+      "research": {
+        "name": "Research",
+        "tools": {
+          "thinking": true,
+          "read_file": true,
+          "project_notifications": true,
+          "open": true,
+          "now": true,
+          "list_directory": true,
+          "grep": true,
+          "find_path": true,
+          "fetch": true,
+          "diagnostics": true,
+          "copy_path": true
+        },
+        "enable_all_context_servers": false,
+        "context_servers": {
+          "mcp-server-context7": {
+            "tools": {
+              "resolve-library-id": true,
+              "get-library-docs": true
+            }
+          }
+        }
+      },
+      "github": {
+        "name": "Github",
+        "tools": {},
+        "enable_all_context_servers": false,
+        "context_servers": {
+          "github": {
+            "tools": {
+              "list_notifications": true,
+              "add_pull_request_review_comment_to_pending_review": true,
+              "search_repositories": true,
+              "search_code": true,
+              "get_pull_request_diff": true,
+              "get_pull_request_files": true,
+              "get_pull_request_comments": true,
+              "get_pull_request": true,
+              "get_notification_details": true,
+              "dismiss_notification": false,
+              "create_branch": false
+            }
+          }
+        }
+      }
+    },
+    "default_model": {
+      "provider": "google",
+      "model": "gemini-2.5-pro"
+    },
+    "play_sound_when_agent_done": true,
+    "use_modifier_to_send": true
+  },
+  "preview_tabs": {
+    "enabled": false
+  },
+  "linked_edits": true,
+  "tab_size": 2,
+  "minimap": {
+    "show": "auto"
+  },
+  "base_keymap": "VSCode",
+  "project_panel": {
+    "auto_reveal_entries": false
+  },
+  "telemetry": {
+    "metrics": false
+  },
+  "icon_theme": "VSCode Icons (Dark)",
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "One Dark"
+  }
+}

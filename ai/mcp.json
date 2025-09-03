@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "kitsune-mcp": {
-      "command": "kitsune-mcp-router",
-      "args": ["kitsune-mcp"]
-    },
     "github": {
       "command": "kitsune-mcp-router",
       "args": ["github"]

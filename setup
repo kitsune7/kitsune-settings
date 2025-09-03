@@ -18,6 +18,7 @@ brew install uv
 brew install fzf
 brew install aichat
 brew install --cask raycast
+brew install --cask zed
 brew install --cask warp
 brew install --cask obsidian
 
@@ -56,26 +57,29 @@ then
 else
   echo "Adding Dvorak keyboard layout..."
   defaults write com.apple.HIToolbox AppleInputSourceHistory -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>16777219</integer><key>KeyboardLayout Name</key><string>Dvorak</string></dict>'
-  
+
   # Update enabled input sources
   defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>16777219</integer><key>KeyboardLayout Name</key><string>Dvorak</string></dict>'
-  
+
   # Restart the system preferences daemon
   killall cfprefsd
-  
+
   echo "Dvorak keyboard layout has been added."
   echo "You may need to log out and log back in for the changes to take effect."
 fi
 
 # Set up kitsune-mcp-router
-sudo touch /usr/local/bin/kitsune-mcp-router
-sudo chown $USER /usr/local/bin/kitsune-mcp-router
-echo "$(cat << EOF
-#!/usr/bin/env bash
-"\${SETTINGS_DIR}/ai/mcp-router.sh" \$@
-EOF
-)" > /usr/local/bin/kitsune-mcp-router
-chmod +x /usr/local/bin/kitsune-mcp-router
+if [ ! -f /usr/local/bin/kitsune-mcp-router ]
+then
+  sudo touch /usr/local/bin/kitsune-mcp-router
+  sudo chown $USER /usr/local/bin/kitsune-mcp-router
+  echo "$(cat << EOF
+  #!/usr/bin/env bash
+  "\${SETTINGS_DIR}/ai/mcp-router.sh" \$@
+  EOF
+  )" > /usr/local/bin/kitsune-mcp-router
+  chmod +x /usr/local/bin/kitsune-mcp-router
+fi
 
 $HOME/Git/kitsune-settings/sync
 

@@ -5,9 +5,9 @@ function new-ssh-key () {
   then
     touch "~/.ssh/config"
   fi
-  echo "Host github.com\nAddKeysToAgent yes\nIdentityFile ~/.ssh/id_ed25519"
+  echo "Host github.com\n  AddKeysToAgent yes\n  IdentityFile ~/.ssh/id_ed25519" > ~/.ssh/config
   ssh-add --apple-use-keychain ~/.ssh/id_ed25519
-  
+
   pbcopy < ~/.ssh/id_ed25519.pub
   echo "Public key copied to clipboard!"
   echo "You can go ahead and add this new key to Github."

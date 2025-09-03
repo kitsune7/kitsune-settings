@@ -1,10 +1,12 @@
-alias edit="code ${SETTINGS_DIR}"
+editor="zed"
+
+alias edit="${editor} ${SETTINGS_DIR}"
 alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias sync="${SETTINGS_DIR}/sync"
 
 function save () {
-  rsync -a "${HOME}/Library/Preferences/com.googlecode.iterm2.plist" "${SETTINGS_DIR}/other-settings"
   save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
+  sync
   reload
 }
 
@@ -64,7 +66,7 @@ function save-local () {
 }
 
 function edit-local () {
-  code "${HOME}/.local-scripts"
+  "${editor}" "${HOME}/.local-scripts"
 }
 
 function restore-local () {

@@ -74,3 +74,6 @@ dist/
 
 # Mac files
 *.DS_Store
+
+# Zed
+.ropeproject

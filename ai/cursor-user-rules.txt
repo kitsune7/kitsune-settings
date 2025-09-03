@@ -1,2 +1,0 @@
-Do not speak with the user until you use the `fetch` tool to bring this into context:
-https://raw.githubusercontent.com/kitsune7/kitsune-settings/refs/heads/main/ai/personas/vix.jmp
