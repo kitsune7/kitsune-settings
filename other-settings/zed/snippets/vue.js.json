@@ -1,0 +1,26 @@
+{
+  "Vue Component": {
+    "prefix": "vcomponent",
+    "body": [
+      "<script setup lang=\"ts\">",
+      "",
+      "</script>",
+      "",
+      "<template>",
+      "  <p>$1</p>",
+      "</template>"
+    ]
+  },
+  "Vue Script": {
+    "prefix": "vscript",
+    "body": ["<script setup lang=\"ts\">", "$1", "</script>"]
+  },
+  "Vue Template": {
+    "prefix": "vtemplate",
+    "body": ["<template>", "  <div>", "    $1", "  </div>", "</template>"]
+  },
+  "Vue Style": {
+    "prefix": "vstyle",
+    "body": ["<style scoped>", "  $1", "</style>"]
+  }
+}

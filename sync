@@ -33,7 +33,7 @@ function getCpOptions () {
   [[ $options != '-' ]] && echo "$options"
 }
 
-function copyFiles () {
+function copy_files () {
   srcDir=$1
   destDir=$2
   for i in "$srcDir"/*; do
@@ -42,37 +42,62 @@ function copyFiles () {
   done
 }
 
-function sync-newest () {
+function sync_newest () {
   file1="$1"
   file2="$2"
 
-  if [[ ! -e "$file1" ]] && [[ ! -e "$file2" ]]; then
-    echo "Neither file exists"
-    return 1
-  elif [[ ! -e "$file1" ]]; then
-    cp "$file2" "$file1"
-    echo "Copied $file2 to $file1 (file1 didn't exist)"
-  elif [[ ! -e "$file2" ]]; then
-    cp "$file1" "$file2"
-    echo "Copied $file1 to $file2 (file2 didn't exist)"
-  elif [[ "$file1" -nt "$file2" ]]; then
-    cp "$file1" "$file2"
-    echo "Copied newer $file1 to $file2"
-  elif [[ "$file2" -nt "$file1" ]]; then
-    cp "$file2" "$file1"
-    echo "Copied newer $file2 to $file1"
-  else
-    echo "Files are already in sync"
+  # Copy from file1 to file2 if file1 is newer
+  rsync -u "$file1" "$file2" 2>/dev/null
+
+  # Copy from file2 to file1 if file2 is newer
+  rsync -u "$file2" "$file1" 2>/dev/null
+}
+
+function sync_dirs () {
+  dir1="$1"
+  dir2="$2"
+
+  # Get relative paths of all files and directories from both directories
+  all_files=$( (cd "$dir1" 2>/dev/null && find . -print) && (cd "$dir2" 2>/dev/null && find . -print) | sort -u)
+
+  if [[ -z "$all_files" ]]; then
+    log "No files found in either directory to sync."
+    return
   fi
+
+  # Loop through each unique path
+  for relative_path in $all_files; do
+    # The find command includes '.' for the directory itself, skip it.
+    if [[ "$relative_path" == "." ]]; then
+      continue
+    fi
+
+    file1="$dir1/$relative_path"
+    file2="$dir2/$relative_path"
+
+    # If it's a directory, we don't need to sync it with sync_newest,
+    # as we are handling files directly. We just need to make sure it exists
+    # on the other side if it doesn't.
+    if [[ -d "$file1" ]] && [[ ! -e "$file2" ]]; then
+      mkdir -p "$file2"
+      log "Created directory $file2"
+    elif [[ -d "$file2" ]] && [[ ! -e "$file1" ]]; then
+      mkdir -p "$file1"
+      log "Created directory $file1"
+    elif [[ -f "$file1" ]] || [[ -f "$file2" ]]; then
+      # It's a file, so sync the newest version.
+      sync_newest "$file1" "$file2"
+    fi
+  done
 }
 
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-copyFiles "$currentDir/home-settings" "$HOME"
-copyFiles "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
-copyFiles "$currentDir/other-settings/.claude" "$HOME/.claude"
-sync-newest "$currentDir/other-settings/zed/settings.json" "$HOME/.config/zed/settings.json"
-sync-newest "$currentDir/other-settings/zed/snippets" "$HOME/.config/zed/snippets"
+copy_files "$currentDir/home-settings" "$HOME"
+copy_files "$currentDir/oh-my-zsh-custom" "$HOME/.oh-my-zsh/custom"
+copy_files "$currentDir/other-settings/.claude" "$HOME/.claude"
+sync_newest "$currentDir/other-settings/zed/settings.json" "$HOME/.config/zed/settings.json"
+sync_dirs "$currentDir/other-settings/zed/snippets" "$HOME/.config/zed/snippets"
 rsync -a --progress "$currentDir/other-settings/com.googlecode.iterm2.plist" "${HOME}/Library/Preferences"
 
 log "Finished syncing settings"
