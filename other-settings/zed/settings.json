@@ -105,8 +105,8 @@
       }
     },
     "default_model": {
-      "provider": "google",
-      "model": "gemini-2.5-pro"
+      "provider": "copilot_chat",
+      "model": "gpt-5"
     },
     "play_sound_when_agent_done": true,
     "use_modifier_to_send": true
