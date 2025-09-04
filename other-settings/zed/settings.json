@@ -7,6 +7,26 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  // Remove the < > buttons from the tab bar
+  "tab_bar": {
+    "show": true,
+    "show_nav_history_buttons": false
+  },
+
+  // Show file type icons in the tab bar. Also color them according to the
+  // git status.
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+
+  // Decrease the horizontal indent size of files & folders in the project
+  // panel to avoid horizontal scrolling
+  "project_panel": {
+    "indent_size": 16,
+    "auto_reveal_entries": false
+  },
+
   "context_servers": {
     "mcp-server-context7": {
       "source": "extension",
@@ -22,6 +42,7 @@
       "args": ["github"]
     }
   },
+
   "format_on_save": "prettier",
   "languages": {
     "JavaScript": {
@@ -41,6 +62,14 @@
         "source.fixAll.eslint": true,
         "source.organizeImports": true
       }
+    },
+    "Markdown": {
+      // Wrap text according to the previously defined preferred line length.
+      "soft_wrap": "preferred_line_length",
+
+      // do not remove any trailing whitespace since line breaks in
+      // lists (without adding a new punctuation) rely on whitespaces.
+      "remove_trailing_whitespace_on_save": false
     }
   },
   "buffer_font_features": {
@@ -120,9 +149,6 @@
     "show": "auto"
   },
   "base_keymap": "VSCode",
-  "project_panel": {
-    "auto_reveal_entries": false
-  },
   "telemetry": {
     "metrics": false
   },
