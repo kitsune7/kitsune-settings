@@ -12,21 +12,18 @@
     "show": true,
     "show_nav_history_buttons": false
   },
-
   // Show file type icons in the tab bar. Also color them according to the
   // git status.
   "tabs": {
     "file_icons": true,
     "git_status": true
   },
-
   // Decrease the horizontal indent size of files & folders in the project
   // panel to avoid horizontal scrolling
   "project_panel": {
     "indent_size": 16,
     "auto_reveal_entries": false
   },
-
   "context_servers": {
     "mcp-server-context7": {
       "source": "extension",
@@ -42,22 +39,49 @@
       "args": ["github"]
     }
   },
-
-  "format_on_save": "prettier",
   "languages": {
+    "Python": {
+      "formatter": "language_server",
+      "format_on_save": "on"
+    },
+    "Rust": {
+      "formatter": "language_server",
+      "format_on_save": "on"
+    },
     "JavaScript": {
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "format_on_save": "on",
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.organizeImports": true
       }
     },
     "TypeScript": {
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "format_on_save": "on",
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.organizeImports": true
       }
     },
     "TSX": {
+      "formatter": {
+        "external": {
+          "command": "prettier",
+          "arguments": ["--stdin-filepath", "{buffer_path}"]
+        }
+      },
+      "format_on_save": "on",
       "code_actions_on_format": {
         "source.fixAll.eslint": true,
         "source.organizeImports": true
@@ -66,7 +90,6 @@
     "Markdown": {
       // Wrap text according to the previously defined preferred line length.
       "soft_wrap": "preferred_line_length",
-
       // do not remove any trailing whitespace since line breaks in
       // lists (without adding a new punctuation) rely on whitespaces.
       "remove_trailing_whitespace_on_save": false
