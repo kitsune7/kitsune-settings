@@ -22,8 +22,8 @@ brew install --cask zed
 brew install --cask warp
 brew install --cask obsidian
 
-# Install Claude Code
-curl -fsSL https://claude.ai/install.sh | bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 if [ ! -d "$HOME/.local-scripts" ]
 then
