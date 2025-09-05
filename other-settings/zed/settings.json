@@ -7,38 +7,51 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
-  // Remove the < > buttons from the tab bar
+  "telemetry": {
+    "metrics": false
+  },
+
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "VSCode Dark Modern"
+  },
+  "icon_theme": "VSCode Icons (Dark)",
+  "ui_font_size": 14,
+  "base_keymap": "VSCode",
+
+  "title_bar": {
+    "show_sign_in": false
+  },
   "tab_bar": {
     "show": true,
-    "show_nav_history_buttons": false
+    "show_nav_history_buttons": false // Remove the < > buttons from the tab bar
   },
-  // Show file type icons in the tab bar. Also color them according to the
-  // git status.
+  // Show file type icons in the tab bar. Also color them according to the git status.
   "tabs": {
     "file_icons": true,
     "git_status": true
   },
-  // Decrease the horizontal indent size of files & folders in the project
-  // panel to avoid horizontal scrolling
+  "preview_tabs": {
+    "enabled": false
+  },
+
   "project_panel": {
     "indent_size": 16,
-    "auto_reveal_entries": false
+    "auto_reveal_entries": true
   },
-  "context_servers": {
-    "mcp-server-context7": {
-      "source": "extension",
-      "enabled": true,
-      "settings": {
-        "default_minimum_tokens": "10000"
-      }
-    },
-    "github": {
-      "source": "custom",
-      "enabled": true,
-      "command": "kitsune-mcp-router",
-      "args": ["github"]
-    }
+
+  "buffer_font_size": 12,
+  "buffer_font_features": {
+    "calt": false // Disable ligatures
   },
+  "linked_edits": true, // Edit open and closing HTML tags at the same time
+  "tab_size": 2,
+
+  "minimap": {
+    "show": "auto"
+  },
+
   "languages": {
     "Python": {
       "formatter": "language_server",
@@ -95,14 +108,25 @@
       "remove_trailing_whitespace_on_save": false
     }
   },
-  "buffer_font_features": {
-    "calt": false // Disable ligatures
-  },
-  "title_bar": {
-    "show_sign_in": false
-  },
+
+  /* AI settings */
   "features": {
     "edit_prediction_provider": "copilot"
+  },
+  "context_servers": {
+    "mcp-server-context7": {
+      "source": "extension",
+      "enabled": true,
+      "settings": {
+        "default_minimum_tokens": "10000"
+      }
+    },
+    "github": {
+      "source": "custom",
+      "enabled": true,
+      "command": "kitsune-mcp-router",
+      "args": ["github"]
+    }
   },
   "agent": {
     "default_profile": "research",
@@ -162,25 +186,5 @@
     },
     "play_sound_when_agent_done": true,
     "use_modifier_to_send": true
-  },
-  "preview_tabs": {
-    "enabled": false
-  },
-  "linked_edits": true,
-  "tab_size": 2,
-  "minimap": {
-    "show": "auto"
-  },
-  "base_keymap": "VSCode",
-  "telemetry": {
-    "metrics": false
-  },
-  "icon_theme": "VSCode Icons (Dark)",
-  "ui_font_size": 14,
-  "buffer_font_size": 12,
-  "theme": {
-    "mode": "dark",
-    "light": "One Light",
-    "dark": "VSCode Dark Modern"
   }
 }
