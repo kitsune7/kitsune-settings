@@ -6,7 +6,7 @@ alias py-run="python3 src/main.py"
 
 function create-py () {
   projectName=$1
-  
+
   mkdir $projectName
   cd $projectName
   python3 -m venv venv

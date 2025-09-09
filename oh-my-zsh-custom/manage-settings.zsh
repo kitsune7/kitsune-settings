@@ -1,4 +1,4 @@
-editor="zed"
+editor="code"
 
 alias edit="${editor} ${SETTINGS_DIR}"
 alias reload="${SETTINGS_DIR}/sync; exec zsh"
