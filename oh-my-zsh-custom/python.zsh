@@ -9,10 +9,7 @@ function create-py () {
 
   mkdir $projectName
   cd $projectName
-  python3 -m venv venv
-  source venv/bin/activate
-  python3 -m pip install --upgrade pip
-  python3 -m pip --version
+  venv
 
   git init
   echo "# $projectName" >> README.md
@@ -20,4 +17,14 @@ function create-py () {
   touch src/main.py
 
   code .
+}
+
+function venv () {
+  if [ ! -d "venv" ]; then
+    echo "No virtual environment found. Creating one..."
+    python3 -m venv venv
+    python3 -m pip install --upgrade pip
+    python3 -m pip --version
+  fi
+  source venv/bin/activate
 }

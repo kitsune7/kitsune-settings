@@ -1,6 +1,4 @@
-editor="code"
-
-alias edit="${editor} ${SETTINGS_DIR}"
+alias edit="code ${SETTINGS_DIR}"
 alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias sync="${SETTINGS_DIR}/sync"
 
@@ -66,7 +64,7 @@ function save-local () {
 }
 
 function edit-local () {
-  "${editor}" "${HOME}/.local-scripts"
+  "code "${HOME}/.local-scripts"
 }
 
 function restore-local () {

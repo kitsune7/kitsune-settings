@@ -38,7 +38,7 @@ function clone () {
   fi
 
   git clone "$1" && cd "$(basename "$1" .git)"
-  zed .
+  code .
 }
 
 function pullhead () {
