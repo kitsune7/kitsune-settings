@@ -36,9 +36,9 @@ function clone () {
   else
     mkdir "${HOME}/Git" && cd "${HOME}/Git"
   fi
-  
+
   git clone "$1" && cd "$(basename "$1" .git)"
-  code .
+  zed .
 }
 
 function pullhead () {
@@ -52,7 +52,7 @@ function pullhead () {
 
   if test "$(git status --porcelain)"; then
     git stash save 'Auto-stash before pull'
-    
+
     checkoutMainBranch
     git branch -D "$WORKING_BRANCH"
     git pull
