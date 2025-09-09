@@ -73,7 +73,7 @@ function restore-local () {
 
 function setup-icloud-dir () {
   if [ -z "${ICLOUD_DIR}" ]; then
-    echo "${ICLOUD_DIR} doesn't exist yet."
+    echo "${ICLOUD_DIR} doesn\'t exist yet."
     echo "Log into iCloud and then run \`setup-icloud-dir\` again."
     return 1
   fi
