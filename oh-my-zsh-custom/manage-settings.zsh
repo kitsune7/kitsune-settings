@@ -64,7 +64,7 @@ function save-local () {
 }
 
 function edit-local () {
-  "code "${HOME}/.local-scripts"
+  code "${HOME}/.local-scripts"
 }
 
 function restore-local () {
