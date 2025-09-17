@@ -1,14 +1,5 @@
 alias inspect-mcp="npx @modelcontextprotocol/inspector kitsune-mcp"
 
-alias copilot-api="npx copilot-api@latest start --port 4141"
-alias copilot-api-claude='copilot-api --claude-code'
-alias co='copilot-api'
-alias cl='claude'
-alias claude-sonnet='ANTHROPIC_MODEL=claude-sonnet-4 claude'
-alias claude-gemini='ANTHROPIC_MODEL=gemini-2.5-pro claude'
-alias claude-opus='ANTHROPIC_MODEL=claude-opus-41 claude'
-alias claude-gpt='ANTHROPIC_MODEL=gpt-5 claude'
-
 # Configurable aichat command variables
 AI_CHAT_COMMAND=$(which aichat 2>/dev/null)
 AI_EXECUTE=("$AI_CHAT_COMMAND" "-e")
@@ -31,7 +22,7 @@ explain:() {
 
 # ZLE widget: send current buffer to aichat and replace with result
 _aichat_zsh() {
-    
+
     if [[ -n "$BUFFER" ]]; then
         local _old=$BUFFER
         BUFFER+="⌛"
@@ -83,7 +74,7 @@ _ai_commit_msg_zsh() {
     [[ -n "$modified_files" ]]  && fzf_display_list+=$(echo "$modified_files"  | sed 's/^/M: /')$'\n'
     [[ -n "$untracked_files" ]] && fzf_display_list+=$(echo "$untracked_files" | sed 's/^/U: /')$'\n'
     [[ -n "$deleted_files" ]]   && fzf_display_list+=$(echo "$deleted_files"   | sed 's/^/D: /')$'\n'
-    
+
     # Sort unique entries, remove blank lines.
     fzf_display_list=$(echo -e "${fzf_display_list}" | grep . | sort -u)
 
@@ -102,9 +93,9 @@ _ai_commit_msg_zsh() {
     if command -v fzf >/dev/null 2>&1; then
         local fzf_input_string
         fzf_input_string="All files (select this to include all listed files)\n$fzf_display_list"
-        
+
         files_string=$(echo -e "$fzf_input_string" | fzf -m --prompt="Select files for commit (S:Staged M:Modified U:Untracked D:Deleted): " --header="TAB to select, ENTER to confirm")
-        
+
         if [[ -z "$files_string" ]]; then
            BUFFER="" # Clear hourglass
            zle -I && zle redisplay
@@ -173,7 +164,7 @@ _ai_commit_msg_zsh() {
 
     # Default 'git diff' is unstaged changes in working dir vs index.
     # Use the array expansion "${files_array[@]}"
-    
+
     # Run git diff from the repository root
     changes=$(git -C "$repo_root" diff --cached -- "${files_array[@]}")
     added_files=$(git -C "$repo_root" diff --cached --name-only --diff-filter=A -- "${files_array[@]}") # Ensure diff is also scoped
