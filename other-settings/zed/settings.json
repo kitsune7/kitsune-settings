@@ -129,7 +129,7 @@
     }
   },
   "agent": {
-    "default_profile": "research",
+    "default_profile": "write",
     "enable_feedback": false,
     "profiles": {
       "research": {
