@@ -4,6 +4,7 @@ alias la="ls -a"
 alias ..="cd .."
 alias cd..="cd .."
 alias count='grep "^.*$" -c'
+alias chrome="open -a 'Google Chrome'"
 
 alias is-linux='"$OSTYPE" == "linux-gnu"'
 alias is-mac='"$OSTYPE" == "darwin"*'
