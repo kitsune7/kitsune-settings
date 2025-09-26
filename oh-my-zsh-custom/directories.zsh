@@ -1,4 +1,5 @@
 export SETTINGS_DIR="${HOME}/Git/kitsune-settings"
+export THOUGHTS_DIR="${HOME}/Git/thoughts"
 export ICLOUD_DIR="${HOME}/Library/Mobile Documents/com~apple~CloudDocs"
 export ICLOUD_WORK_NOTES_DIR="${ICLOUD_DIR}/Areas/Work Notes"
 export ICLOUD_BACKUP_DIR="${ICLOUD_DIR}/Resources/1 - Backup"

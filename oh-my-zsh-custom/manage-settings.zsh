@@ -11,6 +11,10 @@ function save () {
   reload
 }
 
+function save-thoughts () {
+  save-repo-changes "${THOUGHTS_DIR}" 'Auto-save updates to thoughts'
+}
+
 function show () {
   # Shows the custom aliases and functions provided to `oh-my-zsh`
   # Usage: show [OPTIONS] [ALIAS_OR_FUNCTION_NAME]
@@ -55,7 +59,7 @@ function show () {
 
 function save-local () {
   for file in "$HOME"/.local-scripts/*.zsh; do
-      [ -r "$file" ] && source "$file"
+    [ -r "$file" ] && source "$file"
   done
 
   rm -rf "${ICLOUD_BACKUP_DIR}/local-scripts"
