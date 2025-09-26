@@ -129,6 +129,10 @@
     }
   },
   "agent": {
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-5"
+    },
     "default_profile": "write",
     "enable_feedback": false,
     "profiles": {

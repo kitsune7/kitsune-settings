@@ -46,7 +46,7 @@ function editModule () {
   then
     workspace=$3
   fi
-  
+
   # Ensure the module is in node_modules
   echo "Clearing existing links by installing node_modules"
   npm i
@@ -67,7 +67,7 @@ function editModule () {
       rm -rf "${HOME}/Git/module-edits/${module}"
     fi
   fi
-  
+
   # Clear the vite cache if it exists
   if [ -d ./node_modules/.vite ]; then
     rm -rf ./node_modules/.vite
@@ -98,8 +98,8 @@ function editModule () {
   else
     npm link "${module}"
   fi
-  
-  code "${HOME}/Git/module-edits/${module}"
+
+  ide "${HOME}/Git/module-edits/${module}"
 }
 
 function rmModule () {

@@ -16,7 +16,7 @@ function create-py () {
   mkdir src
   touch src/main.py
 
-  code .
+  ide .
 }
 
 function venv () {
