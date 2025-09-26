@@ -1,6 +1,9 @@
 alias edit="ide ${SETTINGS_DIR}"
 alias reload="${SETTINGS_DIR}/sync; exec zsh"
 alias sync="${SETTINGS_DIR}/sync"
+alias edit-local="ide ${HOME}/.local-scripts"
+alias show-local="show -d ${HOME}/.local-scripts"
+alias restore-local="cp -R ${ICLOUD_BACKUP_DIR}/local-scripts ${HOME}/.local-scripts"
 
 function save () {
   sync
@@ -50,10 +53,6 @@ function show () {
   fi
 }
 
-function show-local () {
-  show -d "${HOME}/.local-scripts" $@
-}
-
 function save-local () {
   for file in "$HOME"/.local-scripts/*.zsh; do
       [ -r "$file" ] && source "$file"
@@ -61,14 +60,6 @@ function save-local () {
 
   rm -rf "${ICLOUD_BACKUP_DIR}/local-scripts"
   cp -R "${HOME}/.local-scripts" "${ICLOUD_BACKUP_DIR}/local-scripts"
-}
-
-function edit-local () {
-  ide "${HOME}/.local-scripts"
-}
-
-function restore-local () {
-  cp -R "${ICLOUD_BACKUP_DIR}/local-scripts" "${HOME}/.local-scripts"
 }
 
 function setup-icloud-dir () {
