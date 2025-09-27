@@ -66,7 +66,6 @@ Then wait for the user's research query.
    - Answer the user's specific questions with concrete evidence
 
 5. **Gather metadata for the research document:**
-   - Run the `hack/spec_metadata.sh` script to generate all relevant metadata
    - Filename: `thoughts/PRIVACY/research/YYYY-MM-DD-PREFIX-XXXX-description.md`
      - Replace `PRIVACY` with `open` or `work` depending on sensitivity
      - Format: `YYYY-MM-DD-PREFIX-XXXX-description.md` where:
