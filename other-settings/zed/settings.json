@@ -54,7 +54,12 @@
 
   "languages": {
     "Python": {
-      "formatter": "language_server",
+      "formatter": {
+        "external": {
+          "command": "ruff",
+          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+        }
+      },
       "format_on_save": "on",
       "language_servers": ["ty", "!basedpyright"]
     },
