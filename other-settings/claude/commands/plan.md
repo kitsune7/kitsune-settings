@@ -4,14 +4,9 @@ You are tasked with creating detailed implementation plans through an interactiv
 
 ## Initial Response
 
-When this command is invoked:
+The user may provide `work` or `open` as context to indicate which thoughts directory to use. If not provided, ask for it.
 
-1. **Check if parameters were provided**:
-   - If a file path or ticket reference was provided as a parameter, skip the default message
-   - Immediately read any provided files FULLY
-   - Begin the research process
-
-2. **If no parameters provided**, respond with:
+When this command is invoked, respond with:
 ```
 I'll help you create a detailed implementation plan. Let me start by understanding what we're building.
 
@@ -101,9 +96,6 @@ After getting initial clarifications:
    - **thoughts-locator** - To find any research, plans, or decisions about this area
    - **thoughts-analyzer** - To extract key insights from the most relevant documents
 
-   **For related tickets:**
-   - **linear-searcher** - To find similar issues or past implementations
-
    Each agent knows how to:
    - Find the right files and code patterns
    - Identify conventions and patterns to follow
@@ -157,7 +149,7 @@ Once aligned on approach:
 
 After structure approval:
 
-1. **Write the plan** to `thoughts/PRIVACY/plans/YYYY-MM-DD-PREFIX-XXXX-description.md`
+1. **Write the plan** to `~/Git/thoughts/PRIVACY/plans/YYYY-MM-DD-PREFIX-XXXX-description.md`
    - Replace `PRIVACY` with `open` or `work` depending on sensitivity
    - Format: `YYYY-MM-DD-PREFIX-XXXX-description.md` where:
      - YYYY-MM-DD is today's date
@@ -258,7 +250,7 @@ After structure approval:
 
 ## References
 
-- Relevant research: `thoughts/PRIVACY/research/[relevant].md`
+- Relevant research: `~/Git/thoughts/PRIVACY/research/[relevant].md`
 - Similar implementation: `[file:line]`
 ````
 
@@ -271,7 +263,7 @@ After structure approval:
 2. **Present the draft plan location**:
    ```
    I've created the initial implementation plan at:
-   `thoughts/PRIVACY/plans/YYYY-MM-DD-PREFIX-XXXX-description.md`
+   `~/Git/thoughts/PRIVACY/plans/YYYY-MM-DD-PREFIX-XXXX-description.md`
 
    Please review it and let me know:
    - Are the phases properly scoped?

@@ -47,6 +47,7 @@ Then wait for the user's research query.
    **IMPORTANT**: All agents are documentarians, not critics. They will describe what exists without suggesting improvements or identifying issues.
 
    **For thoughts directory:**
+   - The `thoughts/` directory can be found in `~/Git/`
    - Use the **thoughts-locator** agent to discover what documents exist about the topic
    - Use the **thoughts-analyzer** agent to extract key insights from specific documents (only the most relevant ones)
 
