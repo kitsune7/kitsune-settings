@@ -51,6 +51,24 @@ function worktree () {
   BRANCH_NAME=${2:-$(get-default-branch)}
   git worktree add "../$WORKTREE_NAME" "$BRANCH_NAME"
   cd "../$WORKTREE_NAME"
+
+  if [ -f "package-lock.json" ]; then
+    if command -v npm >/dev/null 2>&1; then
+      echo "package-lock.json found. Running npm i..."
+      npm i
+    else
+      echo "package-lock.json found but npm is not installed (skipping npm install)."
+    fi
+  fi
+  if [ -f "pnpm-lock.yaml" ]; then
+    if command -v pnpm >/dev/null 2>&1; then
+      echo "pnpm-lock.yaml found. Running pnpm i..."
+      pnpm i
+    else
+      echo "pnpm-lock.yaml found but pnpm is not installed (skipping pnpm install)."
+    fi
+  fi
+
   if [ "$BRANCH_NAME" ]; then
     git checkout -b "$BRANCH_NAME" # Assume the user is simply testing code for a PR
   else
