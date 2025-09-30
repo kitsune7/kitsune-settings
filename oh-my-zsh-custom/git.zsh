@@ -49,7 +49,7 @@ alias wt="worktree"
 function worktree () {
   WORKTREE_NAME=${1:-"test-copy"}
   BRANCH_NAME=${2:-$(get-default-branch)}
-  git worktree add "../$WORKTREE_NAME" "$WORKTREE_NAME" "$BRANCH_NAME"
+  git worktree add "../$WORKTREE_NAME" "$BRANCH_NAME"
   cd "../$WORKTREE_NAME"
   if [ "$BRANCH_NAME" ]; then
     git checkout -b "$BRANCH_NAME" # Assume the user is simply testing code for a PR
