@@ -41,6 +41,20 @@ function clone () {
   ide .
 }
 
+alias wt="worktree"
+function worktree () {
+  WORKTREE_NAME=${1:-"test-copy"}
+  git worktree add "../$WORKTREE_NAME" "$WORKTREE_NAME"
+  cd "../$WORKTREE_NAME"
+  read -p "Branch name (leave empty for default branch): " BRANCH_NAME
+  if [ -n "$BRANCH_NAME" ]; then
+    git checkout -b "$BRANCH_NAME" # Assume the user is simply testing code for a PR
+  else
+    ide . # Assume the user wants to work on a separate code change
+  fi
+}
+
+
 function pullhead () {
   WORKING_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   PROTECTED_BRANCHES=("master" "main" "develop")
