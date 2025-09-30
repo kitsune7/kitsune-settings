@@ -54,6 +54,63 @@ function worktree () {
   fi
 }
 
+alias cdw="cd-default-worktree"
+function cd-default-worktree() {
+    # Get the repository name (basename of the main worktree directory)
+    local repo_name=$(basename "$(git rev-parse --show-toplevel)")
+
+    # Get current worktree path
+    local current_worktree=$(git rev-parse --show-toplevel)
+    local current_name=$(basename "$current_worktree")
+
+    # Check if we're already in the default worktree
+    if [[ "$current_name" == "$repo_name" ]]; then
+        echo "Already in default worktree: $current_worktree"
+        return 0
+    fi
+
+    # Move up one directory and into the default worktree
+    local parent_dir=$(dirname "$current_worktree")
+    local target_dir="$parent_dir/$repo_name"
+
+    if [[ -d "$target_dir" ]]; then
+        cd "$target_dir" || return 1
+        echo "Switched to default worktree: $target_dir"
+    else
+        echo "Error: Default worktree not found at $target_dir"
+        return 1
+    fi
+}
+
+alias rmw="rm-worktree"
+function rm-worktree () {
+  WORKTREE_NAME=${1:-"test-copy"}
+  cd-default-worktree
+  git worktree remove "$WORKTREE_NAME"
+  rm -rf "../$WORKTREE_NAME"
+}
+
+alias clw="clear-worktrees"
+function clear-worktrees() {
+  # Get the repository name (basename of the main worktree directory)
+  local repo_name=$(basename "$(git rev-parse --show-toplevel)")
+
+  echo "Repository name: $repo_name"
+  echo "Checking worktrees..."
+
+  # Parse git worktree list and remove non-matching worktrees
+  git worktree list | while read -r path branch rest; do
+    local worktree_name=$(basename "$path")
+
+    if [[ "$worktree_name" != "$repo_name" ]]; then
+      echo "Removing worktree at: $path"
+      rm-worktree "$worktree_name"
+    else
+      echo "Keeping main worktree: $path"
+    fi
+  done
+}
+
 
 function pullhead () {
   WORKING_BRANCH=$(git rev-parse --abbrev-ref HEAD)
