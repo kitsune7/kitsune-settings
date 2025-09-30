@@ -41,13 +41,17 @@ function clone () {
   ide .
 }
 
+function get-default-branch () {
+  git remote show origin | grep 'HEAD branch' | cut -d' ' -f5
+}
+
 alias wt="worktree"
 function worktree () {
   WORKTREE_NAME=${1:-"test-copy"}
-  git worktree add "../$WORKTREE_NAME" "$WORKTREE_NAME"
+  BRANCH_NAME=${2:-$(get-default-branch)}
+  git worktree add "../$WORKTREE_NAME" "$WORKTREE_NAME" "$BRANCH_NAME"
   cd "../$WORKTREE_NAME"
-  read -p "Branch name (leave empty for default branch): " BRANCH_NAME
-  if [ -n "$BRANCH_NAME" ]; then
+  if [ "$BRANCH_NAME" ]; then
     git checkout -b "$BRANCH_NAME" # Assume the user is simply testing code for a PR
   else
     ide . # Assume the user wants to work on a separate code change
