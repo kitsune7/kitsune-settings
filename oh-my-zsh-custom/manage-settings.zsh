@@ -57,6 +57,7 @@ function show () {
   fi
 }
 
+alias sl="save-local"
 function save-local () {
   for file in "$HOME"/.local-scripts/*.zsh; do
     [ -r "$file" ] && source "$file"
