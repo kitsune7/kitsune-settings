@@ -2,8 +2,7 @@ alias activate="source venv/bin/activate"
 alias a="activate"
 alias d="deactivate"
 alias j="jupyter"
-alias py-run="python src/main.py"
-
+alias uvrun="uv run"
 
 function u () {
   projectName=$(basename "$PWD")
