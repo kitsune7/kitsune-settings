@@ -4,28 +4,51 @@ alias d="deactivate"
 alias j="jupyter"
 alias py-run="python src/main.py"
 
+
+function u () {
+  moduleName=$(basename "$PWD" | perl -pe 's/-/_/g')
+  uv run moduleName "$@"
+}
+
 function create-py () {
   projectName=$1
   description=${2:-"A new Python project"}
   moduleName=$(echo "$projectName" | perl -pe 's/-/_/g')
 
+  if [ -z "$projectName" ]; then
+    echo "Usage: create-py <project-name> [description]"
+    return 1
+  fi
+
+  # Create project structure
   mkdir -p "${projectName}/src/${moduleName}"
-  mkdir -p "${projectName}/tests"
   cd $projectName
   git init
   uv init
   gitignore
   mit-license
 
+  # Set up module files
+  rm hello.py
   echo '"""
 Initialization file for the ${moduleName} module.
 """
 
 __version__ = "0.1.0"
 ' > "${projectName}/src/${moduleName}/__init__.py"
-  replace-in-file '    main()' "    sys.exit(main())" hello.py
-  mv hello.py "src/${moduleName}/cli.py"
 
+  echo "import sys
+
+
+def main():
+    print(\"Hello from ${projectName}!\")
+
+
+if __name__ == \"__main__\":
+    sys.exit(main())
+" > "src/${moduleName}/cli.py"
+
+  # Set up pyproject.toml
   replace-in-file 'Add your description here' "$description" pyproject.toml
   echo "
 [project.scripts]
@@ -46,7 +69,26 @@ packages = [\"src/${moduleName}\"]
   ' >> pyproject.toml
   replace-in-file '    ' '  ' pyproject.toml
 
-  zed .
+  # Set up tests
+  mkdir -p "${projectName}/tests"
+  echo "\"\"\"Tests for the CLI interface.\"\"\"
+
+  from iot_rag.cli import main
+
+
+  class TestCLI:
+      \"\"\"Test suite for the CLI interface.\"\"\"
+
+      def test_cli_main(capsys):
+          \"\"\"Test the main function of the CLI.\"\"\"
+          main()
+          captured = capsys.readouterr()
+          assert \"Hello from ${projectName}!\" in captured.out
+" > "tests/test_cli.py"
+  uv run pytest
+
+  # Open for editing
+  ide .
 }
 
 function venv () {
