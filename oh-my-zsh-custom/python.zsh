@@ -3,6 +3,8 @@ alias a="activate"
 alias d="deactivate"
 alias j="jupyter"
 alias uvrun="uv run"
+alias uvtest="uv run pytest"
+alias uvadd="uv add"
 
 function u () {
   projectName=$(basename "$PWD")
