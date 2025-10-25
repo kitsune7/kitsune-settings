@@ -7,7 +7,7 @@ alias py-run="python src/main.py"
 
 function u () {
   moduleName=$(basename "$PWD" | perl -pe 's/-/_/g')
-  uv run moduleName "$@"
+  uv run "${moduleName}" $@
 }
 
 function create-py () {
