@@ -73,17 +73,14 @@ packages = [\"src/${moduleName}\"]
   mkdir -p "tests"
   echo "\"\"\"Tests for the CLI interface.\"\"\"
 
-from iot_rag.cli import main
+from ${moduleName}.cli import main
 
 
-class TestCLI:
-    \"\"\"Test suite for the CLI interface.\"\"\"
-
-    def test_cli_main(capsys):
-        \"\"\"Test the main function of the CLI.\"\"\"
-        main()
-        captured = capsys.readouterr()
-        assert \"Hello from ${projectName}!\" in captured.out
+def test_cli_main(capsys):
+    \"\"\"Test the main function of the CLI.\"\"\"
+    main()
+    captured = capsys.readouterr()
+    assert \"Hello from ${projectName}!\" in captured.out
 " > "tests/test_cli.py"
   uv run pytest
 
