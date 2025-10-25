@@ -45,6 +45,8 @@ packages = [\"src/${moduleName}\"]
   lint.select = ["E", "F", "I", "N", "W"]
   ' >> pyproject.toml
   replace-in-file '    ' '  ' pyproject.toml
+
+  zed .
 }
 
 function venv () {
