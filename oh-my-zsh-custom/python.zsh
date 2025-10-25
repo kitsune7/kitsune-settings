@@ -62,11 +62,17 @@ packages = [\"src/${moduleName}\"]
 " >> pyproject.toml
   uv add --dev ruff pytest
   echo '
-  [tool.ruff]
-  line-length = 100
-  lint.select = ["E", "F", "I", "N", "W"]
-  ' >> pyproject.toml
+[tool.ruff]
+line-length = 100
+lint.select = ["E", "F", "I", "N", "W"]
+' >> pyproject.toml
   replace-in-file '    ' '  ' pyproject.toml
+
+  # Set up README.md
+  echo "# ${projectName}
+
+${description}
+" > README.md
 
   # Set up tests
   mkdir -p "tests"
