@@ -70,7 +70,7 @@ packages = [\"src/${moduleName}\"]
   replace-in-file '    ' '  ' pyproject.toml
 
   # Set up tests
-  mkdir -p "${projectName}/tests"
+  mkdir -p "tests"
   echo "\"\"\"Tests for the CLI interface.\"\"\"
 
   from iot_rag.cli import main
