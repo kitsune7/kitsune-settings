@@ -7,6 +7,9 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "prettier": {
+    "allowed": true
+  },
   "format_on_save": "on",
   "telemetry": {
     "diagnostics": false,
@@ -56,6 +59,9 @@
 
   "languages": {
     "PHP": {
+      "prettier": {
+        "allowed": false
+      },
       "format_on_save": "off"
     },
     "Python": {

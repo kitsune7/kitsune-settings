@@ -4,22 +4,11 @@ alias la="ls -a"
 alias ..="cd .."
 alias cd..="cd .."
 alias count='grep "^.*$" -c'
-alias chrome="open -a Comet"
 
 alias is-linux='"$OSTYPE" == "linux-gnu"'
 alias is-mac='"$OSTYPE" == "darwin"*'
 alias run-on-mac='[[ "$OSTYPE" == "darwin"* ]] && "$@"'
 alias run-on-linux='[[ "$OSTYPE" == "linux-gnu" ]] && "$@"'
-
-function ll () {
-  cd "$(llama "$@")"
-}
-
-function mv-contents () {
-  sourceDir=$1
-  targetDir=$2
-  mv -f $sourceDir/{.,}* $targetDir
-}
 
 function cdl () {
   directory=$1
@@ -33,20 +22,6 @@ function replace-in-file () {
   filePath=$3
 
   perl -pi -e "s/$searchStr/$replaceStr/g" $filePath
-}
-
-function uncomment-shell-line () {
-  beginningOfUncommentedLine=$1
-  filePath=$2
-
-  replace-in-file "^#\s*$beginningOfUncommentedLine" "$beginningOfUncommentedLine" $filePath
-}
-
-function comment-shell-line () {
-  beginningOfLine=$1
-  filePath=$2
-
-  replace-in-file "$beginningOfLine" "# $beginningOfLine" $filePath
 }
 
 function sysfind () {
