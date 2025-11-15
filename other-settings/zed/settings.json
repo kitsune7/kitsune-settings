@@ -19,9 +19,9 @@
   "theme": {
     "mode": "dark",
     "light": "One Light",
-    "dark": "VSCode Dark Modern"
+    "dark": "VSCode Dark Polished"
   },
-  "icon_theme": "VSCode Icons (Dark)",
+  "icon_theme": "VSCode Icons for Zed (Dark)",
   "ui_font_size": 14,
   "base_keymap": "VSCode",
 
@@ -91,10 +91,7 @@
         {
           "external": {
             "command": "prettier",
-            "arguments": [
-              "--stdin-filepath",
-              "{buffer_path}"
-            ]
+            "arguments": ["--stdin-filepath", "{buffer_path}"]
           }
         }
       ],
@@ -111,10 +108,7 @@
         {
           "external": {
             "command": "prettier",
-            "arguments": [
-              "--stdin-filepath",
-              "{buffer_path}"
-            ]
+            "arguments": ["--stdin-filepath", "{buffer_path}"]
           }
         }
       ],
@@ -131,10 +125,7 @@
         {
           "external": {
             "command": "prettier",
-            "arguments": [
-              "--stdin-filepath",
-              "{buffer_path}"
-            ]
+            "arguments": ["--stdin-filepath", "{buffer_path}"]
           }
         }
       ],
