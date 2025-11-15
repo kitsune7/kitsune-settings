@@ -63,6 +63,10 @@ function save-local () {
     [ -r "$file" ] && source "$file"
   done
 
+  if [ ! -d $ICLOUD_BACKUP_DIR ]; then
+    mkdir -p $ICLOUD_BACKUP_DIR;
+  fi
+
   rm -rf "${ICLOUD_BACKUP_DIR}/local-scripts"
   cp -R "${HOME}/.local-scripts" "${ICLOUD_BACKUP_DIR}/local-scripts"
 }
