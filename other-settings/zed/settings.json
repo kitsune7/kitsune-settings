@@ -67,8 +67,15 @@
     "Python": {
       "formatter": {
         "external": {
-          "command": "ruff",
-          "arguments": ["format", "--stdin-filename", "{buffer_path}", "-"]
+          "command": "uv",
+          "arguments": [
+            "run",
+            "ruff",
+            "format",
+            "--stdin-filename",
+            "{buffer_path}",
+            "-"
+          ]
         }
       },
       "format_on_save": "on",
