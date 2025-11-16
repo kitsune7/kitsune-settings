@@ -31,6 +31,7 @@ function create-py () {
 
   # Set up module files
   rm hello.py
+  rm main.py
   echo '"""
 Initialization file for the ${moduleName} module.
 """
@@ -77,7 +78,7 @@ ${description}
 " > README.md
 
   # Set up tests
-  mkdir -p "tests"
+  mkdir -p "src/tests"
   echo "\"\"\"Tests for the CLI interface.\"\"\"
 
 from ${moduleName}.cli import main
@@ -88,7 +89,7 @@ def test_cli_main(capsys):
     main()
     captured = capsys.readouterr()
     assert \"Hello from ${projectName}!\" in captured.out
-" > "tests/test_cli.py"
+" > "src/tests/test_cli.py"
   uv run pytest
 
   # Open for editing
