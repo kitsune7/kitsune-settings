@@ -32,13 +32,16 @@ function create-py () {
   # Set up module files
   rm hello.py
   rm main.py
+
+  # __init__.py
   echo '"""
 Initialization file for the ${moduleName} module.
 """
 
 __version__ = "0.1.0"
-' > "${projectName}/src/${moduleName}/__init__.py"
+' > "src/${moduleName}/__init__.py"
 
+  # cli.py
   echo "import sys
 
 
@@ -50,8 +53,8 @@ if __name__ == \"__main__\":
     sys.exit(main())
 " > "src/${moduleName}/cli.py"
 
-  # Set up pyproject.toml
   replace-in-file 'Add your description here' "$description" pyproject.toml
+  # pyproject.toml
   echo "
 [project.scripts]
 ${projectName} = \"${moduleName}.cli:main\"
@@ -64,8 +67,7 @@ build-backend = \"hatchling.build\"
 packages = [\"src/${moduleName}\"]
 " >> pyproject.toml
   uv add --dev ruff pytest
-  echo '
-[tool.ruff]
+  echo '[tool.ruff]
 line-length = 100
 lint.select = ["E", "F", "I", "N", "W"]
 ' >> pyproject.toml
@@ -77,8 +79,8 @@ lint.select = ["E", "F", "I", "N", "W"]
 ${description}
 " > README.md
 
-  # Set up tests
   mkdir -p "src/tests"
+  # test_cli.py
   echo "\"\"\"Tests for the CLI interface.\"\"\"
 
 from ${moduleName}.cli import main
