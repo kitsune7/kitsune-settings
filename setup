@@ -59,6 +59,9 @@ else
   # Update enabled input sources
   defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>16777219</integer><key>KeyboardLayout Name</key><string>Dvorak</string></dict>'
 
+  # Keep Mac Desktops from re-arranging themselves
+  defaults write com.apple.dock "mru-spaces" -bool "false" && killall Dock
+
   # Restart the system preferences daemon
   killall cfprefsd
 
