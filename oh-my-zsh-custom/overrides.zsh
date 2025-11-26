@@ -8,5 +8,5 @@ alias sha256sum='shasum --algorithm 256'
 alias chrome="open -a Comet"
 
 function ide() {
-  zed $@
+  cursor $@
 }
