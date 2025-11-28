@@ -68,8 +68,10 @@ packages = [\"src/${moduleName}\"]
 " >> pyproject.toml
   uv add --dev ruff pytest
   echo '[tool.ruff]
-line-length = 100
-lint.select = ["E", "F", "I", "N", "W"]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
 ' >> pyproject.toml
   replace-in-file '    ' '  ' pyproject.toml
 
