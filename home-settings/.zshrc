@@ -4,9 +4,6 @@ export NVM_DIR="$HOME/.nvm"
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-alias code="zed"
-alias ide="zed"
-
 # Load all .zsh files from .local-scripts directory
 if [ -d "$HOME/.local-scripts" ]; then
   for file in "$HOME"/.local-scripts/*.zsh; do
