@@ -16,10 +16,20 @@ brew install go
 brew install gh
 brew install uv
 brew install difftastic
+brew install mergiraf
 brew install --cask raycast
 brew install --cask zed
 brew install --cask warp
 brew install --cask obsidian
+
+# Have Git use mergiraf by default
+git config --global merge.mergiraf.name mergiraf
+git config --global merge.mergiraf.driver 'mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P -l %L'
+
+# Add mergiraf to the global gitattributes file if it's not already there
+if ! grep -q '* merge=mergiraf' ~/.config/git/attributes; then
+  echo '* merge=mergiraf' >> ~/.config/git/attributes
+fi
 
 # Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
