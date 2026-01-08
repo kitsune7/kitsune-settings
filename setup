@@ -21,6 +21,7 @@ brew install --cask raycast
 brew install --cask zed
 brew install --cask warp
 brew install --cask obsidian
+brew install --cask hammerspoon
 
 # Have Git use mergiraf by default
 git config --global merge.mergiraf.name mergiraf
