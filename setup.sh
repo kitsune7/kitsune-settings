@@ -9,9 +9,9 @@ function load () {
 }
 
 # The order of that these are loaded is important.
-#load git
-#load programs
+load git
+load programs
 load install-settings
-#load mac-settings
-#load local-files
-#load github
+load mac-settings
+load local-files
+load github
