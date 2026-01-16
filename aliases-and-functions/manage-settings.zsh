@@ -1,13 +1,13 @@
 alias edit="ide ${SETTINGS_DIR}"
-alias reload="${SETTINGS_DIR}/sync; exec zsh"
-alias sync="${SETTINGS_DIR}/sync"
+alias reload="sync-all; exec zsh"
 alias edit-local="ide ${HOME}/.local-scripts"
 alias show-local="show -d ${HOME}/.local-scripts"
 alias restore-local="cp -R ${ICLOUD_BACKUP_DIR}/local-scripts ${HOME}/.local-scripts"
 
 function save () {
-  sync
-  save-repo-changes "${SETTINGS_DIR}" 'Auto-save updates to settings'
+  commitMessage=${2:-"Auto-save updates to settings"}
+  sync-all
+  save-repo-changes "${SETTINGS_DIR}" "$commitMessage"
   reload
 }
 
@@ -24,7 +24,7 @@ function show () {
 
   BAT_ARGS=()
   PARAMS=""
-  DIRECTORY="${HOME}/.oh-my-zsh/custom"
+  DIRECTORY="${SETTINGS_DIR}/aliases-and-functions"
   while (( "$#" )); do
     case "$1" in
       -p|--plain)
@@ -69,17 +69,4 @@ function save-local () {
 
   rm -rf "${ICLOUD_BACKUP_DIR}/local-scripts"
   cp -R "${HOME}/.local-scripts" "${ICLOUD_BACKUP_DIR}/local-scripts"
-}
-
-function setup-icloud-dir () {
-  if [ -z "${ICLOUD_DIR}" ]; then
-    echo "${ICLOUD_DIR} doesn\'t exist yet."
-    echo "Log into iCloud and then run \`setup-icloud-dir\` again."
-    return 1
-  fi
-  mkdir -p "${ICLOUD_DIR}/Projects"
-  mkdir -p "${ICLOUD_DIR}/Areas"
-  mkdir -p "${ICLOUD_DIR}/Resources"
-  mkdir -p "${ICLOUD_DIR}/Archive"
-  mkdir -p "${ICLOUD_BACKUP_DIR}"
 }

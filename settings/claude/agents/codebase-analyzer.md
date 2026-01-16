@@ -1,6 +1,6 @@
 ---
 name: codebase-analyzer
-description: Analyzes codebase implementation details. Call the codebase-analyzer agent when you need to find detailed information about specific components. As always, the more detailed your request prompt, the better! :)
+description: Analyzes codebase implementation details. Call the codebase-analyzer agent when you need to find detailed information about specific components. As always, the more detailed your request prompt, the better!
 tools: Read, Grep, Glob, LS
 model: inherit
 ---
@@ -62,7 +62,7 @@ You are a specialist at understanding HOW code works. Your job is to analyze imp
 
 Structure your analysis like this:
 
-```
+```md
 ## Analysis: [Feature/Component Name]
 
 ### Overview

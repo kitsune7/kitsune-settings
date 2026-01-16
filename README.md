@@ -1,30 +1,28 @@
-<!-- @format -->
-
 # kitsune-settings
 
 A collection of settings I like to have in my home directory
 
 ## Installation
 
-Just run the command below in terminal to get everything set up on a new computer.
+Run the setup script below to get everything set up on a new computer.
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/kitsune7/kitsune-settings/main/setup"
+/bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/kitsune7/kitsune-settings/main/setup.sh)"
 ```
 
-## Sync data
+## Sync settings
 
-The `sync` script copies everything in the settings directory to the logged in user's home directory.
-
-Usage: `sync [-h | [-fq]]`
-
-The following options are available for `sync`:
+Use the `settings-sync` function to sync entries defined in `settings-sync.yaml`.
 
 ```text
--h  Shows usage string.
+settings-sync list
+settings-sync sync <name>|--all
+settings-sync push <name>|--all
+settings-sync pull <name>|--all
 
--f  Does not prompt you when overwriting existing files.
-    This may overwrite previous settings you had in your home directory. Use with discretion.
-
--q  Hides most output from the program. To keep all output hidden, it is recommended to use this in conjunction with -f.
+Examples:
+settings-sync list
+settings-sync sync home-settings
+settings-sync push --all
+settings-sync pull iterm2
 ```

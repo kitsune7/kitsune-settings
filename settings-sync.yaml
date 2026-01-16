@@ -1,0 +1,35 @@
+# Settings sync config for kitsune-settings.
+# Paths support $VARS and ~ expansion. Relative paths use defaults below.
+defaults:
+  local_root: "$HOME"
+  repo_root: "$SETTINGS_DIR/settings"
+
+entries:
+  - name: "home-settings"
+    description: "Settings that live directly in the home directory"
+    local_path: "$HOME"
+    repo_path: "home-settings"
+
+  - name: "aliases-and-functions"
+    description: "Custom aliases and functions"
+    local_path: "$HOME/.oh-my-zsh/custom"
+    repo_path: "$SETTINGS_DIR/aliases-and-functions"
+
+  - name: "zed-settings"
+    local_path: "$HOME/.config/zed/settings.json"
+    repo_path: "zed/settings.json"
+
+  - name: "zed-snippets"
+    description: "Zed snippets"
+    local_path: "$HOME/.config/zed/snippets"
+    repo_path: "zed/snippets"
+
+  - name: "claude-agents"
+    description: "Sub-agents for Claude Code"
+    local_path: "$HOME/.claude/agents"
+    repo_path: "claude/agents"
+
+  - name: "iterm2"
+    description: "iTerm2 preferences"
+    local_path: "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+    repo_path: "com.googlecode.iterm2.plist"
