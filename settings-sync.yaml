@@ -15,6 +15,11 @@ entries:
     local_path: "$HOME/.oh-my-zsh/custom"
     repo_path: "$SETTINGS_DIR/aliases-and-functions"
 
+  - name: "hammerspoon"
+    description: "Hammerspoon settings"
+    local_path: "$HOME/.hammerspoon"
+    repo_path: "hammerspoon"
+
   - name: "zed-settings"
     local_path: "$HOME/.config/zed/settings.json"
     repo_path: "zed/settings.json"
