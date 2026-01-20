@@ -9,6 +9,7 @@ entries:
     description: "Custom aliases and functions"
     local_path: "$HOME/.oh-my-zsh/custom"
     repo_path: "$SETTINGS_DIR/aliases-and-functions"
+    sync_direction: "repo_to_local"
 
   - name: "claude-agents"
     description: "Sub-agents for Claude Code"

@@ -12,8 +12,11 @@ main().catch((error) => {
 })
 
 async function main() {
-  const action = process.argv[2]
-  const target = process.argv[3]
+  const rawArgs = process.argv.slice(2)
+  const force = rawArgs.includes('-f') || rawArgs.includes('--force')
+  const args = rawArgs.filter((arg) => arg !== '-f' && arg !== '--force')
+  const action = args[0]
+  const target = args[1]
 
   if (!action || action === '-h' || action === '--help') {
     printUsage()
@@ -38,7 +41,7 @@ async function main() {
   }
 
   for (const entry of filteredEntries) {
-    await handleEntry(action, entry)
+    await handleEntry(action, entry, { force })
   }
 }
 
@@ -46,8 +49,8 @@ function printUsage() {
   console.log('Usage:')
   console.log('  settings-sync.mjs list')
   console.log('  settings-sync.mjs sync <name>|--all')
-  console.log('  settings-sync.mjs push <name>|--all')
-  console.log('  settings-sync.mjs pull <name>|--all')
+  console.log('  settings-sync.mjs push <name>|--all [-f|--force]')
+  console.log('  settings-sync.mjs pull <name>|--all [-f|--force]')
 }
 
 async function loadConfig() {
@@ -141,7 +144,8 @@ function normalizeEntries(config) {
     local_root: config.defaults?.local_root ?? '$HOME',
     repo_root:
       config.defaults?.repo_root ??
-      `${process.env.KITSUNE_SETTINGS ?? ''}/settings`
+      `${process.env.KITSUNE_SETTINGS ?? ''}/settings`,
+    sync_direction: config.defaults?.sync_direction ?? 'both'
   }
 
   const localRoot = expandEnv(defaults.local_root)
@@ -150,13 +154,31 @@ function normalizeEntries(config) {
   return (config.entries ?? []).map((entry) => {
     const localPath = resolveWithRoot(entry.local_path, localRoot)
     const repoPath = resolveWithRoot(entry.repo_path, repoRoot)
+    const syncDirection = normalizeSyncDirection(
+      entry.sync_direction ?? defaults.sync_direction,
+      entry.name ?? `${localPath} -> ${repoPath}`
+    )
     return {
       ...entry,
       localPath,
       repoPath,
+      sync_direction: syncDirection,
       _defaults: defaults,
     }
   })
+}
+
+function normalizeSyncDirection(value, entryLabel) {
+  if (!value) return 'both'
+  const normalized = value.trim()
+  const allowed = new Set(['local_to_repo', 'repo_to_local', 'both'])
+  if (!allowed.has(normalized)) {
+    throw new Error(
+      `Invalid sync_direction "${value}" for ${entryLabel}. ` +
+        'Use local_to_repo, repo_to_local, or both.'
+    )
+  }
+  return normalized
 }
 
 function expandEnv(value) {
@@ -188,22 +210,38 @@ function listEntries(entries) {
   }
 }
 
-async function handleEntry(action, entry) {
+async function handleEntry(action, entry, { force = false } = {}) {
   const pathType = await resolvePathType(entry)
+  const syncDirection = entry.sync_direction ?? 'both'
+  const canPush = syncDirection === 'both' || syncDirection === 'local_to_repo'
+  const canPull = syncDirection === 'both' || syncDirection === 'repo_to_local'
+
   if (action === 'push') {
-    if (pathType === 'dir') {
-      await rsyncDir(entry.localPath, entry.repoPath)
-    } else {
-      await rsyncFile(entry.localPath, entry.repoPath)
+    if (!force && !canPush) {
+      throw new Error(
+        `${entry.name} is configured as ${syncDirection}; push is not allowed. Run with -f or --force to override.`
+      )
     }
+    await pushEntry(entry, pathType)
     return
   }
   if (action === 'pull') {
-    if (pathType === 'dir') {
-      await rsyncDir(entry.repoPath, entry.localPath)
-    } else {
-      await rsyncFile(entry.repoPath, entry.localPath)
+    if (!force && !canPull) {
+      throw new Error(
+        `${entry.name} is configured as ${syncDirection}; pull is not allowed. Run with -f or --force to override.`
+      )
     }
+    await pullEntry(entry, pathType)
+    return
+  }
+
+  if (syncDirection === 'local_to_repo') {
+    await pushEntry(entry, pathType)
+    return
+  }
+
+  if (syncDirection === 'repo_to_local') {
+    await pullEntry(entry, pathType)
     return
   }
 
@@ -211,6 +249,22 @@ async function handleEntry(action, entry) {
     await syncDir(entry.localPath, entry.repoPath)
   } else {
     await syncFile(entry, entry.localPath, entry.repoPath)
+  }
+}
+
+async function pushEntry(entry, pathType) {
+  if (pathType === 'dir') {
+    await rsyncDir(entry.localPath, entry.repoPath)
+  } else {
+    await rsyncFile(entry.localPath, entry.repoPath)
+  }
+}
+
+async function pullEntry(entry, pathType) {
+  if (pathType === 'dir') {
+    await rsyncDir(entry.repoPath, entry.localPath)
+  } else {
+    await rsyncFile(entry.repoPath, entry.localPath)
   }
 }
 
