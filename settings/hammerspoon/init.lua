@@ -28,7 +28,7 @@ local windowConfig = {
     screens = {
         lg = "LG ULTRAFINE",
         dell = "DELL U2723QE",
-        builtin = "Built-in Retina"
+        builtin = "Built-in Retina Display"
     },
     -- External monitor arrangements (Tier 1)
     external = {
