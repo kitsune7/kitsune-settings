@@ -20,6 +20,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAIN_REPO="$(git rev-parse --show-toplevel)"
 REPO_NAME="$(basename "$MAIN_REPO")"
 PRDS_DIR="$MAIN_REPO/prds"
+# Detect default branch (main, master, or develop)
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "develop")
 
 # Check if a project is complete (all stories pass)
 is_project_complete() {
@@ -220,7 +222,7 @@ if [ ! -d "$WORKTREE_PATH" ]; then
 
   # Create branch if it doesn't exist
   if ! git show-ref --verify --quiet "refs/heads/$BRANCH_NAME"; then
-    git branch "$BRANCH_NAME" main
+    git branch "$BRANCH_NAME" "$DEFAULT_BRANCH"
   fi
 
   git worktree add "$WORKTREE_PATH" "$BRANCH_NAME"
@@ -348,7 +350,7 @@ EOF
     echo "Creating worktree at $WORKTREE_PATH..."
 
     if ! git show-ref --verify --quiet "refs/heads/$BRANCH_NAME"; then
-      git branch "$BRANCH_NAME" main
+      git branch "$BRANCH_NAME" "$DEFAULT_BRANCH"
     fi
 
     git worktree add "$WORKTREE_PATH" "$BRANCH_NAME"
