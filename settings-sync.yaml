@@ -5,20 +5,40 @@ defaults:
   repo_root: "$SETTINGS_DIR/settings"
 
 entries:
-  - name: "home-settings"
-    description: "Settings that live directly in the home directory"
-    local_path: "$HOME"
-    repo_path: "home-settings"
-
   - name: "aliases-and-functions"
     description: "Custom aliases and functions"
     local_path: "$HOME/.oh-my-zsh/custom"
     repo_path: "$SETTINGS_DIR/aliases-and-functions"
 
+  - name: "claude-agents"
+    description: "Sub-agents for Claude Code"
+    local_path: "$HOME/.claude/agents"
+    repo_path: "claude/agents"
+
   - name: "hammerspoon"
     description: "Hammerspoon settings"
     local_path: "$HOME/.hammerspoon"
     repo_path: "hammerspoon"
+
+  - name: "iterm2"
+    description: "iTerm2 preferences"
+    local_path: "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+    repo_path: "com.googlecode.iterm2.plist"
+
+  - name: "p10k"
+    description: "Powerlevel10k configuration"
+    local_path: "$HOME/.p10k.zsh"
+    repo_path: ".p10k.zsh"
+
+  - name: "vim-settings"
+    description: "Vim settings"
+    local_path: "$HOME/.vim"
+    repo_path: "vim"
+
+  - name: "vimrc"
+    description: "Vim configuration"
+    local_path: "$HOME/.vimrc"
+    repo_path: ".vimrc"
 
   - name: "zed-settings"
     local_path: "$HOME/.config/zed/settings.json"
@@ -29,12 +49,7 @@ entries:
     local_path: "$HOME/.config/zed/snippets"
     repo_path: "zed/snippets"
 
-  - name: "claude-agents"
-    description: "Sub-agents for Claude Code"
-    local_path: "$HOME/.claude/agents"
-    repo_path: "claude/agents"
-
-  - name: "iterm2"
-    description: "iTerm2 preferences"
-    local_path: "$HOME/Library/Preferences/com.googlecode.iterm2.plist"
-    repo_path: "com.googlecode.iterm2.plist"
+  - name: "zshrc"
+    description: "Zsh configuration"
+    local_path: "$HOME/.zshrc"
+    repo_path: ".zshrc"

@@ -208,7 +208,7 @@ async function handleEntry(action, entry) {
   }
 
   if (pathType === 'dir') {
-    await syncDir(entry, entry.localPath, entry.repoPath)
+    await syncDir(entry.localPath, entry.repoPath)
   } else {
     await syncFile(entry, entry.localPath, entry.repoPath)
   }
