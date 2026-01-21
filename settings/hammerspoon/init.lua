@@ -192,3 +192,8 @@ hs.hotkey.bind(hyper, "W", arrangeExternalMonitors)  -- External monitors
 hs.hotkey.bind(hyper, "S", arrangeBuiltInSpaces)     -- Built-in spaces
 hs.hotkey.bind(hyper, "A", arrangeAll)               -- Full arrangement
 hs.hotkey.bind(hyper, "D", showScreenNames)          -- Debug screen names
+
+-- Focus Warp
+hs.hotkey.bind({"cmd", "ctrl"}, "T", function()
+    hs.application.launchOrFocus("Warp")
+end)
