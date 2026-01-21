@@ -30,6 +30,20 @@ function reclone () {
   fi
 }
 
+function exclude () {
+  if [ -f ".git/info/exclude" ] && ! grep -q "$1" ".git/info/exclude"; then
+    echo "$1" >> ".git/info/exclude"
+  elif [ ! -f ".git/info/exclude" ]; then
+    echo "$1" > ".git/info/exclude"
+  fi
+}
+
+function rm-exclude () {
+  if [ -f ".git/info/exclude" ] && grep -q "$1" ".git/info/exclude"; then
+    replace-in-file "$1" "" ".git/info/exclude"
+  fi
+}
+
 function clone () {
   if test -d "${HOME}/Git"; then
     cd "${HOME}/Git"
