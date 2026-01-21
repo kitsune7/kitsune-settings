@@ -51,12 +51,23 @@ local windowConfig = {
 }
 
 -- Helper: Find screen with alert on failure
+-- Note: hs.screen.find() has a bug where it can't find "Built-in Retina Display"
+-- so we fall back to manual iteration if the initial find fails
 local function findScreenSafe(hint, alertOnFail)
     local screen = hs.screen.find(hint)
-    if not screen and alertOnFail ~= false then
+    if screen then return screen end
+
+    -- Fallback: iterate all screens and match by name
+    for _, s in ipairs(hs.screen.allScreens()) do
+        if s:name() == hint then
+            return s
+        end
+    end
+
+    if alertOnFail ~= false then
         hs.alert.show("Screen not found: " .. hint)
     end
-    return screen
+    return nil
 end
 
 -- Helper: Find app (silent if not running)
