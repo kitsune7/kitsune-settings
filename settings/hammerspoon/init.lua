@@ -197,3 +197,8 @@ hs.hotkey.bind(hyper, "D", showScreenNames)          -- Debug screen names
 hs.hotkey.bind({"cmd", "ctrl"}, "T", function()
     hs.application.launchOrFocus("Warp")
 end)
+
+-- Focus Cursor
+hs.hotkey.bind({"cmd", "ctrl"}, "C", function()
+    hs.application.launchOrFocus("Cursor")
+end)
