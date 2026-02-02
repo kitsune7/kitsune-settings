@@ -15,6 +15,12 @@ alias drop="git stash save --include-untracked && git stash drop stash@{0}"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias cred="git config credential.helper store"
 
+function auto-commit () {
+  git add .
+  commitMessage=$(claude -p "Analyze the current changes in Git and give me back a commit message that would fit. Do not explain yourself or wrap the message with anything. It's meant to be used _directly_ as a commit message.")
+  git commit -m "$commitMessage"
+}
+
 function reclone () {
   if test -d "./.git"
   then
