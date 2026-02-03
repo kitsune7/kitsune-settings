@@ -73,7 +73,7 @@ local function transformSelection(transformFn)
     end
 end
 
-testing-testing
+-- testing-testing
 
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
