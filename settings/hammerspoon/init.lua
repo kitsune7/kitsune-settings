@@ -58,9 +58,10 @@ local function transformSelection(transformFn)
     hs.timer.usleep(50000) -- 50ms delay for clipboard to update
     
     local text = hs.pasteboard.getContents()
-    if text then
+    if text and text ~= originalClipboard then
         local transformed = transformFn(text)
         hs.pasteboard.setContents(transformed)
+        hs.timer.usleep(50000) -- 50ms delay for clipboard to update
         hs.eventtap.keyStroke({"cmd"}, "v")
         
         -- Restore original clipboard after a short delay
@@ -73,7 +74,7 @@ end
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
     transformSelection(toCamelCase)
-    hs.alert.show("→ camelCase")
+    hs.alert.show("→ camelCase")testing-testing
 end)
 
 hs.hotkey.bind({"ctrl", "alt"}, "k", function() 
