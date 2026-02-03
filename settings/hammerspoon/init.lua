@@ -23,28 +23,47 @@ end
 -- Text Replacement
 --------------------------------------------------------------------------------
 
+-- Helper to split text into words regardless of input format
+local function toWords(str)
+    -- First, insert spaces before uppercase letters (for camelCase/PascalCase)
+    local spaced = str:gsub("([a-z])([A-Z])", "%1 %2")
+    -- Replace underscores and hyphens with spaces
+    spaced = spaced:gsub("[-_]", " ")
+    -- Split into words and lowercase them
+    local words = {}
+    for word in spaced:gmatch("%S+") do
+        table.insert(words, word:lower())
+    end
+    return words
+end
+
 local function toCamelCase(str)
-    local result = str:gsub("[-_](%w)", function(c) return c:upper() end)
-    result = result:gsub("^%u", string.lower) -- lowercase first char
+    local words = toWords(str)
+    if #words == 0 then return str end
+    
+    local result = words[1]
+    for i = 2, #words do
+        result = result .. words[i]:gsub("^%l", string.upper)
+    end
     return result
 end
 
 local function toKebabCase(str)
-    -- Insert hyphen before uppercase letters, then lowercase everything
-    local result = str:gsub("([a-z])([A-Z])", "%1-%2")
-    result = result:gsub("_", "-"):lower()
-    return result
+    local words = toWords(str)
+    return table.concat(words, "-")
 end
 
 local function toSnakeCase(str)
-    local result = str:gsub("([a-z])([A-Z])", "%1_%2")
-    result = result:gsub("-", "_"):lower()
-    return result
+    local words = toWords(str)
+    return table.concat(words, "_")
 end
 
 local function toPascalCase(str)
-    local result = str:gsub("[-_](%w)", function(c) return c:upper() end)
-    result = result:gsub("^%l", string.upper) -- uppercase first char
+    local words = toWords(str)
+    local result = ""
+    for _, word in ipairs(words) do
+        result = result .. word:gsub("^%l", string.upper)
+    end
     return result
 end
 
@@ -85,8 +104,6 @@ local function transformSelection(transformFn)
         end)
     end)
 end
-
--- testing testing
 
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
