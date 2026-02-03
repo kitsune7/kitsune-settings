@@ -20,7 +20,79 @@ if caffeine then
 end
 
 --------------------------------------------------------------------------------
--- Window Arrangement System
+-- Text Replacement
+--------------------------------------------------------------------------------
+
+local function toCamelCase(str)
+    local result = str:gsub("[-_](%w)", function(c) return c:upper() end)
+    result = result:gsub("^%u", string.lower) -- lowercase first char
+    return result
+end
+
+local function toKebabCase(str)
+    -- Insert hyphen before uppercase letters, then lowercase everything
+    local result = str:gsub("([a-z])([A-Z])", "%1-%2")
+    result = result:gsub("_", "-"):lower()
+    return result
+end
+
+local function toSnakeCase(str)
+    local result = str:gsub("([a-z])([A-Z])", "%1_%2")
+    result = result:gsub("-", "_"):lower()
+    return result
+end
+
+local function toPascalCase(str)
+    local result = str:gsub("[-_](%w)", function(c) return c:upper() end)
+    result = result:gsub("^%l", string.upper) -- uppercase first char
+    return result
+end
+
+-- Core function to transform selected text
+local function transformSelection(transformFn)
+    -- Save current clipboard
+    local originalClipboard = hs.pasteboard.getContents()
+    
+    -- Copy selection
+    hs.eventtap.keyStroke({"cmd"}, "c")
+    hs.timer.usleep(50000) -- 50ms delay for clipboard to update
+    
+    local text = hs.pasteboard.getContents()
+    if text then
+        local transformed = transformFn(text)
+        hs.pasteboard.setContents(transformed)
+        hs.eventtap.keyStroke({"cmd"}, "v")
+        
+        -- Restore original clipboard after a short delay
+        hs.timer.doAfter(0.2, function()
+            hs.pasteboard.setContents(originalClipboard)
+        end)
+    end
+end
+
+-- Bind hotkeys
+hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
+    transformSelection(toCamelCase)
+    hs.alert.show("→ camelCase")
+end)
+
+hs.hotkey.bind({"ctrl", "alt"}, "k", function() 
+    transformSelection(toKebabCase)
+    hs.alert.show("→ kebab-case")
+end)
+
+hs.hotkey.bind({"ctrl", "alt"}, "s", function() 
+    transformSelection(toSnakeCase)
+    hs.alert.show("→ snake_case")
+end)
+
+hs.hotkey.bind({"ctrl", "alt"}, "p", function() 
+    transformSelection(toPascalCase)
+    hs.alert.show("→ PascalCase")
+end)
+
+--------------------------------------------------------------------------------
+-- Window Arrangement
 --------------------------------------------------------------------------------
 
 -- Configuration
