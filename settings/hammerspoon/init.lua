@@ -67,6 +67,22 @@ local function toPascalCase(str)
     return result
 end
 
+local function toggleBackticks(str)
+    if str:match("^`.*`$") then
+        return str:sub(2, -2)
+    else
+        return "`" .. str .. "`"
+    end
+end
+
+local function toggleQuotes(str)
+    if str:match('^".*"$') then
+        return str:sub(2, -2)
+    else
+        return '"' .. str .. '"'
+    end
+end
+
 local function waitForModifierRelease(callback)
     local function check()
         local flags = hs.eventtap.checkKeyboardModifiers()
@@ -124,6 +140,16 @@ end)
 hs.hotkey.bind({"ctrl", "alt"}, "p", function() 
     transformSelection(toPascalCase)
     hs.alert.show("→ PascalCase")
+end)
+
+hs.hotkey.bind({"ctrl", "alt"}, "b", function() 
+    transformSelection(toggleBackticks)
+    hs.alert.show("→ `backticks`")
+end)
+
+hs.hotkey.bind({"ctrl", "alt"}, "q", function() 
+    transformSelection(toggleQuotes)
+    hs.alert.show('→ "quotes"')
 end)
 
 --------------------------------------------------------------------------------
