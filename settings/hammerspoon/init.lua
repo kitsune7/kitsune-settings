@@ -48,41 +48,33 @@ local function toPascalCase(str)
     return result
 end
 
-local function sendCmd(key)
-    -- Small delay to let hotkey modifiers release
-    hs.eventtap.event.newKeyEvent({}, key, false):post()  -- clear any stuck keys
-    hs.timer.usleep(10000)
-    
-    local event = hs.eventtap.event.newKeyEvent({"cmd"}, key, true)
-    event:post()
-    hs.eventtap.event.newKeyEvent({"cmd"}, key, false):post()
-end
-
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
+    local originalChangeCount = hs.pasteboard.changeCount()
     
-    -- Wait for hotkey modifiers to be released
-    hs.timer.doAfter(0.15, function()
-        sendCmd("c")
+    -- Use AppleScript to send Cmd+C
+    hs.osascript.applescript('tell application "System Events" to keystroke "c" using command down')
+    
+    hs.timer.doAfter(0.2, function()
+        local text = hs.pasteboard.getContents()
+        local newChangeCount = hs.pasteboard.changeCount()
         
-        hs.timer.doAfter(0.2, function()
-            local text = hs.pasteboard.getContents()
+        print("Change count: " .. originalChangeCount .. " -> " .. newChangeCount)
+        print("Original clipboard: " .. tostring(originalClipboard))
+        print("After copy: " .. tostring(text))
+        
+        -- Check if clipboard actually changed using change count
+        if newChangeCount > originalChangeCount then
+            local transformed = transformFn(text)
+            hs.pasteboard.setContents(transformed)
+            hs.osascript.applescript('tell application "System Events" to keystroke "v" using command down')
             
-            print("Original clipboard: " .. tostring(originalClipboard))
-            print("After copy: " .. tostring(text))
-            
-            if text and text ~= originalClipboard then
-                local transformed = transformFn(text)
-                hs.pasteboard.setContents(transformed)
-                sendCmd("v")
-                
-                hs.timer.doAfter(0.1, function()
-                    hs.pasteboard.setContents(originalClipboard)
-                end)
-            else
-                hs.alert.show("Failed to adjust text")
-            end
-        end)
+            hs.timer.doAfter(0.1, function()
+                hs.pasteboard.setContents(originalClipboard)
+            end)
+        else
+            hs.alert.show("Clipboard didn't change")
+        end
     end)
 end
 
