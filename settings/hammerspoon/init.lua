@@ -51,25 +51,33 @@ end
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
     
-    -- Use menu instead of keystroke
-    local app = hs.application.frontmostApplication()
-    app:selectMenuItem({"Edit", "Copy"})
+    sendCmd("c")
     
-    hs.timer.doAfter(0.2, function()
+    hs.timer.doAfter(0.2, function()  -- bumped to 200ms
         local text = hs.pasteboard.getContents()
+        
+        -- Debug output
+        print("Original clipboard: " .. tostring(originalClipboard))
+        print("After copy: " .. tostring(text))
         
         if text and text ~= originalClipboard then
             local transformed = transformFn(text)
             hs.pasteboard.setContents(transformed)
-            app:selectMenuItem({"Edit", "Paste"})
+            sendCmd("v")
             
             hs.timer.doAfter(0.1, function()
                 hs.pasteboard.setContents(originalClipboard)
             end)
         else
-            hs.alert.show("Failed to adjust text")
+            hs.alert.show("Failed: orig=" .. tostring(originalClipboard):sub(1,20) .. " new=" .. tostring(text):sub(1,20))
         end
     end)
+end
+
+local function sendCmd(key)
+    local event = hs.eventtap.event.newKeyEvent({"cmd"}, key, true)
+    event:post()
+    hs.eventtap.event.newKeyEvent({"cmd"}, key, false):post()
 end
 
 -- testing-testing
