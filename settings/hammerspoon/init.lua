@@ -48,37 +48,45 @@ local function toPascalCase(str)
     return result
 end
 
+local function waitForModifierRelease(callback)
+    local function check()
+        local flags = hs.eventtap.checkKeyboardModifiers()
+        if flags.ctrl or flags.alt or flags.cmd or flags.shift then
+            hs.timer.doAfter(0.05, check)
+        else
+            callback()
+        end
+    end
+    check()
+end
+
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
     local originalChangeCount = hs.pasteboard.changeCount()
     
-    -- Use AppleScript to send Cmd+C
-    hs.osascript.applescript('tell application "System Events" to keystroke "c" using command down')
-    
-    hs.timer.doAfter(0.2, function()
-        local text = hs.pasteboard.getContents()
-        local newChangeCount = hs.pasteboard.changeCount()
+    waitForModifierRelease(function()
+        hs.osascript.applescript('tell application "System Events" to keystroke "c" using command down')
         
-        print("Change count: " .. originalChangeCount .. " -> " .. newChangeCount)
-        print("Original clipboard: " .. tostring(originalClipboard))
-        print("After copy: " .. tostring(text))
-        
-        -- Check if clipboard actually changed using change count
-        if newChangeCount > originalChangeCount then
-            local transformed = transformFn(text)
-            hs.pasteboard.setContents(transformed)
-            hs.osascript.applescript('tell application "System Events" to keystroke "v" using command down')
+        hs.timer.doAfter(0.2, function()
+            local newChangeCount = hs.pasteboard.changeCount()
             
-            hs.timer.doAfter(0.1, function()
-                hs.pasteboard.setContents(originalClipboard)
-            end)
-        else
-            hs.alert.show("Clipboard didn't change")
-        end
+            if newChangeCount > originalChangeCount then
+                local text = hs.pasteboard.getContents()
+                local transformed = transformFn(text)
+                hs.pasteboard.setContents(transformed)
+                hs.osascript.applescript('tell application "System Events" to keystroke "v" using command down')
+                
+                hs.timer.doAfter(0.1, function()
+                    hs.pasteboard.setContents(originalClipboard)
+                end)
+            else
+                hs.alert.show("Clipboard didn't change")
+            end
+        end)
     end)
 end
 
--- testing-testing
+-- testing testing
 
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
