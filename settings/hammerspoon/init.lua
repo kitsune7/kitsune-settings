@@ -95,6 +95,17 @@ local function waitForModifierRelease(callback)
     check()
 end
 
+local function selectBackwards(length)
+    local script = string.format([[
+        tell application "System Events"
+            repeat %d times
+                key code 123 using shift down
+            end repeat
+        end tell
+    ]], length)
+    hs.osascript.applescript(script)
+end
+
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
     local originalChangeCount = hs.pasteboard.changeCount()
@@ -112,6 +123,7 @@ local function transformSelection(transformFn)
                 hs.osascript.applescript('tell application "System Events" to keystroke "v" using command down')
                 
                 hs.timer.doAfter(0.1, function()
+                    selectBackwards(#transformed)
                     hs.pasteboard.setContents(originalClipboard)
                 end)
             else
