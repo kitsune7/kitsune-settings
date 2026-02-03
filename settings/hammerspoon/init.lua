@@ -74,7 +74,7 @@ end
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
     transformSelection(toCamelCase)
-    hs.alert.show("→ camelCase")testing-testing
+    hs.alert.show("→ camelCase")
 end)
 
 hs.hotkey.bind({"ctrl", "alt"}, "k", function() 
