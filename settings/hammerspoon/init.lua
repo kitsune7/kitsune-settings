@@ -48,6 +48,12 @@ local function toPascalCase(str)
     return result
 end
 
+local function sendCmd(key)
+    local event = hs.eventtap.event.newKeyEvent({"cmd"}, key, true)
+    event:post()
+    hs.eventtap.event.newKeyEvent({"cmd"}, key, false):post()
+end
+
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
     
@@ -72,12 +78,6 @@ local function transformSelection(transformFn)
             hs.alert.show("Failed: orig=" .. tostring(originalClipboard):sub(1,20) .. " new=" .. tostring(text):sub(1,20))
         end
     end)
-end
-
-local function sendCmd(key)
-    local event = hs.eventtap.event.newKeyEvent({"cmd"}, key, true)
-    event:post()
-    hs.eventtap.event.newKeyEvent({"cmd"}, key, false):post()
 end
 
 -- testing-testing
