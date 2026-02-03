@@ -49,6 +49,10 @@ local function toPascalCase(str)
 end
 
 local function sendCmd(key)
+    -- Small delay to let hotkey modifiers release
+    hs.eventtap.event.newKeyEvent({}, key, false):post()  -- clear any stuck keys
+    hs.timer.usleep(10000)
+    
     local event = hs.eventtap.event.newKeyEvent({"cmd"}, key, true)
     event:post()
     hs.eventtap.event.newKeyEvent({"cmd"}, key, false):post()
@@ -57,26 +61,28 @@ end
 local function transformSelection(transformFn)
     local originalClipboard = hs.pasteboard.getContents()
     
-    sendCmd("c")
-    
-    hs.timer.doAfter(0.2, function()  -- bumped to 200ms
-        local text = hs.pasteboard.getContents()
+    -- Wait for hotkey modifiers to be released
+    hs.timer.doAfter(0.15, function()
+        sendCmd("c")
         
-        -- Debug output
-        print("Original clipboard: " .. tostring(originalClipboard))
-        print("After copy: " .. tostring(text))
-        
-        if text and text ~= originalClipboard then
-            local transformed = transformFn(text)
-            hs.pasteboard.setContents(transformed)
-            sendCmd("v")
+        hs.timer.doAfter(0.2, function()
+            local text = hs.pasteboard.getContents()
             
-            hs.timer.doAfter(0.1, function()
-                hs.pasteboard.setContents(originalClipboard)
-            end)
-        else
-            hs.alert.show("Failed: orig=" .. tostring(originalClipboard):sub(1,20) .. " new=" .. tostring(text):sub(1,20))
-        end
+            print("Original clipboard: " .. tostring(originalClipboard))
+            print("After copy: " .. tostring(text))
+            
+            if text and text ~= originalClipboard then
+                local transformed = transformFn(text)
+                hs.pasteboard.setContents(transformed)
+                sendCmd("v")
+                
+                hs.timer.doAfter(0.1, function()
+                    hs.pasteboard.setContents(originalClipboard)
+                end)
+            else
+                hs.alert.show("Failed to adjust text")
+            end
+        end)
     end)
 end
 
