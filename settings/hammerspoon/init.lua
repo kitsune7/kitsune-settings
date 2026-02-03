@@ -68,8 +68,12 @@ local function transformSelection(transformFn)
         hs.timer.doAfter(0.2, function()
             hs.pasteboard.setContents(originalClipboard)
         end)
+    else
+        hs.alert.show("Wasn't able to change clipboard contents. Original: " .. originalClipboard .. " Transformed: " .. text)
     end
 end
+
+testing-testing
 
 -- Bind hotkeys
 hs.hotkey.bind({"ctrl", "alt"}, "c", function() 
