@@ -70,7 +70,7 @@ local function transformSelection(transformFn)
                 hs.pasteboard.setContents(originalClipboard)
             end)
         else
-            hs.logger.d("Wasn't able to change clipboard contents.\nOriginal: " .. originalClipboard .. "\nTransformed: " .. text)
+            hs.alert.show("Failed to adjust text.")
         end
     end)
 end
