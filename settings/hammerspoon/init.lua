@@ -48,29 +48,31 @@ local function toPascalCase(str)
     return result
 end
 
--- Core function to transform selected text
 local function transformSelection(transformFn)
     -- Save current clipboard
     local originalClipboard = hs.pasteboard.getContents()
     
     -- Copy selection
     hs.eventtap.keyStroke({"cmd"}, "c")
-    hs.timer.usleep(50000) -- 50ms delay for clipboard to update
     
-    local text = hs.pasteboard.getContents()
-    if text and text ~= originalClipboard then
-        local transformed = transformFn(text)
-        hs.pasteboard.setContents(transformed)
-        hs.timer.usleep(50000) -- 50ms delay for clipboard to update
-        hs.eventtap.keyStroke({"cmd"}, "v")
+    -- Wait for clipboard to actually update
+    hs.timer.doAfter(0.1, function()
+        local text = hs.pasteboard.getContents()
         
-        -- Restore original clipboard after a short delay
-        hs.timer.doAfter(0.2, function()
-            hs.pasteboard.setContents(originalClipboard)
-        end)
-    else
-        hs.alert.show("Wasn't able to change clipboard contents. Original: " .. originalClipboard .. " Transformed: " .. text)
-    end
+        -- Only transform if clipboard actually changed
+        if text and text ~= originalClipboard then
+            local transformed = transformFn(text)
+            hs.pasteboard.setContents(transformed)
+            hs.eventtap.keyStroke({"cmd"}, "v")
+            
+            -- Restore original clipboard
+            hs.timer.doAfter(0.1, function()
+                hs.pasteboard.setContents(originalClipboard)
+            end)
+        else
+            hs.alert.show("Wasn't able to change clipboard contents. Original: " .. originalClipboard .. " Transformed: " .. text)
+        end
+    end)
 end
 
 -- testing-testing
