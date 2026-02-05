@@ -21,6 +21,11 @@ entries:
     local_path: "$HOME/.claude/skills"
     repo_path: "claude/skills"
 
+  - name: "claude-commands"
+    description: "Claude commands"
+    local_path: "$HOME/.claude/commands"
+    repo_path: "claude/commands"
+
   - name: "hammerspoon"
     description: "Hammerspoon settings"
     local_path: "$HOME/.hammerspoon"
