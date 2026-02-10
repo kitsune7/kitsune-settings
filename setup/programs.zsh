@@ -64,7 +64,6 @@ brew_install_cask zed Zed.app
 brew_install_cask warp Warp.app
 brew_install_cask obsidian Obsidian.app
 brew_install_cask hammerspoon Hammerspoon.app
-brew_install_cask jordanbaird-ice Ice.app
 
 # Mergiraf
 brew_install mergiraf

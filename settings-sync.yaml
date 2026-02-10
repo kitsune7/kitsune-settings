@@ -20,6 +20,7 @@ entries:
     description: "Claude skills"
     local_path: "$HOME/.claude/skills"
     repo_path: "claude/skills"
+    sync_direction: "repo_to_local"
 
   - name: "claude-commands"
     description: "Claude commands"
