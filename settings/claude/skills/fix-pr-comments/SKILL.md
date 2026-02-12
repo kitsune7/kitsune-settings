@@ -14,7 +14,7 @@ Resolve unresolved PR review comments by pulling them down via the GitHub CLI, v
 The user provides a GitHub PR URL as an argument, e.g.:
 
 ```
-/fix-pr-comments https://github.com/PrinterLogic/vac/pull/1234
+/fix-pr-comments https://github.com/owner/repo/pull/1234
 ```
 
 If no URL is provided, ask the user for one.
