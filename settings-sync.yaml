@@ -11,6 +11,12 @@ entries:
     repo_path: "$SETTINGS_DIR/aliases-and-functions"
     sync_direction: "repo_to_local"
 
+  - name: "claude-md"
+    description: "Global Claude.md file"
+    local_path: "$HOME/.claude/CLAUDE.md"
+    repo_path: "claude/CLAUDE.md"
+    sync_direction: "repo_to_local"
+
   - name: "claude-agents"
     description: "Sub-agents for Claude Code"
     local_path: "$HOME/.claude/agents"
