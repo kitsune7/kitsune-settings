@@ -103,3 +103,4 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$PATH:/Users/chris.bradshaw/.cache/lm-studio/bin"
 # End of LM Studio CLI section
 
+export ENABLE_LSP_TOOL=1
