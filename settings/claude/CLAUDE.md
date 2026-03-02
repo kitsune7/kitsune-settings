@@ -7,3 +7,5 @@ Additional CLI tools you have access to anywhere in the system:
 - uv
 - jq
 - Github CLI
+
+Always prefer LSP over Grep for code navigation.
