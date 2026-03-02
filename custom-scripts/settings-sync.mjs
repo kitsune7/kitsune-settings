@@ -1,5 +1,5 @@
 import fs, { access, mkdir, readFile } from 'node:fs/promises'
-import { join, isAbsolute, dirname } from 'node:path'
+import { join, isAbsolute, dirname, basename } from 'node:path'
 import { spawn } from 'node:child_process'
 
 const CONFIG_PATH = process.env.SETTINGS_DIR
