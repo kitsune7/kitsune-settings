@@ -28,11 +28,6 @@ entries:
     repo_path: "claude/skills"
     sync_direction: "repo_to_local"
 
-  - name: "claude-commands"
-    description: "Claude commands"
-    local_path: "$HOME/.claude/commands"
-    repo_path: "claude/commands"
-
   - name: "hammerspoon"
     description: "Hammerspoon settings"
     local_path: "$HOME/.hammerspoon"

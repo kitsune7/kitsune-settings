@@ -295,6 +295,7 @@ async function pathExists(path) {
 }
 
 async function rsyncDir(source, destination, options = {}) {
+  if (!(await pathExists(source))) return
   await mkdir(destination, { recursive: true })
   const args = ['-a', '--progress']
   if (options.updateOnly) args.push('--update')
@@ -314,6 +315,7 @@ async function runRsync(args) {
 }
 
 async function rsyncFile(source, destination) {
+  if (!(await pathExists(source))) return
   await ensureParentDir(destination)
   await runRsync(['-a', '--progress', source, destination])
 }
