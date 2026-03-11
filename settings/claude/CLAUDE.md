@@ -9,3 +9,5 @@ Additional CLI tools you have access to anywhere in the system:
 - Github CLI
 
 Always prefer LSP over Grep for code navigation.
+
+Read ~/.local-scripts/CLAUDE.md for some additional, important instructions.
