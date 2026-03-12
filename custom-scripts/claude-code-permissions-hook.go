@@ -90,12 +90,6 @@ func main() {
 		return
 	case "run":
 		if err := run(cfg); err != nil {
-			var denyErr denyDecisionError
-			if errors.As(err, &denyErr) {
-				writeDecision("deny", denyErr.Reason)
-				os.Exit(2)
-			}
-
 			fatal(err)
 		}
 	default:
@@ -270,7 +264,8 @@ func run(cfg *compiledConfig) error {
 	}
 
 	if matchedRule, matched := findMatch(cfg.denyRules, ctx); matched {
-		return denyDecisionError{Reason: decisionReason("deny", matchedRule)}
+		writeDecision("deny", decisionReason("deny", matchedRule))
+		return nil
 	}
 
 	if matchedRule, matched := findMatch(cfg.allowRules, ctx); matched {
@@ -498,10 +493,3 @@ func fatal(err error) {
 	os.Exit(1)
 }
 
-type denyDecisionError struct {
-	Reason string
-}
-
-func (err denyDecisionError) Error() string {
-	return err.Reason
-}

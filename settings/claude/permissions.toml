@@ -10,8 +10,7 @@ reason = "Destructive rm -rf commands are blocked."
 [[deny]]
 name = "block-repo-path-traversal"
 tool = "Read"
-file_path_regex = "Git/kitsune-settings(?:/.*)?$"
-file_path_exclude_regex = "\\.\\."
+file_path_regex = "\\.\\."
 reason = "Path traversal is blocked for repository reads."
 
 [[allow]]
