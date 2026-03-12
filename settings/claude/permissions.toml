@@ -1,0 +1,35 @@
+# Deny rules run before allow rules. If no rule matches, the hook exits without
+# a decision so Claude Code falls back to its normal permission flow.
+
+[[deny]]
+name = "block-destructive-bash"
+tool = "Bash"
+command_regex = "(^|\\s)rm\\s+-rf(\\s|$)"
+reason = "Destructive rm -rf commands are blocked."
+
+[[deny]]
+name = "block-repo-path-traversal"
+tool = "Read"
+file_path_regex = "Git/kitsune-settings(?:/.*)?$"
+file_path_exclude_regex = "\\.\\."
+reason = "Path traversal is blocked for repository reads."
+
+[[allow]]
+name = "allow-safe-bash-in-settings"
+tool = "Bash"
+command_regex = "^(git status|git diff|ls\\b|pwd$|go test\\b|go build\\b)"
+working_directory_regex = "Git/kitsune-settings(?:/.*)?$"
+reason = "Safe repository-local Bash commands are allowed."
+
+[[allow]]
+name = "allow-read-in-settings"
+tool = "Read"
+file_path_regex = "Git/kitsune-settings(?:/.*)?$"
+file_path_exclude_regex = "\\.\\."
+reason = "Reads inside the settings repository are allowed."
+
+[[allow]]
+name = "allow-codebase-analyzer-task"
+tool = "Task"
+subagent_type = "codebase-analyzer"
+reason = "The codebase-analyzer subagent is allowed."

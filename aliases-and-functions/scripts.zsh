@@ -131,6 +131,7 @@ function _script_build_go_binary () {
   local script_path="$1"
   local bin_dir="${SETTINGS_DIR}/custom-scripts/bin"
   local binary_path="$(_script_binary_path "${script_path}")"
+  local relative_script_path="custom-scripts/$(_script_relative_path "${script_path}")"
 
   mkdir -p "${bin_dir}" || {
     echo "Error: Failed to create ${bin_dir}" >&2
@@ -138,7 +139,10 @@ function _script_build_go_binary () {
   }
 
   echo "Compiling $(_script_relative_path "${script_path}")..." >&2
-  command go build -o "${binary_path}" "${script_path}" || {
+  (
+    cd "${SETTINGS_DIR}" &&
+    command go build -o "${binary_path}" "./${relative_script_path}"
+  ) || {
     echo "Error: Failed to compile $(_script_relative_path "${script_path}")" >&2
     return 1
   }
