@@ -194,6 +194,16 @@ function run-script () {
   esac
 }
 
+function compile-all-scripts () {
+  local scripts_dir="${SETTINGS_DIR}/custom-scripts"
+  local script_path
+
+  for script_path in ${scripts_dir}/**/*.go(.N); do
+    [[ "${script_path}" == "${scripts_dir}/bin/"* ]] && continue
+    _script_build_go_binary "${script_path}" || return 1
+  done
+}
+
 function compile-script () {
   if (( $# != 1 )); then
     echo "Usage: compile-script <script-name>" >&2

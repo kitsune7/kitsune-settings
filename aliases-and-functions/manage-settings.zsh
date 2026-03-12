@@ -7,6 +7,7 @@ alias restore-local="cp -R ${ICLOUD_BACKUP_DIR}/local-scripts ${HOME}/.local-scr
 function save () {
   commitMessage=${2:-"Auto-save updates to settings"}
   sync-all
+  compile-all-scripts
   save-repo-changes "${SETTINGS_DIR}" "$commitMessage"
   reload
 }
