@@ -28,6 +28,13 @@ entries:
     repo_path: "claude/skills"
     sync_direction: "repo_to_local"
 
+  - name: "claude-settings"
+    description: "Claude settings"
+    local_path: "$HOME/.claude/settings.json"
+    repo_path: "claude/settings.json"
+    sync_direction: "repo_to_local"
+    merge: true
+
   - name: "hammerspoon"
     description: "Hammerspoon settings"
     local_path: "$HOME/.hammerspoon"

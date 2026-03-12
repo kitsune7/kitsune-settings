@@ -1,4 +1,4 @@
-import fs, { access, mkdir, readFile } from 'node:fs/promises'
+import fs, { access, mkdir, readFile, writeFile } from 'node:fs/promises'
 import { join, isAbsolute, dirname, basename } from 'node:path'
 import { spawn } from 'node:child_process'
 
@@ -163,6 +163,7 @@ function normalizeEntries(config) {
       localPath,
       repoPath,
       sync_direction: syncDirection,
+      merge: entry.merge === 'true' || entry.merge === true,
       _defaults: defaults,
     }
   })
@@ -245,7 +246,9 @@ async function handleEntry(action, entry, { force = false } = {}) {
     return
   }
 
-  if (pathType === 'dir') {
+  if (entry.merge && pathType === 'file') {
+    await syncMergeFile(entry)
+  } else if (pathType === 'dir') {
     await syncDir(entry.localPath, entry.repoPath)
   } else {
     await syncFile(entry, entry.localPath, entry.repoPath)
@@ -253,7 +256,9 @@ async function handleEntry(action, entry, { force = false } = {}) {
 }
 
 async function pushEntry(entry, pathType) {
-  if (pathType === 'dir') {
+  if (entry.merge && pathType === 'file') {
+    await mergeJsonFile(entry.localPath, entry.repoPath)
+  } else if (pathType === 'dir') {
     await rsyncDir(entry.localPath, entry.repoPath)
   } else {
     await rsyncFile(entry.localPath, entry.repoPath)
@@ -261,7 +266,9 @@ async function pushEntry(entry, pathType) {
 }
 
 async function pullEntry(entry, pathType) {
-  if (pathType === 'dir') {
+  if (entry.merge && pathType === 'file') {
+    await mergeJsonFile(entry.repoPath, entry.localPath)
+  } else if (pathType === 'dir') {
     await rsyncDir(entry.repoPath, entry.localPath)
   } else {
     await rsyncFile(entry.repoPath, entry.localPath)
@@ -332,6 +339,67 @@ async function ensureParentDir(destination) {
 async function syncDir(localPath, repoPath) {
   await rsyncDir(localPath, repoPath, { updateOnly: true })
   await rsyncDir(repoPath, localPath, { updateOnly: true })
+}
+
+function deepMerge(target, source) {
+  const result = { ...target }
+  for (const key of Object.keys(source)) {
+    const sourceValue = source[key]
+    const targetValue = result[key]
+    if (
+      sourceValue !== null &&
+      typeof sourceValue === 'object' &&
+      !Array.isArray(sourceValue) &&
+      targetValue !== null &&
+      typeof targetValue === 'object' &&
+      !Array.isArray(targetValue)
+    ) {
+      result[key] = deepMerge(targetValue, sourceValue)
+    } else {
+      result[key] = sourceValue
+    }
+  }
+  return result
+}
+
+async function mergeJsonFile(source, destination) {
+  if (!(await pathExists(source))) return
+
+  const sourceJson = JSON.parse(await readFile(source, 'utf-8'))
+
+  let destJson = {}
+  if (await pathExists(destination)) {
+    destJson = JSON.parse(await readFile(destination, 'utf-8'))
+  } else {
+    await ensureParentDir(destination)
+  }
+
+  const merged = deepMerge(destJson, sourceJson)
+  await writeFile(destination, JSON.stringify(merged, null, 2) + '\n', 'utf-8')
+  console.log(`Merged ${source} -> ${destination}`)
+}
+
+async function syncMergeFile(entry) {
+  const localExists = await pathExists(entry.localPath)
+  const repoExists = await pathExists(entry.repoPath)
+  if (!localExists && !repoExists) return
+  if (!localExists) {
+    await mergeJsonFile(entry.repoPath, entry.localPath)
+    return
+  }
+  if (!repoExists) {
+    await mergeJsonFile(entry.localPath, entry.repoPath)
+    return
+  }
+  const [localStat, repoStat] = await Promise.all([
+    fs.stat(entry.localPath),
+    fs.stat(entry.repoPath),
+  ])
+  if (localStat.mtimeMs > repoStat.mtimeMs) {
+    await mergeJsonFile(entry.localPath, entry.repoPath)
+  } else {
+    await mergeJsonFile(entry.repoPath, entry.localPath)
+  }
 }
 
 async function syncFile(entry, localPath, repoPath) {

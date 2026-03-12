@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git pull:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr comments:*)",
+      "Bash(gh api graphql -f query:*)",
+      "Bash(save)",
+      "Bash(uv run:*)",
+      "Bash(ls:*)",
+      "Bash(pwd:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
