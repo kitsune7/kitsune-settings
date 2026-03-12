@@ -77,3 +77,6 @@ dist/
 
 # Zed
 .ropeproject
+
+# Compiled scripts
+custom-scripts/bin/
