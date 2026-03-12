@@ -15,12 +15,12 @@ function new-ssh-key () {
 }
 
 function dependabot-approve () {
-  "${SETTINGS_DIR}/custom-scripts/dependabot-approve.py" "$@"
+  run-script dependabot-approve "$@"
 }
 
 alias pn="process-notifications"
 function process-notifications () {
-  "${SETTINGS_DIR}/custom-scripts/process-notifications.py" "$@"
+  run-script process-notifications "$@"
 }
 
 alias prr="prs-reviewed"

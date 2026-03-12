@@ -1,5 +1,5 @@
 function settings-sync () {
-  node "${SETTINGS_DIR}/custom-scripts/settings-sync.mjs" "$@"
+  run-script settings-sync "$@"
   source "${HOME}/.zshrc"
 }
 

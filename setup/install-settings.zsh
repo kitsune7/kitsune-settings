@@ -10,6 +10,6 @@ then
 fi
 
 echo "Pulling settings..."
-node "${SETTINGS_DIR}/custom-scripts/settings-sync.mjs" pull --all
+run-script settings-sync pull --all
 source "${HOME}/.zshrc"
 echo
