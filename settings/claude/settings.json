@@ -4,6 +4,8 @@
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git pull:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr comments:*)",
       "Bash(gh api graphql -f query:*)",
