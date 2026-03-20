@@ -21,6 +21,8 @@
       "Bash(head:*)",
       "Bash(tail:*)",
       "Bash(cat:*)",
+      "Read(~/.zshrc)",
+      "Read(~/.local-scripts)",
       "WebFetch(domain:github.com)"
     ]
   },
