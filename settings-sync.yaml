@@ -11,6 +11,13 @@ entries:
     repo_path: "$SETTINGS_DIR/aliases-and-functions"
     sync_direction: "repo_to_local"
 
+  - name: "cronjobs"
+    description: "Saved cronjobs"
+    local_path: "$HOME/scripts"
+    repo_path: "$SETTINGS_DIR/cronjobs/scripts"
+    sync_direction: "repo_to_local"
+    sync_script: "$SETTINGS_DIR/sync-scripts/cron.zsh"
+
   - name: "claude-md"
     description: "Global Claude.md file"
     local_path: "$HOME/.claude/CLAUDE.md"

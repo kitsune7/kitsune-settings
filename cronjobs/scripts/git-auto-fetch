@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+PATH="/usr/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+
+for repo in "${HOME}"/Git/*/; do
+  if [ -d "${repo}.git" ]; then
+    git -C "${repo}" fetch --all --quiet 2>/dev/null
+
+    # If on the default branch with no local changes or unpushed commits, pull
+    default_branch=$(git -C "${repo}" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | perl -pe 's{^refs/remotes/origin/}{}')
+    if [ -n "${default_branch}" ]; then
+      current_branch=$(git -C "${repo}" branch --show-current 2>/dev/null)
+      if [ "${current_branch}" = "${default_branch}" ]; then
+        if git -C "${repo}" diff --quiet 2>/dev/null && git -C "${repo}" diff --cached --quiet 2>/dev/null; then
+          local_ref=$(git -C "${repo}" rev-parse "${default_branch}" 2>/dev/null)
+          remote_ref=$(git -C "${repo}" rev-parse "origin/${default_branch}" 2>/dev/null)
+          if [ "${local_ref}" != "${remote_ref}" ] && git -C "${repo}" merge-base --is-ancestor "${local_ref}" "${remote_ref}" 2>/dev/null; then
+            git -C "${repo}" pull --ff-only --quiet 2>/dev/null
+          fi
+        fi
+      fi
+    fi
+  fi
+done

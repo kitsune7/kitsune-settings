@@ -42,6 +42,9 @@ async function main() {
 
   for (const entry of filteredEntries) {
     await handleEntry(action, entry, { force })
+    if (entry.syncScript) {
+      await runSyncScript(entry)
+    }
   }
 }
 
@@ -158,12 +161,14 @@ function normalizeEntries(config) {
       entry.sync_direction ?? defaults.sync_direction,
       entry.name ?? `${localPath} -> ${repoPath}`
     )
+    const syncScript = entry.sync_script ? expandEnv(entry.sync_script) : null
     return {
       ...entry,
       localPath,
       repoPath,
       sync_direction: syncDirection,
       merge: entry.merge === 'true' || entry.merge === true,
+      syncScript,
       _defaults: defaults,
     }
   })
@@ -308,6 +313,18 @@ async function rsyncDir(source, destination, options = {}) {
   if (options.updateOnly) args.push('--update')
   args.push(`${source.replace(/\/$/, '')}/`, destination)
   await runRsync(args)
+}
+
+async function runSyncScript(entry) {
+  console.log(`Running sync script for ${entry.name}: ${entry.syncScript}`)
+  await new Promise((resolve, reject) => {
+    const child = spawn(entry.syncScript, [], { stdio: 'inherit', shell: true })
+    child.on('close', (code) => {
+      if (code === 0) resolve()
+      else reject(new Error(`sync_script for ${entry.name} failed with exit code ${code}`))
+    })
+    child.on('error', reject)
+  })
 }
 
 async function runRsync(args) {
