@@ -23,5 +23,11 @@
       "Bash(cat:*)",
       "WebFetch(domain:github.com)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "allowWrite": ["~/Git", "/tmp/build", "~/.local-scripts"]
+    }
   }
 }
