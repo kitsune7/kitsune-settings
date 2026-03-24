@@ -1,3 +1,4 @@
+require("zoom_countdown")
 hs.loadSpoon("ReloadConfiguration")
 spoon.ReloadConfiguration:start()
 
