@@ -9,9 +9,15 @@ function _script_binary_path () {
   local script_path="$1"
   local scripts_dir="${SETTINGS_DIR}/custom-scripts"
   local relative_path="${script_path#${scripts_dir}/}"
-  local binary_name="${relative_path%.*}"
+  local binary_name
 
-  binary_name="${binary_name//\//__}"
+  if [[ "${relative_path:t}" == "main.go" ]]; then
+    binary_name="${relative_path:h}"
+    binary_name="${binary_name//\//__}"
+  else
+    binary_name="${relative_path%.*}"
+    binary_name="${binary_name//\//__}"
+  fi
 
   print -r -- "${scripts_dir}/bin/${binary_name}"
 }
@@ -108,6 +114,34 @@ function _script_resolve_path () {
     fi
   done
 
+  local dir_path
+  local dir_name
+  local normalized_dir_name
+  local normalized_dir_relative
+  for dir_path in ${scripts_dir}/**/*(/:N); do
+    [[ "${dir_path}" == "${scripts_dir}/bin"* ]] && continue
+    [[ -f "${dir_path}/main.go" ]] || continue
+
+    relative_path="${dir_path#${scripts_dir}/}"
+    dir_name="${relative_path:t}"
+    normalized_dir_name="${dir_name:l}"
+    normalized_dir_relative="${relative_path:l}"
+
+    if [[ "${normalized_dir_name}" == "${normalized_query}" || "${normalized_dir_relative}" == "${normalized_query}" ]]; then
+      exact_matches+=("${dir_path}/main.go")
+      continue
+    fi
+
+    if [[ "${normalized_dir_name}" == "${normalized_query}"* || "${normalized_dir_relative}" == "${normalized_query}"* ]]; then
+      prefix_matches+=("${dir_path}/main.go")
+      continue
+    fi
+
+    if [[ "${normalized_dir_name}" == *"${normalized_query}"* || "${normalized_dir_relative}" == *"${normalized_query}"* ]]; then
+      substring_matches+=("${dir_path}/main.go")
+    fi
+  done
+
   if (( ${#exact_matches[@]} > 0 )); then
     _script_select_match "${query}" "${exact_matches[@]}"
     return $?
@@ -131,7 +165,21 @@ function _script_build_go_binary () {
   local script_path="$1"
   local bin_dir="${SETTINGS_DIR}/custom-scripts/bin"
   local binary_path="$(_script_binary_path "${script_path}")"
-  local relative_script_path="custom-scripts/$(_script_relative_path "${script_path}")"
+  local module_dir="${script_path:h}"
+
+  while [[ "${module_dir}" != "/" && ! -f "${module_dir}/go.mod" ]]; do
+    module_dir="${module_dir:h}"
+  done
+
+  if [[ ! -f "${module_dir}/go.mod" ]]; then
+    echo "Error: No go.mod found for $(_script_relative_path "${script_path}")" >&2
+    return 1
+  fi
+
+  local script_dir="${script_path:h}"
+  local build_target="./${script_dir#${module_dir}/}"
+  [[ "${build_target}" == "./${script_dir}" ]] && build_target="."
+  [[ "${build_target}" == "./" ]] && build_target="."
 
   mkdir -p "${bin_dir}" || {
     echo "Error: Failed to create ${bin_dir}" >&2
@@ -140,8 +188,8 @@ function _script_build_go_binary () {
 
   echo "Compiling $(_script_relative_path "${script_path}")..." >&2
   (
-    cd "${SETTINGS_DIR}" &&
-    command go build -o "${binary_path}" "./${relative_script_path}"
+    cd "${module_dir}" &&
+    command go build -o "${binary_path}" "${build_target}"
   ) || {
     echo "Error: Failed to compile $(_script_relative_path "${script_path}")" >&2
     return 1
@@ -200,6 +248,7 @@ function compile-all-scripts () {
 
   for script_path in ${scripts_dir}/**/*.go(.N); do
     [[ "${script_path}" == "${scripts_dir}/bin/"* ]] && continue
+    [[ "${script_path:t}" != "main.go" && -f "${script_path:h}/main.go" ]] && continue
     _script_build_go_binary "${script_path}" || return 1
   done
 }
