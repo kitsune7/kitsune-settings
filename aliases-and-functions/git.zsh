@@ -141,24 +141,5 @@ function save-repo-changes () {
 }
 
 function repo-status () {
-  for dir in "${HOME}/Git"/*/; do
-    [ -d "${dir}.git" ] || continue
-
-    repo_name=$(basename "$dir")
-    changes=$(git -C "$dir" status --porcelain 2>/dev/null)
-    default_branch=$(git -C "$dir" remote show origin 2>/dev/null | grep 'HEAD branch' | cut -d' ' -f5)
-    current_branch=$(git -C "$dir" rev-parse --abbrev-ref HEAD 2>/dev/null)
-
-    has_changes=false
-    off_default=false
-
-    [ -n "$changes" ] && has_changes=true
-    [ -n "$default_branch" ] && [ "$current_branch" != "$default_branch" ] && off_default=true
-
-    if $has_changes || $off_default; then
-      echo "$repo_name"
-      $has_changes && echo "  Local changes"
-      $off_default && echo "  On branch: $current_branch (default: $default_branch)"
-    fi
-  done
+  run-script repo-status
 }
