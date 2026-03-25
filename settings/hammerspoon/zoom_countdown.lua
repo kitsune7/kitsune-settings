@@ -22,10 +22,10 @@ local config = {
 
   -- How many seconds before the meeting to PLAY the sound
   -- (e.g., 30 means the sound plays with 30 seconds to go)
-  soundTriggerSecs = 30,
+  soundTriggerSecs = 62,
 
   -- Path to your countdown sound file (mp3, wav, aif, etc.)
-  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.mp3",
+  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.ogg",
 
   -- How often (seconds) to poll the calendar for upcoming events
   pollInterval = 60,
