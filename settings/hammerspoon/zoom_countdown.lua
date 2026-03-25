@@ -22,7 +22,7 @@ local config = {
 
   -- How many seconds before the meeting to PLAY the sound
   -- (e.g., 30 means the sound plays with 30 seconds to go)
-  soundTriggerSecs = 62,
+  soundTriggerSecs = 30,
 
   -- Path to your countdown sound file (mp3, wav, aif, etc.)
   soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.mp3",
@@ -119,82 +119,110 @@ end
 -- the AppleScript date-format-to-epoch locale nightmare.
 --------------------------------------------------------------------------------
 
+local function dumpTable(t, indent)
+  indent = indent or ""
+  if type(t) ~= "table" then return tostring(t) end
+  local parts = {}
+  for k, v in pairs(t) do
+    if type(v) == "table" then
+      table.insert(parts, indent .. tostring(k) .. ": " .. dumpTable(v, indent .. "  "))
+    else
+      table.insert(parts, indent .. tostring(k) .. ": " .. tostring(v))
+    end
+  end
+  return "\n" .. table.concat(parts, "\n")
+end
+
 local function queryNextMeeting()
+  -- Write JXA to a temp file and run via shell osascript.
+  -- This bypasses hs.osascript.javascript which has issues returning
+  -- results reliably (error tables instead of actual output).
+  local scriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_query.js"
+  local lookAheadSecs = config.lookAheadSecs
+
   local jxa = string.format([[
-    ObjC.import('Foundation');
+var calApp = Application("Calendar");
+var now = new Date();
+var horizon = new Date(now.getTime() + %d * 1000);
 
-    var calApp  = Application("Calendar");
-    calApp.includeStandardAdditions = true;
+var results = [];
+var calendars = calApp.calendars();
 
-    var now     = new Date();
-    var horizon = new Date(now.getTime() + %d * 1000);
+for (var ci = 0; ci < calendars.length; ci++) {
+  var cal = calendars[ci];
+  var calName = cal.name();
+  var events;
+  try {
+    events = cal.events.whose({
+      _and: [
+        { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
+        { startDate: { _lessThanEquals: horizon } }
+      ]
+    })();
+  } catch(e) {
+    continue;
+  }
 
-    var results = [];
+  for (var ei = 0; ei < events.length; ei++) {
+    var evt = events[ei];
+    var startEpoch;
+    try {
+      startEpoch = Math.floor(evt.startDate().getTime() / 1000);
+    } catch(e) { continue; }
 
-    var calendars = calApp.calendars();
-    for (var ci = 0; ci < calendars.length; ci++) {
-      var cal = calendars[ci];
-      var calName = cal.name();
-      var events;
-      try {
-        events = cal.events.whose({
-          _and: [
-            { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
-            { startDate: { _lessThanEquals: horizon } }
-          ]
-        })();
-      } catch(e) {
-        continue;
-      }
+    var summary = "", location = "", url = "", description = "";
+    try { summary     = evt.summary()     || ""; } catch(e) {}
+    try { location    = evt.location()    || ""; } catch(e) {}
+    try { url         = evt.url()         || ""; } catch(e) {}
+    try { description = evt.description() || ""; } catch(e) {}
 
-      for (var ei = 0; ei < events.length; ei++) {
-        var evt = events[ei];
-        var startDate, summary, location, url, description;
-        try { startDate   = evt.startDate().getTime() / 1000; } catch(e) { continue; }
-        try { summary     = evt.summary()     || ""; } catch(e) { summary = ""; }
-        try { location    = evt.location()    || ""; } catch(e) { location = ""; }
-        try { url         = evt.url()         || ""; } catch(e) { url = ""; }
-        try { description = evt.description() || ""; } catch(e) { description = ""; }
+    results.push({
+      title:      summary,
+      startEpoch: startEpoch,
+      location:   location,
+      url:        url,
+      notes:      description,
+      calendar:   calName
+    });
+  }
+}
 
-        if (startDate >= (now.getTime() / 1000 - 60)) {
-          results.push({
-            title:       summary,
-            startEpoch:  Math.floor(startDate),
-            location:    location,
-            url:         url,
-            notes:       description,
-            calendar:    calName
-          });
-        }
-      }
-    }
+results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
+JSON.stringify(results);
+  ]], lookAheadSecs)
 
-    results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
+  -- Write script to temp file
+  local f = io.open(scriptPath, "w")
+  if not f then
+    warn("Could not write temp JXA script to: " .. scriptPath)
+    return nil
+  end
+  f:write(jxa)
+  f:close()
 
-    JSON.stringify(results);
-  ]], config.lookAheadSecs)
+  -- Execute via shell osascript
+  local cmd = "/usr/bin/osascript -l JavaScript " .. scriptPath .. " 2>&1"
+  local output, status, _, rc = hs.execute(cmd)
 
-  local ok, result, rawOutput = hs.osascript.javascript(jxa)
-
-  if not ok then
-    warn("JXA calendar query failed. Raw output: " .. tostring(rawOutput))
-    warn("Check: System Settings → Privacy & Security → Calendars → Hammerspoon")
+  if not status then
+    warn("osascript failed (exit code " .. tostring(rc) .. "):")
+    warn("  " .. (output or "(no output)"))
+    warn("Check: System Settings → Privacy & Security → Automation → Hammerspoon → Calendar.app")
     return nil
   end
 
-  -- hs.osascript.javascript may return a parsed table or a JSON string
-  local events
-  if type(result) == "table" then
-    events = result
-  elseif type(result) == "string" then
-    local decoded, _, err = hs.json.decode(result)
-    if not decoded then
-      warn("Failed to parse JXA JSON: " .. tostring(err))
-      return nil
-    end
-    events = decoded
-  else
-    warn("Unexpected JXA result type: " .. type(result))
+  if not output or output:match("^%s*$") then
+    log("osascript returned empty output")
+    return nil
+  end
+
+  -- Trim whitespace
+  output = output:match("^%s*(.-)%s*$")
+
+  local events, _, err = hs.json.decode(output)
+  if not events then
+    warn("Failed to parse JSON from osascript: " .. tostring(err))
+    warn("Raw output: " .. output:sub(1, 300))
     return nil
   end
 
@@ -391,25 +419,24 @@ local function diagnose()
   print("")
 
   -- 1. Check calendar access
-  print("[1] Testing Calendar.app access via JXA...")
-  local testScript = [[
-    var calApp = Application("Calendar");
-    var cals = calApp.calendars();
-    var names = [];
-    for (var i = 0; i < cals.length; i++) {
-      names.push(cals[i].name());
-    }
-    JSON.stringify(names);
-  ]]
-  local ok, result = hs.osascript.javascript(testScript)
-  if not ok then
-    print("   ❌ FAILED — Hammerspoon likely doesn't have calendar access.")
-    print("   Fix: System Settings → Privacy & Security → Calendars → enable Hammerspoon")
-    print("   If Hammerspoon isn't listed, try toggling Full Disk Access for it.")
+  print("[1] Testing Calendar.app access via shell osascript...")
+  local testResult, testOk = hs.execute(
+    '/usr/bin/osascript -l JavaScript -e \'var c=Application("Calendar").calendars();var n=[];for(var i=0;i<c.length;i++)n.push(c[i].name());JSON.stringify(n)\' 2>&1'
+  )
+  if not testOk then
+    print("   ❌ FAILED — osascript cannot talk to Calendar.app")
+    print("   Error: " .. (testResult or "(no output)"))
+    print("")
+    print("   Fix: System Settings → Privacy & Security → Automation")
+    print("   → Hammerspoon → Calendar.app must be ON")
+    print("")
+    print("   If that's already on, try resetting permissions in Terminal:")
+    print("     tccutil reset AppleEvents com.hammerspoon.Hammerspoon")
+    print("   Then reload Hammerspoon and allow the permission prompt.")
     return
   end
 
-  local calendars = type(result) == "table" and result or (hs.json.decode(result) or {})
+  local calendars = hs.json.decode(testResult or "[]") or {}
   print("   ✅ Found " .. #calendars .. " calendar(s):")
   for _, name in ipairs(calendars) do
     print("      • " .. name)
@@ -420,52 +447,61 @@ local function diagnose()
   end
   print("")
 
-  -- 2. Look for events in the next hour
+  -- 2. Look for events in the next hour (via shell osascript)
   print("[2] Looking for ALL events in the next 60 minutes...")
-  local evtScript = [[
-    var calApp  = Application("Calendar");
-    var now     = new Date();
-    var horizon = new Date(now.getTime() + 3600000);
+  local diagScriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_diag.js"
+  local diagJS = [[
+var calApp = Application("Calendar");
+var now = new Date();
+var horizon = new Date(now.getTime() + 3600000);
 
-    var results = [];
-    var calendars = calApp.calendars();
-    for (var ci = 0; ci < calendars.length; ci++) {
-      var cal = calendars[ci];
-      var events;
-      try {
-        events = cal.events.whose({
-          _and: [
-            { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
-            { startDate: { _lessThanEquals: horizon } }
-          ]
-        })();
-      } catch(e) { continue; }
-      for (var ei = 0; ei < events.length; ei++) {
-        var evt = events[ei];
-        try {
-          results.push({
-            title:    evt.summary()  || "(no title)",
-            start:    evt.startDate().toISOString(),
-            epoch:    Math.floor(evt.startDate().getTime() / 1000),
-            location: (evt.location()    || "").substring(0, 100),
-            url:      (evt.url()         || "").substring(0, 100),
-            notes:    (evt.description() || "").substring(0, 100),
-            calendar: cal.name()
-          });
-        } catch(e) {}
-      }
-    }
-    results.sort(function(a, b) { return a.epoch - b.epoch; });
-    JSON.stringify(results, null, 2);
+var results = [];
+var calendars = calApp.calendars();
+for (var ci = 0; ci < calendars.length; ci++) {
+  var cal = calendars[ci];
+  var calName = cal.name();
+  var events;
+  try {
+    events = cal.events.whose({
+      _and: [
+        { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
+        { startDate: { _lessThanEquals: horizon } }
+      ]
+    })();
+  } catch(e) { continue; }
+  for (var ei = 0; ei < events.length; ei++) {
+    var evt = events[ei];
+    try {
+      results.push({
+        title:    evt.summary()  || "(no title)",
+        start:    evt.startDate().toISOString(),
+        epoch:    Math.floor(evt.startDate().getTime() / 1000),
+        location: (evt.location()    || "").substring(0, 100),
+        url:      (evt.url()         || "").substring(0, 100),
+        notes:    (evt.description() || "").substring(0, 100),
+        calendar: calName
+      });
+    } catch(e) {}
+  }
+}
+results.sort(function(a, b) { return a.epoch - b.epoch; });
+JSON.stringify(results, null, 2);
   ]]
 
-  local ok2, result2 = hs.osascript.javascript(evtScript)
-  if not ok2 then
-    print("   ❌ Event query failed: " .. tostring(result2))
+  local df = io.open(diagScriptPath, "w")
+  if df then
+    df:write(diagJS)
+    df:close()
+  end
+
+  local evtOutput, evtOk = hs.execute("/usr/bin/osascript -l JavaScript " .. diagScriptPath .. " 2>&1")
+  if not evtOk then
+    print("   ❌ Event query failed:")
+    print("   " .. (evtOutput or "(no output)"))
     return
   end
 
-  local events = type(result2) == "table" and result2 or (hs.json.decode(result2) or {})
+  local events = hs.json.decode(evtOutput or "[]") or {}
   if #events == 0 then
     print("   ⚠ No events found in the next hour.")
     print("   → Open Calendar.app and verify your Google events appear there.")
