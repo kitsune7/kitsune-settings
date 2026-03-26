@@ -140,7 +140,7 @@ local swiftSourcePath = os.getenv("HOME") .. "/.hammerspoon/zoom_countdown_helpe
 --- Swift gives us proper EventKit + DispatchSemaphore support that actually works,
 --- unlike JXA's ObjC bridge which chokes on NSNull returns from EventKit.
 local function ensureSwiftHelper()
-  local swiftSource = [[
+  local swiftSource = [=[
 import EventKit
 import Foundation
 
@@ -232,7 +232,7 @@ if let data = try? JSONSerialization.data(withJSONObject: results),
    let str = String(data: data, encoding: .utf8) {
     print(str)
 }
-]]
+]=]
 
   -- Write source
   local f = io.open(swiftSourcePath, "w")
