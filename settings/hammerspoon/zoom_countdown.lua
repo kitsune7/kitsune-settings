@@ -22,10 +22,10 @@ local config = {
 
   -- How many seconds before the meeting to PLAY the sound
   -- (e.g., 30 means the sound plays with 30 seconds to go)
-  soundTriggerSecs = 62,
+  soundTriggerSecs = 30,
 
   -- Path to your countdown sound file (mp3, wav, aif, etc.)
-  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.ogg",
+  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.mp3",
 
   -- How often (seconds) to poll the calendar for upcoming events
   pollInterval = 60,
@@ -134,61 +134,54 @@ local function dumpTable(t, indent)
 end
 
 local function queryNextMeeting()
-  -- Write JXA to a temp file and run via shell osascript.
-  -- This bypasses hs.osascript.javascript which has issues returning
-  -- results reliably (error tables instead of actual output).
+  -- Uses EventKit (Apple's native calendar framework) via the ObjC bridge.
+  -- This gives us proper indexed date-range queries that return in milliseconds,
+  -- unlike the Calendar.app scripting bridge whose() filter which fetches ALL
+  -- events and filters client-side (causing multi-minute hangs on large calendars).
   local scriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_query.js"
   local lookAheadSecs = config.lookAheadSecs
 
   local jxa = string.format([[
-var calApp = Application("Calendar");
-var now = new Date();
-var horizon = new Date(now.getTime() + %d * 1000);
+ObjC.import('EventKit');
+ObjC.import('Foundation');
 
-var results = [];
-var calendars = calApp.calendars();
+var store = $.EKEventStore.alloc.init;
 
-for (var ci = 0; ci < calendars.length; ci++) {
-  var cal = calendars[ci];
-  var calName = cal.name();
-  var events;
-  try {
-    events = cal.events.whose({
-      _and: [
-        { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
-        { startDate: { _lessThanEquals: horizon } }
-      ]
-    })();
-  } catch(e) {
-    continue;
-  }
+// Check authorization status (0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess)
+var status = $.EKEventStore.authorizationStatusForEntityType(0); // 0 = EKEntityTypeEvent
+if (status < 3) {
+  // Not authorized — output a diagnostic marker so Lua knows
+  JSON.stringify({ error: "not_authorized", status: status });
+} else {
+  var start   = $.NSDate.dateWithTimeIntervalSinceNow(-60);
+  var horizon = $.NSDate.dateWithTimeIntervalSinceNow(%d);
+  var pred    = store.predicateForEventsWithStartDateEndDateCalendars(start, horizon, null);
+  var nsEvents = store.eventsMatchingPredicate(pred);
 
-  for (var ei = 0; ei < events.length; ei++) {
-    var evt = events[ei];
-    var startEpoch;
-    try {
-      startEpoch = Math.floor(evt.startDate().getTime() / 1000);
-    } catch(e) { continue; }
+  var results = [];
+  for (var i = 0; i < nsEvents.count; i++) {
+    var evt = nsEvents.objectAtIndex(i);
+    var startEpoch = Math.floor(evt.startDate.timeIntervalSince1970);
 
-    var summary = "", location = "", url = "", description = "";
-    try { summary     = evt.summary()     || ""; } catch(e) {}
-    try { location    = evt.location()    || ""; } catch(e) {}
-    try { url         = evt.url()         || ""; } catch(e) {}
-    try { description = evt.description() || ""; } catch(e) {}
+    var title    = ObjC.unwrap(evt.title)    || "";
+    var location = ObjC.unwrap(evt.location) || "";
+    var url      = evt.URL ? (ObjC.unwrap(evt.URL.absoluteString) || "") : "";
+    var notes    = ObjC.unwrap(evt.notes)    || "";
+    var calName  = ObjC.unwrap(evt.calendar.title) || "";
 
     results.push({
-      title:      summary,
+      title:      title,
       startEpoch: startEpoch,
       location:   location,
       url:        url,
-      notes:      description,
+      notes:      notes,
       calendar:   calName
     });
   }
-}
 
-results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
-JSON.stringify(results);
+  results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
+  JSON.stringify(results);
+}
   ]], lookAheadSecs)
 
   -- Write script to temp file
@@ -207,7 +200,8 @@ JSON.stringify(results);
   if not status then
     warn("osascript failed (exit code " .. tostring(rc) .. "):")
     warn("  " .. (output or "(no output)"))
-    warn("Check: System Settings → Privacy & Security → Automation → Hammerspoon → Calendar.app")
+    warn("Tip: Hammerspoon (or osascript) may need Calendars access in")
+    warn("  System Settings → Privacy & Security → Calendars")
     return nil
   end
 
@@ -219,10 +213,25 @@ JSON.stringify(results);
   -- Trim whitespace
   output = output:match("^%s*(.-)%s*$")
 
-  local events, _, err = hs.json.decode(output)
-  if not events then
+  local decoded, _, err = hs.json.decode(output)
+  if not decoded then
     warn("Failed to parse JSON from osascript: " .. tostring(err))
     warn("Raw output: " .. output:sub(1, 300))
+    return nil
+  end
+
+  -- Check if EventKit returned an authorization error
+  if type(decoded) == "table" and decoded.error == "not_authorized" then
+    warn("EventKit not authorized (status=" .. tostring(decoded.status) .. ")")
+    warn("Fix: System Settings → Privacy & Security → Calendars")
+    warn("  → Enable access for 'osascript' or 'Hammerspoon'")
+    return nil
+  end
+
+  -- Should be an array of events
+  local events = decoded
+  if type(events) ~= "table" then
+    warn("Unexpected response type from EventKit query")
     return nil
   end
 
@@ -418,26 +427,54 @@ local function diagnose()
   print("=== Zoom Countdown Diagnostics ===")
   print("")
 
-  -- 1. Check calendar access
-  print("[1] Testing Calendar.app access via shell osascript...")
-  local testResult, testOk = hs.execute(
-    '/usr/bin/osascript -l JavaScript -e \'var c=Application("Calendar").calendars();var n=[];for(var i=0;i<c.length;i++)n.push(c[i].name());JSON.stringify(n)\' 2>&1'
-  )
-  if not testOk then
-    print("   ❌ FAILED — osascript cannot talk to Calendar.app")
-    print("   Error: " .. (testResult or "(no output)"))
+  -- 1. Check EventKit calendar access
+  print("[1] Testing EventKit calendar access...")
+  local diagScriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_diag.js"
+
+  -- Step 1 script: list all calendars via EventKit
+  local listCalJS = [[
+ObjC.import('EventKit');
+ObjC.import('Foundation');
+
+var store = $.EKEventStore.alloc.init;
+var status = $.EKEventStore.authorizationStatusForEntityType(0);
+// 0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess(macOS14+)
+var authorized = (status >= 3);
+
+var cals = store.calendarsForEntityType(0);
+var names = [];
+for (var i = 0; i < cals.count; i++) {
+  names.push(ObjC.unwrap(cals.objectAtIndex(i).title));
+}
+JSON.stringify({ authorized: authorized, status: status, calendars: names });
+  ]]
+
+  local df = io.open(diagScriptPath, "w")
+  if df then df:write(listCalJS); df:close() end
+
+  local calResult, calOk = hs.execute("/usr/bin/osascript -l JavaScript " .. diagScriptPath .. " 2>&1")
+  if not calOk then
+    print("   ❌ FAILED — osascript returned an error:")
+    print("   " .. (calResult or "(no output)"))
     print("")
-    print("   Fix: System Settings → Privacy & Security → Automation")
-    print("   → Hammerspoon → Calendar.app must be ON")
-    print("")
-    print("   If that's already on, try resetting permissions in Terminal:")
-    print("     tccutil reset AppleEvents com.hammerspoon.Hammerspoon")
-    print("   Then reload Hammerspoon and allow the permission prompt.")
+    print("   Fix: System Settings → Privacy & Security → Calendars")
+    print("   → Make sure 'osascript' or 'Hammerspoon' is listed and enabled.")
     return
   end
 
-  local calendars = hs.json.decode(testResult or "[]") or {}
-  print("   ✅ Found " .. #calendars .. " calendar(s):")
+  local calData = hs.json.decode(calResult or "{}") or {}
+  if calData.authorized then
+    print("   ✅ EventKit access granted (status=" .. tostring(calData.status) .. ")")
+  else
+    print("   ❌ EventKit access NOT granted (status=" .. tostring(calData.status) .. ")")
+    print("   Status codes: 0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess")
+    print("   Fix: System Settings → Privacy & Security → Calendars")
+    print("   → Enable access for 'osascript' or 'Hammerspoon'")
+    return
+  end
+
+  local calendars = calData.calendars or {}
+  print("   Found " .. #calendars .. " calendar(s):")
   for _, name in ipairs(calendars) do
     print("      • " .. name)
   end
@@ -447,52 +484,50 @@ local function diagnose()
   end
   print("")
 
-  -- 2. Look for events in the next hour (via shell osascript)
-  print("[2] Looking for ALL events in the next 60 minutes...")
-  local diagScriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_diag.js"
+  -- 2. Look for events in the next hour via EventKit
+  print("[2] Looking for ALL events in the next 60 minutes (via EventKit)...")
   local diagJS = [[
-var calApp = Application("Calendar");
-var now = new Date();
-var horizon = new Date(now.getTime() + 3600000);
+ObjC.import('EventKit');
+ObjC.import('Foundation');
 
-var results = [];
-var calendars = calApp.calendars();
-for (var ci = 0; ci < calendars.length; ci++) {
-  var cal = calendars[ci];
-  var calName = cal.name();
-  var events;
-  try {
-    events = cal.events.whose({
-      _and: [
-        { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
-        { startDate: { _lessThanEquals: horizon } }
-      ]
-    })();
-  } catch(e) { continue; }
-  for (var ei = 0; ei < events.length; ei++) {
-    var evt = events[ei];
-    try {
-      results.push({
-        title:    evt.summary()  || "(no title)",
-        start:    evt.startDate().toISOString(),
-        epoch:    Math.floor(evt.startDate().getTime() / 1000),
-        location: (evt.location()    || "").substring(0, 100),
-        url:      (evt.url()         || "").substring(0, 100),
-        notes:    (evt.description() || "").substring(0, 100),
-        calendar: calName
-      });
-    } catch(e) {}
+var store = $.EKEventStore.alloc.init;
+var status = $.EKEventStore.authorizationStatusForEntityType(0);
+if (status < 3) {
+  JSON.stringify([]);
+} else {
+  var start   = $.NSDate.dateWithTimeIntervalSinceNow(-60);
+  var horizon = $.NSDate.dateWithTimeIntervalSinceNow(3600);
+  var pred    = store.predicateForEventsWithStartDateEndDateCalendars(start, horizon, null);
+  var nsEvents = store.eventsMatchingPredicate(pred);
+
+  var results = [];
+  for (var i = 0; i < nsEvents.count; i++) {
+    var evt = nsEvents.objectAtIndex(i);
+    var startEpoch = Math.floor(evt.startDate.timeIntervalSince1970);
+
+    var title    = ObjC.unwrap(evt.title)    || "";
+    var location = ObjC.unwrap(evt.location) || "";
+    var url      = evt.URL ? (ObjC.unwrap(evt.URL.absoluteString) || "") : "";
+    var notes    = ObjC.unwrap(evt.notes)    || "";
+    var calName  = ObjC.unwrap(evt.calendar.title) || "";
+
+    results.push({
+      title:    title,
+      start:    ObjC.unwrap(evt.startDate.description),
+      epoch:    startEpoch,
+      location: location.substring(0, 100),
+      url:      url.substring(0, 100),
+      notes:    notes.substring(0, 100),
+      calendar: calName
+    });
   }
+  results.sort(function(a, b) { return a.epoch - b.epoch; });
+  JSON.stringify(results, null, 2);
 }
-results.sort(function(a, b) { return a.epoch - b.epoch; });
-JSON.stringify(results, null, 2);
   ]]
 
-  local df = io.open(diagScriptPath, "w")
-  if df then
-    df:write(diagJS)
-    df:close()
-  end
+  df = io.open(diagScriptPath, "w")
+  if df then df:write(diagJS); df:close() end
 
   local evtOutput, evtOk = hs.execute("/usr/bin/osascript -l JavaScript " .. diagScriptPath .. " 2>&1")
   if not evtOk then
