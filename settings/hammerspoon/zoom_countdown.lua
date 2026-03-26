@@ -22,10 +22,10 @@ local config = {
 
   -- How many seconds before the meeting to PLAY the sound
   -- (e.g., 30 means the sound plays with 30 seconds to go)
-  soundTriggerSecs = 62,
+  soundTriggerSecs = 30,
 
   -- Path to your countdown sound file (mp3, wav, aif, etc.)
-  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.ogg",
+  soundPath = os.getenv("HOME") .. "/.hammerspoon/sounds/countdown.mp3",
 
   -- How often (seconds) to poll the calendar for upcoming events
   pollInterval = 60,
@@ -133,105 +133,181 @@ local function dumpTable(t, indent)
   return "\n" .. table.concat(parts, "\n")
 end
 
-local function queryNextMeeting()
-  -- Uses EventKit (Apple's native calendar framework) via the ObjC bridge.
-  -- This gives us proper indexed date-range queries that return in milliseconds,
-  -- unlike the Calendar.app scripting bridge whose() filter which fetches ALL
-  -- events and filters client-side (causing multi-minute hangs on large calendars).
-  local scriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_query.js"
-  local lookAheadSecs = config.lookAheadSecs
+local swiftBinaryPath = os.getenv("HOME") .. "/.hammerspoon/zoom_countdown_helper"
+local swiftSourcePath = os.getenv("HOME") .. "/.hammerspoon/zoom_countdown_helper.swift"
 
-  local jxa = string.format([[
-ObjC.import('EventKit');
-ObjC.import('Foundation');
+--- Write and compile the Swift helper binary (runs once at startup).
+--- Swift gives us proper EventKit + DispatchSemaphore support that actually works,
+--- unlike JXA's ObjC bridge which chokes on NSNull returns from EventKit.
+local function ensureSwiftHelper()
+  local swiftSource = [[
+import EventKit
+import Foundation
 
-var store = $.EKEventStore.alloc.init;
+// Parse look-ahead seconds from command line (default 600)
+let lookAhead: TimeInterval = CommandLine.arguments.count > 1
+    ? (Double(CommandLine.arguments[1]) ?? 600)
+    : 600
 
-// Check authorization status (0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess)
-var status = $.EKEventStore.authorizationStatusForEntityType(0); // 0 = EKEntityTypeEvent
-if (status < 3) {
-  // Not authorized — output a diagnostic marker so Lua knows
-  JSON.stringify({ error: "not_authorized", status: status });
+// "list-calendars" mode for diagnostics
+let listMode = CommandLine.arguments.contains("--list-calendars")
+// "diagnose" mode shows events in next hour
+let diagnoseMode = CommandLine.arguments.contains("--diagnose")
+
+let store = EKEventStore()
+let semaphore = DispatchSemaphore(value: 0)
+var accessGranted = false
+
+// Request access synchronously using a semaphore
+if #available(macOS 14.0, *) {
+    store.requestFullAccessToEvents { granted, error in
+        accessGranted = granted
+        semaphore.signal()
+    }
 } else {
-  var start   = $.NSDate.dateWithTimeIntervalSinceNow(-60);
-  var horizon = $.NSDate.dateWithTimeIntervalSinceNow(%d);
-  var pred    = store.predicateForEventsWithStartDateEndDateCalendars(start, horizon, null);
-  var nsEvents = store.eventsMatchingPredicate(pred);
-
-  var results = [];
-  for (var i = 0; i < nsEvents.count; i++) {
-    var evt = nsEvents.objectAtIndex(i);
-    var startEpoch = Math.floor(evt.startDate.timeIntervalSince1970);
-
-    var title    = ObjC.unwrap(evt.title)    || "";
-    var location = ObjC.unwrap(evt.location) || "";
-    var url      = evt.URL ? (ObjC.unwrap(evt.URL.absoluteString) || "") : "";
-    var notes    = ObjC.unwrap(evt.notes)    || "";
-    var calName  = ObjC.unwrap(evt.calendar.title) || "";
-
-    results.push({
-      title:      title,
-      startEpoch: startEpoch,
-      location:   location,
-      url:        url,
-      notes:      notes,
-      calendar:   calName
-    });
-  }
-
-  results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
-  JSON.stringify(results);
+    store.requestAccess(to: .event) { granted, error in
+        accessGranted = granted
+        semaphore.signal()
+    }
 }
-  ]], lookAheadSecs)
+semaphore.wait()
 
-  -- Write script to temp file
-  local f = io.open(scriptPath, "w")
+if listMode {
+    // Output calendar list as JSON
+    let cals = store.calendars(for: .event)
+    var names: [[String: Any]] = []
+    for cal in cals {
+        names.append(["name": cal.title, "source": cal.source?.title ?? ""])
+    }
+    let status = EKEventStore.authorizationStatus(for: .event)
+    let result: [String: Any] = [
+        "authorized": accessGranted,
+        "status": status.rawValue,
+        "calendars": names
+    ]
+    if let data = try? JSONSerialization.data(withJSONObject: result),
+       let str = String(data: data, encoding: .utf8) {
+        print(str)
+    }
+    exit(0)
+}
+
+guard accessGranted else {
+    let status = EKEventStore.authorizationStatus(for: .event)
+    print("{\"error\":\"not_authorized\",\"status\":\(status.rawValue)}")
+    exit(1)
+}
+
+let now = Date()
+let start = now.addingTimeInterval(-60)
+let effectiveLookAhead = diagnoseMode ? 3600.0 : lookAhead
+let horizon = now.addingTimeInterval(effectiveLookAhead)
+
+let predicate = store.predicateForEvents(withStart: start, end: horizon, calendars: nil)
+let events = store.events(matching: predicate)
+
+var results: [[String: Any]] = []
+for event in events {
+    var dict: [String: Any] = [
+        "title": event.title ?? "",
+        "startEpoch": Int(event.startDate.timeIntervalSince1970),
+        "location": event.location ?? "",
+        "notes": (event.notes ?? ""),
+        "calendar": event.calendar?.title ?? ""
+    ]
+    if let url = event.url {
+        dict["url"] = url.absoluteString
+    } else {
+        dict["url"] = ""
+    }
+    if diagnoseMode {
+        dict["start"] = ISO8601DateFormatter().string(from: event.startDate)
+    }
+    results.append(dict)
+}
+
+results.sort { ($0["startEpoch"] as? Int ?? 0) < ($1["startEpoch"] as? Int ?? 0) }
+
+if let data = try? JSONSerialization.data(withJSONObject: results),
+   let str = String(data: data, encoding: .utf8) {
+    print(str)
+}
+]]
+
+  -- Write source
+  local f = io.open(swiftSourcePath, "w")
   if not f then
-    warn("Could not write temp JXA script to: " .. scriptPath)
-    return nil
+    warn("Could not write Swift source to: " .. swiftSourcePath)
+    return false
   end
-  f:write(jxa)
+  f:write(swiftSource)
   f:close()
 
-  -- Execute via shell osascript
-  local cmd = "/usr/bin/osascript -l JavaScript " .. scriptPath .. " 2>&1"
-  local output, status, _, rc = hs.execute(cmd)
+  -- Check if binary already exists and is newer than source
+  local srcAttr = hs.fs.attributes(swiftSourcePath)
+  local binAttr = hs.fs.attributes(swiftBinaryPath)
+  if binAttr and srcAttr and binAttr.modification >= srcAttr.modification then
+    log("Swift helper binary is up to date")
+    return true
+  end
+
+  -- Compile
+  log("Compiling Swift helper...")
+  local compileCmd = string.format(
+    "/usr/bin/swiftc -O -o %s %s -framework EventKit 2>&1",
+    swiftBinaryPath, swiftSourcePath
+  )
+  local output, status = hs.execute(compileCmd)
+  if not status then
+    warn("Failed to compile Swift helper:")
+    warn("  " .. (output or "(no output)"))
+    warn("Make sure Xcode command line tools are installed: xcode-select --install")
+    return false
+  end
+
+  log("Swift helper compiled successfully")
+  return true
+end
+
+local function queryNextMeeting()
+  if not hs.fs.attributes(swiftBinaryPath) then
+    if not ensureSwiftHelper() then return nil end
+  end
+
+  local cmd = string.format("%s %d 2>&1", swiftBinaryPath, config.lookAheadSecs)
+  local output, status = hs.execute(cmd)
 
   if not status then
-    warn("osascript failed (exit code " .. tostring(rc) .. "):")
+    warn("Swift helper failed:")
     warn("  " .. (output or "(no output)"))
-    warn("Tip: Hammerspoon (or osascript) may need Calendars access in")
-    warn("  System Settings → Privacy & Security → Calendars")
     return nil
   end
 
   if not output or output:match("^%s*$") then
-    log("osascript returned empty output")
+    log("Swift helper returned empty output")
     return nil
   end
 
-  -- Trim whitespace
   output = output:match("^%s*(.-)%s*$")
 
   local decoded, _, err = hs.json.decode(output)
   if not decoded then
-    warn("Failed to parse JSON from osascript: " .. tostring(err))
+    warn("Failed to parse JSON from helper: " .. tostring(err))
     warn("Raw output: " .. output:sub(1, 300))
     return nil
   end
 
-  -- Check if EventKit returned an authorization error
+  -- Check for authorization error
   if type(decoded) == "table" and decoded.error == "not_authorized" then
     warn("EventKit not authorized (status=" .. tostring(decoded.status) .. ")")
-    warn("Fix: System Settings → Privacy & Security → Calendars")
-    warn("  → Enable access for 'osascript' or 'Hammerspoon'")
+    warn("Run the helper manually once to trigger the permission prompt:")
+    warn("  " .. swiftBinaryPath .. " --list-calendars")
     return nil
   end
 
-  -- Should be an array of events
   local events = decoded
   if type(events) ~= "table" then
-    warn("Unexpected response type from EventKit query")
+    warn("Unexpected response from helper")
     return nil
   end
 
@@ -427,38 +503,25 @@ local function diagnose()
   print("=== Zoom Countdown Diagnostics ===")
   print("")
 
-  -- 1. Check EventKit calendar access
+  -- 0. Ensure Swift helper is compiled
+  print("[0] Checking Swift helper binary...")
+  if not ensureSwiftHelper() then
+    print("   ❌ Could not compile Swift helper. Do you have Xcode CLI tools?")
+    print("   Run: xcode-select --install")
+    return
+  end
+  print("   ✅ Swift helper ready: " .. swiftBinaryPath)
+  print("")
+
+  -- 1. Check EventKit calendar access + list calendars
   print("[1] Testing EventKit calendar access...")
-  local diagScriptPath = os.getenv("HOME") .. "/.hammerspoon/.zoom_countdown_diag.js"
-
-  -- Step 1 script: list all calendars via EventKit
-  local listCalJS = [[
-ObjC.import('EventKit');
-ObjC.import('Foundation');
-
-var store = $.EKEventStore.alloc.init;
-var status = $.EKEventStore.authorizationStatusForEntityType(0);
-// 0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess(macOS14+)
-var authorized = (status >= 3);
-
-var cals = store.calendarsForEntityType(0);
-var names = [];
-for (var i = 0; i < cals.count; i++) {
-  names.push(ObjC.unwrap(cals.objectAtIndex(i).title));
-}
-JSON.stringify({ authorized: authorized, status: status, calendars: names });
-  ]]
-
-  local df = io.open(diagScriptPath, "w")
-  if df then df:write(listCalJS); df:close() end
-
-  local calResult, calOk = hs.execute("/usr/bin/osascript -l JavaScript " .. diagScriptPath .. " 2>&1")
+  local calResult, calOk = hs.execute(swiftBinaryPath .. " --list-calendars 2>&1")
   if not calOk then
-    print("   ❌ FAILED — osascript returned an error:")
+    print("   ❌ FAILED:")
     print("   " .. (calResult or "(no output)"))
     print("")
-    print("   Fix: System Settings → Privacy & Security → Calendars")
-    print("   → Make sure 'osascript' or 'Hammerspoon' is listed and enabled.")
+    print("   Try running the helper manually in Terminal to trigger the permission prompt:")
+    print("   " .. swiftBinaryPath .. " --list-calendars")
     return
   end
 
@@ -468,15 +531,19 @@ JSON.stringify({ authorized: authorized, status: status, calendars: names });
   else
     print("   ❌ EventKit access NOT granted (status=" .. tostring(calData.status) .. ")")
     print("   Status codes: 0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess")
-    print("   Fix: System Settings → Privacy & Security → Calendars")
-    print("   → Enable access for 'osascript' or 'Hammerspoon'")
+    print("")
+    print("   Run the helper manually in Terminal to trigger the permission prompt:")
+    print("   " .. swiftBinaryPath .. " --list-calendars")
+    print("   Then allow access when macOS asks.")
     return
   end
 
   local calendars = calData.calendars or {}
   print("   Found " .. #calendars .. " calendar(s):")
-  for _, name in ipairs(calendars) do
-    print("      • " .. name)
+  for _, cal in ipairs(calendars) do
+    local name = type(cal) == "table" and cal.name or tostring(cal)
+    local source = type(cal) == "table" and cal.source or ""
+    print("      • " .. name .. (source ~= "" and (" (" .. source .. ")") or ""))
   end
   if #calendars == 0 then
     print("   ⚠ No calendars found! Is Google Calendar synced to Apple Calendar?")
@@ -484,52 +551,9 @@ JSON.stringify({ authorized: authorized, status: status, calendars: names });
   end
   print("")
 
-  -- 2. Look for events in the next hour via EventKit
-  print("[2] Looking for ALL events in the next 60 minutes (via EventKit)...")
-  local diagJS = [[
-ObjC.import('EventKit');
-ObjC.import('Foundation');
-
-var store = $.EKEventStore.alloc.init;
-var status = $.EKEventStore.authorizationStatusForEntityType(0);
-if (status < 3) {
-  JSON.stringify([]);
-} else {
-  var start   = $.NSDate.dateWithTimeIntervalSinceNow(-60);
-  var horizon = $.NSDate.dateWithTimeIntervalSinceNow(3600);
-  var pred    = store.predicateForEventsWithStartDateEndDateCalendars(start, horizon, null);
-  var nsEvents = store.eventsMatchingPredicate(pred);
-
-  var results = [];
-  for (var i = 0; i < nsEvents.count; i++) {
-    var evt = nsEvents.objectAtIndex(i);
-    var startEpoch = Math.floor(evt.startDate.timeIntervalSince1970);
-
-    var title    = ObjC.unwrap(evt.title)    || "";
-    var location = ObjC.unwrap(evt.location) || "";
-    var url      = evt.URL ? (ObjC.unwrap(evt.URL.absoluteString) || "") : "";
-    var notes    = ObjC.unwrap(evt.notes)    || "";
-    var calName  = ObjC.unwrap(evt.calendar.title) || "";
-
-    results.push({
-      title:    title,
-      start:    ObjC.unwrap(evt.startDate.description),
-      epoch:    startEpoch,
-      location: location.substring(0, 100),
-      url:      url.substring(0, 100),
-      notes:    notes.substring(0, 100),
-      calendar: calName
-    });
-  }
-  results.sort(function(a, b) { return a.epoch - b.epoch; });
-  JSON.stringify(results, null, 2);
-}
-  ]]
-
-  df = io.open(diagScriptPath, "w")
-  if df then df:write(diagJS); df:close() end
-
-  local evtOutput, evtOk = hs.execute("/usr/bin/osascript -l JavaScript " .. diagScriptPath .. " 2>&1")
+  -- 2. Look for events in the next hour
+  print("[2] Looking for ALL events in the next 60 minutes...")
+  local evtOutput, evtOk = hs.execute(swiftBinaryPath .. " --diagnose 2>&1")
   if not evtOk then
     print("   ❌ Event query failed:")
     print("   " .. (evtOutput or "(no output)"))
@@ -544,12 +568,12 @@ if (status < 3) {
   else
     print("   Found " .. #events .. " event(s):")
     for _, evt in ipairs(events) do
-      local secsUntil = (evt.epoch or 0) - os.time()
+      local secsUntil = (evt.startEpoch or 0) - os.time()
       print(string.format('      • "%s" in %ds [%s] cal=%s',
-        evt.title, secsUntil, evt.start, evt.calendar))
-      if evt.location ~= "" then print("        location: " .. evt.location) end
-      if evt.url      ~= "" then print("        url:      " .. evt.url) end
-      if evt.notes    ~= "" then print("        notes:    " .. evt.notes) end
+        evt.title or "?", secsUntil, evt.start or "?", evt.calendar or "?"))
+      if (evt.location or "") ~= "" then print("        location: " .. evt.location) end
+      if (evt.url or "")      ~= "" then print("        url:      " .. evt.url) end
+      if (evt.notes or "")    ~= "" then print("        notes:    " .. (evt.notes or ""):sub(1, 100)) end
 
       local blob = ((evt.location or "") .. " " .. (evt.url or "") .. " " .. (evt.notes or "")):lower()
       local matched = false
@@ -590,6 +614,12 @@ end
 --------------------------------------------------------------------------------
 
 local function init()
+  -- Compile Swift helper if needed (first run or source changed)
+  if not ensureSwiftHelper() then
+    warn("Could not compile Swift helper — calendar features will not work")
+    warn("Make sure Xcode command line tools are installed: xcode-select --install")
+  end
+
   if hs.fs.attributes(config.soundPath) then
     countdownSound = hs.sound.getByFile(config.soundPath)
     if countdownSound then
