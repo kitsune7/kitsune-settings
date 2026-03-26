@@ -485,13 +485,8 @@ function pollForMeetings()
 
   nextMeeting = meeting
 
-  if secsUntil <= config.countdownStartSecs then
-    log("Meeting '" .. meeting.title .. "' is within countdown window (" .. secsUntil .. "s away)")
-    startTicking()
-  else
-    log("Meeting '" .. meeting.title .. "' found but too far out (" .. secsUntil .. "s away)")
-    updateMenubar(secsUntil)
-  end
+  log("Meeting '" .. meeting.title .. "' in " .. secsUntil .. "s — starting countdown")
+  startTicking()
 end
 
 --------------------------------------------------------------------------------
