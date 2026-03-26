@@ -1,49 +1,41 @@
-var calApp = Application("Calendar");
-var now = new Date();
-var horizon = new Date(now.getTime() + 600 * 1000);
+ObjC.import('EventKit');
+ObjC.import('Foundation');
 
-var results = [];
-var calendars = calApp.calendars();
+var store = $.EKEventStore.alloc.init;
 
-for (var ci = 0; ci < calendars.length; ci++) {
-  var cal = calendars[ci];
-  var calName = cal.name();
-  var events;
-  try {
-    events = cal.events.whose({
-      _and: [
-        { startDate: { _greaterThan: new Date(now.getTime() - 60000) } },
-        { startDate: { _lessThanEquals: horizon } }
-      ]
-    })();
-  } catch(e) {
-    continue;
-  }
+// Check authorization status (0=notDetermined, 1=restricted, 2=denied, 3=authorized, 4=fullAccess)
+var status = $.EKEventStore.authorizationStatusForEntityType(0); // 0 = EKEntityTypeEvent
+if (status < 3) {
+  // Not authorized — output a diagnostic marker so Lua knows
+  JSON.stringify({ error: "not_authorized", status: status });
+} else {
+  var start   = $.NSDate.dateWithTimeIntervalSinceNow(-60);
+  var horizon = $.NSDate.dateWithTimeIntervalSinceNow(600);
+  var pred    = store.predicateForEventsWithStartDateEndDateCalendars(start, horizon, null);
+  var nsEvents = store.eventsMatchingPredicate(pred);
 
-  for (var ei = 0; ei < events.length; ei++) {
-    var evt = events[ei];
-    var startEpoch;
-    try {
-      startEpoch = Math.floor(evt.startDate().getTime() / 1000);
-    } catch(e) { continue; }
+  var results = [];
+  for (var i = 0; i < nsEvents.count; i++) {
+    var evt = nsEvents.objectAtIndex(i);
+    var startEpoch = Math.floor(evt.startDate.timeIntervalSince1970);
 
-    var summary = "", location = "", url = "", description = "";
-    try { summary     = evt.summary()     || ""; } catch(e) {}
-    try { location    = evt.location()    || ""; } catch(e) {}
-    try { url         = evt.url()         || ""; } catch(e) {}
-    try { description = evt.description() || ""; } catch(e) {}
+    var title    = ObjC.unwrap(evt.title)    || "";
+    var location = ObjC.unwrap(evt.location) || "";
+    var url      = evt.URL ? (ObjC.unwrap(evt.URL.absoluteString) || "") : "";
+    var notes    = ObjC.unwrap(evt.notes)    || "";
+    var calName  = ObjC.unwrap(evt.calendar.title) || "";
 
     results.push({
-      title:      summary,
+      title:      title,
       startEpoch: startEpoch,
       location:   location,
       url:        url,
-      notes:      description,
+      notes:      notes,
       calendar:   calName
     });
   }
-}
 
-results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
-JSON.stringify(results);
+  results.sort(function(a, b) { return a.startEpoch - b.startEpoch; });
+  JSON.stringify(results);
+}
   
