@@ -33,6 +33,10 @@ function update-npm () {
   npm install -g npm@latest
 }
 
+function update-packages () {
+  npm-check-updates -u --target minor
+}
+
 function findPackageJson () {
   find . -name package.json -not \( -path "*/node_modules*" -prune \) -not \( -path "*/dist*" -prune \)
 }
