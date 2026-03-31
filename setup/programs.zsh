@@ -59,6 +59,7 @@ brew_install go
 brew_install gh
 brew_install uv
 brew_install difftastic
+brew_install rtk
 brew_install roborev-dev/tap/roborev
 brew_install_cask raycast Raycast.app
 brew_install_cask zed Zed.app
