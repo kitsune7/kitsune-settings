@@ -27,7 +27,7 @@
     ]
   },
   "sandbox": {
-    "enabled": true,
+    "enabled": false,
     "filesystem": {
       "allowWrite": ["~/Git", "/tmp/build", "~/.local-scripts"]
     }
