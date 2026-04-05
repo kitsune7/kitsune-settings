@@ -61,6 +61,7 @@ brew_install uv
 brew_install difftastic
 brew_install rtk
 brew_install roborev-dev/tap/roborev
+brew_install cmux
 brew_install_cask raycast Raycast.app
 brew_install_cask zed Zed.app
 brew_install_cask warp Warp.app

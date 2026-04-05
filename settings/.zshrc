@@ -105,3 +105,8 @@ export PATH="$PATH:/Users/chris.bradshaw/.cache/lm-studio/bin"
 
 export ENABLE_LSP_TOOL=1
 export RTK_TELEMETRY_DISABLED=1
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/chris/.lmstudio/bin"
+# End of LM Studio CLI section
+
