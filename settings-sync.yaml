@@ -42,6 +42,12 @@ entries:
     sync_direction: "repo_to_local"
     merge: true
 
+  - name: "claude-hooks"
+    description: "Claude hooks"
+    local_path: "$HOME/.claude/hooks"
+    repo_path: "claude/hooks"
+    sync_direction: "repo_to_local"
+
   - name: "hammerspoon"
     description: "Hammerspoon settings"
     local_path: "$HOME/.hammerspoon"

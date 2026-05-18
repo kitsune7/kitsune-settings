@@ -23,6 +23,26 @@ if [ ! -d "${ZSH_CUSTOM_PATH}/plugins/zsh-syntax-highlighting" ]; then
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM_PATH}/plugins/zsh-syntax-highlighting
 fi
 
+# Claude
+if ! command -v claude &> /dev/null; then
+  echo "Installing Claude..."
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+add-claude-plugin () {
+  local plugin="$1"
+  local marketplace="$2"
+  if [ ! -d "$HOME/.claude/plugins/$(basename $plugin)" ]; then
+    claude plugins marketplace add $marketplace
+    claude plugins install $plugin
+    claude plugins enable $plugin
+  fi
+}
+
+# Claude plugins
+add-claude-plugin "froggeric/claude-smart-approval" "smart-approval@claude-smart-approval"
+add-claude-plugin "jarrodwatts/claude-hud" "claude-hud"
+
 # Homebrew helpers
 brew_install () {
   local formula="$1"
@@ -55,6 +75,7 @@ brew_install_cask () {
 brew_install nvm
 brew_install bat
 brew_install jq
+brew_install shfmt
 brew_install go
 brew_install gh
 brew_install uv

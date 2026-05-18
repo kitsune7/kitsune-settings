@@ -31,5 +31,32 @@
     "filesystem": {
       "allowWrite": ["~/Git", "/tmp/build", "~/.local-scripts"]
     }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/block-dangerous-shell.sh\""
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/block-secret-reads.sh\""
+          }
+        ]
+      }
+    ],
+    "enabled": true,
+    "hooks": [
+      "block-dangerous-shell.sh",
+      "block-secret-reads.sh"
+    ]
   }
 }
