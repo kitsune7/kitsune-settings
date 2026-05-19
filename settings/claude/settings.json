@@ -78,13 +78,6 @@
           }
         ]
       }
-    ],
-    "enabled": true,
-    "hooks": [
-      "block-dangerous-shell.sh",
-      "block-secret-reads.sh",
-      "block-large-file-reads.sh",
-      "require-verification-before-stop.sh"
     ]
   }
 }
