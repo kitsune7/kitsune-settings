@@ -58,27 +58,5 @@
         ]
       }
     ]
-    // "PostToolUse": [
-    //   {
-    //     "matcher": "",
-    //     "hooks": [
-    //       {
-    //         "type": "command",
-    //         "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
-    //       }
-    //     ]
-    //   }
-    // ],
-    // "Stop": [
-    //   {
-    //     "matcher": "",
-    //     "hooks": [
-    //       {
-    //         "type": "command",
-    //         "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
-    //       }
-    //     ]
-    //   }
-    // ]
   }
 }
