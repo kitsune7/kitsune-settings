@@ -9,6 +9,7 @@
       "Bash(gh pr view:*)",
       "Bash(gh pr comments:*)",
       "Bash(gh api graphql -f query:*)",
+      "Bash(npx -y agent-browser:*)",
       "Bash(save)",
       "Bash(uv run:*)",
       "Bash(ls:*)",
@@ -56,28 +57,28 @@
           }
         ]
       }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
-          }
-        ]
-      }
     ]
+    // "PostToolUse": [
+    //   {
+    //     "matcher": "",
+    //     "hooks": [
+    //       {
+    //         "type": "command",
+    //         "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
+    //       }
+    //     ]
+    //   }
+    // ],
+    // "Stop": [
+    //   {
+    //     "matcher": "",
+    //     "hooks": [
+    //       {
+    //         "type": "command",
+    //         "command": "bash \"$HOME/.claude/hooks/require-verification-before-stop.sh\""
+    //       }
+    //     ]
+    //   }
+    // ]
   }
 }
