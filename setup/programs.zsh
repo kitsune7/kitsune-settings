@@ -40,7 +40,7 @@ add-claude-plugin () {
 }
 
 # Claude plugins
-add-claude-plugin "froggeric/claude-smart-approval" "smart-approval@claude-smart-approval"
+add-claude-plugin "smart-approval@claude-smart-approval" "froggeric/claude-smart-approval"
 add-claude-plugin "jarrodwatts/claude-hud" "claude-hud"
 add-claude-plugin "ponytail@ponytail" "DietrichGebert/ponytail"
 
