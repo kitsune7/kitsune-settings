@@ -7,6 +7,15 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
   "prettier": {
     "allowed": true
   },
@@ -42,6 +51,7 @@
   },
 
   "project_panel": {
+    "dock": "left",
     "indent_size": 16,
     "auto_reveal_entries": true
   },
@@ -161,6 +171,7 @@
     }
   },
   "agent": {
+    "dock": "right",
     "inline_assistant_model": {
       "provider": "copilot_chat",
       "model": "claude-sonnet-4.5"
