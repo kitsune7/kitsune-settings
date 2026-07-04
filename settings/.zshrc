@@ -110,3 +110,6 @@ export RTK_TELEMETRY_DISABLED=1
 export PATH="$PATH:/Users/chris/.lmstudio/bin"
 # End of LM Studio CLI section
 
+
+# Hermes Agent — ensure ~/.local/bin is on PATH
+export PATH="$HOME/.local/bin:$PATH"
