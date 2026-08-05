@@ -7,6 +7,25 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "agent_servers": {
+    "oh-my-pi": {
+      "type": "custom",
+      "command": "omp acp"
+    }
+  },
+  "language_models": {
+    "ollama": {
+      "api_url": "http://localhost:1234"
+    }
+  },
+  "edit_predictions": {
+    "open_ai_compatible_api": {
+      "max_output_tokens": 64,
+      "model": "gpt-5.6-sol",
+      "api_url": "http://localhost:1234"
+    },
+    "provider": "copilot"
+  },
   "outline_panel": {
     "dock": "left"
   },
@@ -158,12 +177,8 @@
   },
 
   /* AI settings */
-  "features": {
-    "edit_prediction_provider": "copilot"
-  },
   "context_servers": {
     "mcp-server-context7": {
-      "source": "extension",
       "enabled": true,
       "settings": {
         "default_minimum_tokens": "10000"
@@ -231,7 +246,7 @@
       "provider": "copilot_chat",
       "model": "claude-sonnet-4.5"
     },
-    "play_sound_when_agent_done": true,
+    "play_sound_when_agent_done": "always",
     "use_modifier_to_send": true
   }
 }
