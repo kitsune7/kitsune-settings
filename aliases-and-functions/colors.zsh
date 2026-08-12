@@ -1,9 +1,10 @@
-export GREEN=$(tput setaf 2)
-export YELLOW=$(tput setaf 3)
-export BLUE=$(tput setaf 4)
-export MAGENTA=$(tput setaf 5)
-export CYAN=$(tput setaf 6)
-export WHITE=$(tput setaf 7)
-export BRIGHT=$(tput bold)
-export DIM=$(tput dim)
-export RESET=$(tput sgr0)
+# Hardcoded ANSI escapes avoid spawning `tput` nine times on every shell start.
+export GREEN=$'\033[32m'
+export YELLOW=$'\033[33m'
+export BLUE=$'\033[34m'
+export MAGENTA=$'\033[35m'
+export CYAN=$'\033[36m'
+export WHITE=$'\033[37m'
+export BRIGHT=$'\033[1m'
+export DIM=$'\033[2m'
+export RESET=$'\033[0m'

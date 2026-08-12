@@ -1,6 +1,7 @@
 function settings-sync () {
   run-script settings-sync "$@"
-  source "${HOME}/.zshrc"
+  # Prefer a fresh shell over `source ~/.zshrc` (re-sourcing duplicates fpath/OMZ state).
+  exec zsh
 }
 
 function sync-entry () {

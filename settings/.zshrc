@@ -1,8 +1,30 @@
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Put default Node on PATH without paying for a full `nvm use` on every shell.
+# Full nvm (and bash completion) lazy-load on first `nvm` invocation.
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  if [ -r "$NVM_DIR/alias/default" ]; then
+    _nvm_default=$(<"$NVM_DIR/alias/default")
+    _nvm_default_path="$NVM_DIR/versions/node/v${_nvm_default#v}/bin"
+    if [ -d "$_nvm_default_path" ]; then
+      export PATH="$_nvm_default_path:$PATH"
+    fi
+    unset _nvm_default _nvm_default_path
+  fi
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+  nvm() {
+    unset -f nvm
+    # shellcheck disable=SC1091
+    . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+    nvm "$@"
+  }
+fi
+
+# Homebrew normally comes from ~/.zprofile (login shells). For non-login
+# interactive shells that didn't inherit it, load once when missing.
+if [[ -z "$HOMEBREW_PREFIX" && -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # Load all .zsh files from .local-scripts directory
 if [ -d "$HOME/.local-scripts" ]; then
@@ -10,11 +32,6 @@ if [ -d "$HOME/.local-scripts" ]; then
     [ -r "$file" ] && source "$file"
   done
   unset file
-fi
-
-# Configure shell for rust when installed
-if [ -d "$HOME/.cargo" ]; then
-  source "$HOME/.cargo/env"
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -51,8 +68,8 @@ typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # HYPHEN_INSENSITIVE="true"
 
 # Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
 # zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to enable command auto-correction.
@@ -90,7 +107,7 @@ PNPM_HOME="$HOME/Library/pnpm"
 
 # Go setup
 if [ -d "$HOME/go" ]; then
-  export GOPATH=$(go env GOPATH)
+  export GOPATH="${GOPATH:-$HOME/go}"
   export PATH=$PATH:$GOPATH/bin
 fi
 
