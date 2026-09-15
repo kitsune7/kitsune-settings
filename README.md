@@ -1,6 +1,6 @@
 # kitsune-settings
 
-A collection of settings I like to have in my home directory
+A personal collection of tools, settings, and automations that I use regularly
 
 ## Installation
 
