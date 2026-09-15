@@ -80,3 +80,5 @@ dist/
 
 # Compiled scripts
 custom-scripts/bin/
+
+settings/hammerspoon/zoom_countdown_helper
