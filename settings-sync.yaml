@@ -23,6 +23,12 @@ entries:
     local_path: "$HOME/.claude/CLAUDE.md"
     repo_path: "claude/CLAUDE.md"
     sync_direction: "repo_to_local"
+  
+  - name: "pi-models"
+    description: "PI models"
+    local_path: "$HOME/.pi/agents/models.json"
+    repo_path: "pi/models.json"
+    sync_direction: "repo_to_local"
 
   - name: "claude-agents"
     description: "Sub-agents for Claude Code"
