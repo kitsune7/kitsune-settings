@@ -26,7 +26,7 @@ entries:
   
   - name: "pi-models"
     description: "PI models"
-    local_path: "$HOME/.pi/agents/models.json"
+    local_path: "$HOME/.pi/agent/models.json"
     repo_path: "pi/models.json"
     sync_direction: "repo_to_local"
 
