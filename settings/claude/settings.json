@@ -45,6 +45,10 @@
           {
             "type": "command",
             "command": "bash \"$HOME/.claude/hooks/block-dangerous-shell.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.claude/hooks/validate-package-install.sh\""
           }
         ]
       },

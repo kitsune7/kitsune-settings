@@ -1,7 +1,16 @@
 function settings-sync () {
   run-script settings-sync "$@"
-  # Prefer a fresh shell over `source ~/.zshrc` (re-sourcing duplicates fpath/OMZ state).
-  exec zsh
+  reload-shell-functions
+}
+
+function reload-shell-functions () {
+  # Only safe because every file in the custom directory is pure alias and
+  # function definitions. Anything with side effects (PATH, fpath, compinit)
+  # belongs in ~/.zshrc, which needs a brand new shell to pick up.
+  local file
+  for file in "${ZSH:-$HOME/.oh-my-zsh}"/custom/*.zsh(.N); do
+    source "$file"
+  done
 }
 
 function sync-entry () {

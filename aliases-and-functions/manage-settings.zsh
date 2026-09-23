@@ -1,15 +1,15 @@
 alias edit="ide ${SETTINGS_DIR}"
-alias reload="sync-all; exec zsh"
+alias reload="sync-all"
 alias edit-local="ide ${HOME}/.local-scripts"
 alias show-local="show -d ${HOME}/.local-scripts"
 alias restore-local="cp -R ${ICLOUD_BACKUP_DIR}/local-scripts ${HOME}/.local-scripts"
 
 function save () {
-  commitMessage=${2:-"Auto-save updates to settings"}
+  local commitMessage=${1:-"Auto-save updates to settings"}
+  # Sync first so local-only edits land in the repo before they get committed.
   sync-all
   compile-all-scripts
   save-repo-changes "${SETTINGS_DIR}" "$commitMessage"
-  reload
 }
 
 function save-thoughts () {

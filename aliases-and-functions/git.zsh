@@ -132,8 +132,8 @@ function killtag () {
 }
 
 function save-repo-changes () {
-  commitMessage=${2:-"Save updates"}
-  _cd=$(pwd)
+  local commitMessage=${2:-"Save updates"}
+  local _cd=$(pwd)
   cd "$1" || return
   git add .
   git commit -m "$commitMessage"
