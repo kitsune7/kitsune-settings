@@ -18,6 +18,18 @@ exec /bin/zsh -l -c '
   command_name="$2"
   shift 2
 
+  # ~/.zshrc puts the default nvm Node on PATH, but a login shell running -c
+  # is non-interactive and never sources it, so Node scripts go unfound.
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  if [[ -r "$NVM_DIR/alias/default" ]]; then
+    nvm_default=$(<"$NVM_DIR/alias/default")
+    nvm_default_path="$NVM_DIR/versions/node/v${nvm_default#v}/bin"
+    if [[ -d "$nvm_default_path" && ":$PATH:" != *":$nvm_default_path:"* ]]; then
+      export PATH="$nvm_default_path:$PATH"
+    fi
+    unset nvm_default nvm_default_path
+  fi
+
   # Load private definitions first, matching the normal shell environment.
   for file in "$HOME"/.local-scripts/*.zsh(N); do
     source "$file"
