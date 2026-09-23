@@ -1,0 +1,37 @@
+#!/bin/zsh
+
+set -e
+
+command_name="$1"
+shift
+
+if [[ -z "${command_name}" || "${command_name}" == *[^A-Za-z0-9_-]* ]]; then
+  print -u2 "Invalid command name: ${command_name}"
+  exit 2
+fi
+
+script_dir="${0:A:h}"
+settings_dir="${script_dir:h}"
+
+exec /bin/zsh -l -c '
+  settings_dir="$1"
+  command_name="$2"
+  shift 2
+
+  # Load private definitions first, matching the normal shell environment.
+  for file in "$HOME"/.local-scripts/*.zsh(N); do
+    source "$file"
+  done
+
+  # Source the live repository definitions so these commands cannot drift
+  # from the aliases and functions they expose.
+  source "${settings_dir}/aliases-and-functions/directories.zsh"
+  export SETTINGS_DIR="${settings_dir}"
+  for file in "${settings_dir}"/aliases-and-functions/*.zsh(N); do
+    [[ "${file:t}" == "directories.zsh" ]] && continue
+    source "$file"
+  done
+
+  # eval is needed for aliases; "$@" remains separately quoted user input.
+  eval "${command_name} \"\$@\""
+' raycast-script-command "${settings_dir}" "${command_name}" "$@"
