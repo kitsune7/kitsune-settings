@@ -12,7 +12,7 @@ alias ac="git add .; git commit -m"
 alias list="git stash list"
 alias stash="git stash save --include-untracked"
 alias pop="git stash pop"
-alias drop="git stash save --include-untracked && git stash drop stash@{0}"
+alias drop="git clean --force -d -x && git reset --hard"
 alias clearbranch="git branch | grep -v 'master\|main\|development\|develop' | xargs git branch -D"
 alias cred="git config credential.helper store"
 
