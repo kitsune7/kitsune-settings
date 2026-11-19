@@ -39,3 +39,13 @@ function killport () {
   port=${1:-8080}
   kill -9 $(lsof -t -i tcp:${port})
 }
+
+function lsports () {
+  sudo lsof -iTCP -sTCP:LISTEN -P -n
+}
+
+function pidpath () {
+  pid=${1:-$$}
+  ps -ww -p $pid -o command=
+  sudo lsof -a -p $pid -d txt -Fn
+}
