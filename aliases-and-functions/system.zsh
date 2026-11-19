@@ -49,3 +49,8 @@ function pidpath () {
   ps -ww -p $pid -o command=
   sudo lsof -a -p $pid -d txt -Fn
 }
+
+function portpath () {
+  port=${1:-8080}
+  pidpath $(lsof -t -i tcp:${port}) | head
+}
