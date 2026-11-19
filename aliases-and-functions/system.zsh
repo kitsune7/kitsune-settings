@@ -52,5 +52,5 @@ function pidpath () {
 
 function portpath () {
   port=${1:-8080}
-  pidpath $(lsof -t -i tcp:${port}) | head
+  pidpath $(lsof -t -i tcp:${port})
 }
